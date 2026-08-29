@@ -1,0 +1,265 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { Gift, Medal, ShoppingBagOpen, Storefront } from "@phosphor-icons/react";
+import { UserCircle } from "@phosphor-icons/react";
+import { categories } from "@/data/categories";
+import { blogPosts } from "@/data/blog";
+import { homePageSections } from "@/data/home-page";
+import { products } from "@/data/products";
+
+const quickActions = [
+  { label: ["Lịch sử", "Đơn hàng"], href: "/gio-hang", icon: ShoppingBagOpen },
+  { label: ["Đăng Ký", "Đại Lý"], href: "/dang-ky-dai-ly", icon: Storefront },
+  { label: ["Vòng quay", "May mắn"], href: "/tin-tuc", icon: Gift },
+  { label: ["Hội viên", "Thân thiết"], href: "/dang-ky-thanh-vien", icon: Medal },
+];
+
+const utilityItems = [
+  { label: "Vòng quay may mắn", href: "/tin-tuc" },
+  { label: "Hội viên thân thiết", href: "/dang-ky-thanh-vien" },
+  { label: "Lịch sử đơn hàng", href: "/gio-hang" },
+  { label: "Lịch sử điểm thưởng", href: "/dang-nhap" },
+];
+
+export function MobileHomeSections() {
+  const blogCarouselRef = useRef<HTMLDivElement | null>(null);
+  const [activeBlogIndex, setActiveBlogIndex] = useState(0);
+
+  useEffect(() => {
+    const container = blogCarouselRef.current;
+    if (!container) return;
+
+    const cards = Array.from(container.querySelectorAll<HTMLElement>("[data-blog-card]"));
+    if (cards.length === 0) return;
+
+    const updateActiveIndex = () => {
+      const containerLeft = container.scrollLeft;
+      const cardWidth = cards[0]?.offsetWidth ?? container.clientWidth;
+      const gap = 12;
+      const step = cardWidth + gap;
+      const index = Math.round(containerLeft / step);
+      setActiveBlogIndex(Math.max(0, Math.min(cards.length - 1, index)));
+    };
+
+    updateActiveIndex();
+    container.addEventListener("scroll", updateActiveIndex, { passive: true });
+    window.addEventListener("resize", updateActiveIndex);
+
+    return () => {
+      container.removeEventListener("scroll", updateActiveIndex);
+      window.removeEventListener("resize", updateActiveIndex);
+    };
+  }, []);
+
+  return (
+    <div className="md:hidden">
+      <section className="bg-[linear-gradient(180deg,#86b900,#70a800)] px-4 pb-4 pt-3 text-white shadow-[0_14px_30px_rgba(92,160,0,0.18)]">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-[16px] bg-white text-[18px] font-black text-[var(--green)] shadow-[0_10px_20px_rgba(0,0,0,0.12)]">
+              H
+            </div>
+            <div>
+              <div className="text-[12px] font-semibold uppercase tracking-[0.18em] text-white/78">Nông Sản Hòa Phúc</div>
+              <div className="mt-1 text-[12px] text-white/88">Trà sạch, quà biếu đẹp, mua nhanh như mini app</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {homePageSections.hero ? (
+        <section className="pt-0">
+          <div className="relative aspect-[16/9] w-screen overflow-hidden bg-[linear-gradient(180deg,#ecffe6,#d3f0b3)]">
+            <Image
+              src={products[0].image}
+              alt="Banner trà Hòa Phúc"
+              fill
+              sizes="100vw"
+              className="object-cover transition-opacity duration-300"
+              priority
+            />
+            <video
+              className="absolute inset-0 h-full w-full object-cover"
+              src="/media/video-tra-hoa-phuc.mp4"
+              poster={products[0].image}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="none"
+              aria-label="Hero video trà Hòa Phúc"
+            />
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(124,180,0,0.18),rgba(9,45,27,0.46))]" />
+          </div>
+        </section>
+      ) : null}
+
+      <section className="px-4 pt-3">
+        <div className="rounded-[28px] border border-[rgba(15,77,50,0.08)] bg-white p-4 shadow-[0_14px_34px_rgba(15,77,50,0.08)]">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex min-w-0 items-center gap-3">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[rgba(15,77,50,0.08)] text-[var(--green)]">
+                <UserCircle size={34} weight="fill" />
+              </div>
+              <div className="min-w-0">
+                <div className="text-[13px] text-[var(--muted)]">Xin chào,</div>
+                <div className="text-[18px] font-semibold leading-tight text-[var(--green-dark)]">Quý khách hàng</div>
+              </div>
+            </div>
+            <div className="border-l border-[rgba(15,77,50,0.12)] pl-4 text-right">
+              <div className="text-[12px] text-[var(--muted)]">Điểm thưởng: 0đ</div>
+              <div className="mt-1 text-[16px] font-semibold text-[var(--green-dark)]">Chưa là hội viên</div>
+            </div>
+          </div>
+
+          <div className="mt-4 grid grid-cols-2 gap-3">
+              {quickActions.map((item) => (
+                (() => {
+                  const Icon = item.icon;
+
+                  return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="flex min-h-[84px] items-center gap-3 rounded-[20px] border border-[rgba(15,77,50,0.1)] bg-[linear-gradient(180deg,#ffffff,#fbfaf6)] px-4 py-3 shadow-[0_10px_20px_rgba(15,77,50,0.06)]"
+              >
+                <span className="min-w-0 flex-1 text-[14px] leading-[1.02] text-[var(--green-dark)]">
+                  {Array.isArray(item.label)
+                    ? item.label.map((line) => (
+                        <span key={line} className="block">
+                          {line}
+                        </span>
+                      ))
+                    : item.label}
+                </span>
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[16px] bg-[rgba(15,77,50,0.06)] text-[var(--green)]">
+                  <Icon size={22} weight="bold" />
+                </span>
+              </Link>
+                );
+              })()
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="px-4 pt-4">
+        <div className="rounded-[24px] bg-[linear-gradient(90deg,#dbf46f,#e8f8c0)] p-4 shadow-[0_12px_28px_rgba(92,160,0,0.12)]">
+          <div className="flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--green)]">Ưu đãi</div>
+              <div className="mt-1 text-[18px] font-semibold leading-tight text-[var(--green-dark)]">Bạn đang có 2 ưu đãi</div>
+              <div className="mt-1 text-[13px] leading-6 text-[var(--muted)]">Mua hàng để tận hưởng ưu đãi ngay bạn nhé!</div>
+            </div>
+            <Link
+              href="/tin-tuc"
+              className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-[var(--green)] shadow-[0_10px_20px_rgba(15,77,50,0.12)]"
+              aria-label="Xem ưu đãi"
+            >
+              <span className="text-2xl leading-none">›</span>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="px-4 pt-4">
+        <div className="rounded-[28px] bg-white p-5 shadow-[0_14px_32px_rgba(15,77,50,0.08)]">
+          <div className="flex items-end justify-between gap-4">
+            <div>
+              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--green)]">Danh mục</div>
+              <h2 className="mt-2 text-[26px] font-semibold leading-[1.05] text-[var(--green-dark)]">Danh mục sản phẩm</h2>
+            </div>
+          </div>
+          <div className="mt-4 grid grid-cols-4 gap-4">
+            {categories.map((category) => (
+              <Link
+                key={category.slug}
+                href={`/muc-san-pham/${category.slug}`}
+                className="flex flex-col items-center gap-2 text-center"
+              >
+                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[rgba(15,77,50,0.06)] text-[24px] text-[var(--green)]">
+                  {category.name.startsWith("Trà") ? "🍃" : category.name.startsWith("Dưỡng") ? "🌿" : "🎁"}
+                </div>
+                <span className="text-[12px] leading-5 text-[var(--green-dark)]">{category.name}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {homePageSections.blogTeaser ? (
+        <section className="pt-8">
+          <div className="bg-white px-5 py-5 shadow-[0_14px_32px_rgba(15,77,50,0.08)]">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--green)]">Tin tức</div>
+            <h2 className="mt-2 text-[26px] font-semibold leading-[1.05] text-[var(--green-dark)]">Bài viết gần đây</h2>
+            <div className="mt-1 text-[13px] leading-6 text-[var(--muted)]">(*) Quan tâm ZaloOA để nhận thông tin khuyến mãi.</div>
+            <div
+              ref={blogCarouselRef}
+              className="-mx-5 mt-4 flex snap-x snap-mandatory gap-3 overflow-x-auto pl-8 pr-5 pb-2 [scrollbar-width:none] [overscroll-behavior-x:contain] [scroll-behavior:smooth] [scroll-padding-left:2rem] [&::-webkit-scrollbar]:hidden"
+              style={{ WebkitOverflowScrolling: "touch" }}
+            >
+              {blogPosts.slice(0, 3).map((post) => (
+                <Link
+                  key={post.slug}
+                  href={`/tin-tuc/${post.slug}`}
+                  data-blog-card
+                  className="min-w-[84%] max-w-[84%] snap-start overflow-hidden rounded-[22px] bg-white shadow-[0_10px_24px_rgba(15,77,50,0.08)] first:ml-1"
+                >
+                  <Image src={post.coverImage} alt={post.title} width={1400} height={1050} className="aspect-[16/10] w-full object-cover" />
+                  <div className="px-5 py-4">
+                    <div className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--brown)]">{post.category}</div>
+                    <div className="mt-1.5 line-clamp-2 text-[15px] font-semibold leading-[1.18] text-[var(--green-dark)]">{post.title}</div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+            <div className="mt-3 flex justify-center gap-2">
+              {blogPosts.slice(0, 3).map((post, index) => (
+                <span
+                  key={post.slug}
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    index === activeBlogIndex ? "w-7 bg-[var(--green)]" : "w-2 bg-[rgba(15,77,50,0.22)]"
+                  }`}
+                  aria-hidden="true"
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
+
+      {homePageSections.featuredProducts ? (
+        <section id="san-pham-mobile" className="px-4 pt-6">
+          <div className="flex items-end justify-between gap-4">
+            <div>
+              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--green)]">Sản phẩm</div>
+              <h2 className="mt-2 text-[28px] font-semibold leading-[1.05] text-[var(--green-dark)]">Sản phẩm nổi bật</h2>
+            </div>
+            <Link href="/san-pham" className="text-sm font-semibold text-[var(--green)]">
+              Xem tất cả
+            </Link>
+          </div>
+          <div className="mt-4 grid grid-cols-2 gap-3">
+            {products.slice(0, 4).map((product) => (
+              <Link
+                key={product.slug}
+                href={`/san-pham/${product.slug}`}
+                className="overflow-hidden rounded-[22px] border border-[rgba(15,77,50,0.08)] bg-white shadow-[0_12px_28px_rgba(15,77,50,0.08)]"
+              >
+                <Image src={product.image} alt={product.name} width={product.imageWidth} height={product.imageHeight} className="h-auto w-full" />
+                <div className="p-3">
+                  <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--brown)]">{product.category}</div>
+                  <div className="mt-2 text-[14px] font-semibold leading-snug text-[var(--green-dark)]">{product.name}</div>
+                  <div className="mt-2 line-clamp-2 text-[12px] leading-5 text-[var(--muted)]">{product.shortDescription}</div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      ) : null}
+    </div>
+  );
+}
