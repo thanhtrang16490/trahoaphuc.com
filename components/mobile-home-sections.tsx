@@ -202,7 +202,6 @@ export function MobileHomeSections() {
           <div className="bg-white px-5 py-5 shadow-[0_14px_32px_rgba(15,77,50,0.08)]">
             <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--green)]">Tin tức</div>
             <h2 className="mt-2 text-[26px] font-semibold leading-[1.05] text-[var(--green-dark)]">Bài viết gần đây</h2>
-            <div className="mt-1 text-[13px] leading-6 text-[var(--muted)]">(*) Quan tâm ZaloOA để nhận thông tin khuyến mãi.</div>
             <div
               ref={blogCarouselRef}
               className="-mx-5 mt-4 flex snap-x snap-mandatory gap-3 overflow-x-auto pl-8 pr-5 pb-2 [scrollbar-width:none] [overscroll-behavior-x:contain] [scroll-behavior:smooth] [scroll-padding-left:2rem] [&::-webkit-scrollbar]:hidden"
