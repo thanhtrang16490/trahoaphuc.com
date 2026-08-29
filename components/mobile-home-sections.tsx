@@ -12,7 +12,7 @@ import { products } from "@/data/products";
 
 const quickActions = [
   { label: ["Lịch sử", "Đơn hàng"], href: "/gio-hang", icon: ShoppingBagOpen },
-  { label: ["Đăng Ký", "Đại Lý"], href: "/dang-ky-dai-ly", icon: Storefront },
+  { label: ["Đại lý", "Hợp tác"], href: "/dang-ky-dai-ly", icon: Storefront },
   { label: ["Vòng quay", "May mắn"], href: "/vong-quay-may-man", icon: Gift },
   { label: ["Hội viên", "Thân thiết"], href: "/dang-ky-thanh-vien", icon: Medal },
 ];

@@ -25,7 +25,7 @@ body {
     radial-gradient(circle at top left, rgba(15, 77, 50, 0.08), transparent 28%),
     radial-gradient(circle at 80% 0%, rgba(216, 183, 123, 0.24), transparent 22%),
     linear-gradient(180deg, #fbf7ef 0%, var(--bg) 45%, #efe6d6 100%);
-  font-family: var(--font-body), system-ui, sans-serif;
+  font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -42,11 +42,11 @@ img { max-width: 100%; display: block; }
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--green);
-  font-size: 0.78rem;
-  font-weight: 700;
+  font-size: 0.74rem;
+  font-weight: 600;
 }
 
 .section {
@@ -54,17 +54,18 @@ img { max-width: 100%; display: block; }
 }
 
 .section-title {
-  font-family: var(--font-display), Georgia, serif;
+  font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: clamp(2rem, 4vw, 4.6rem);
-  line-height: 0.95;
-  letter-spacing: -0.04em;
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+  font-weight: 600;
   margin: 0;
 }
 
 .section-copy {
   color: var(--muted);
-  font-size: 1.02rem;
-  line-height: 1.8;
+  font-size: 1rem;
+  line-height: 1.75;
   max-width: 62ch;
 }
 
@@ -91,7 +92,7 @@ img { max-width: 100%; display: block; }
   gap: 10px;
   border-radius: 999px;
   padding: 14px 22px;
-  font-weight: 700;
+  font-weight: 600;
   transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
 }
 
@@ -136,6 +137,113 @@ img { max-width: 100%; display: block; }
   100% {
     transform: translateY(0) scale(1);
     opacity: 1;
+  }
+}
+
+@keyframes tea-fall {
+  0% {
+    transform: translate3d(0, -12vh, 0) rotate(0deg);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.55;
+  }
+  100% {
+    transform: translate3d(0, 118vh, 0) rotate(160deg);
+    opacity: 0;
+  }
+}
+
+.tea-fall {
+  animation: tea-fall 12s linear infinite;
+  filter: drop-shadow(0 6px 10px rgba(15, 77, 50, 0.12));
+}
+
+.tea-fall-delay-1 { animation-delay: -1.8s; }
+.tea-fall-delay-2 { animation-delay: -3.2s; }
+.tea-fall-delay-3 { animation-delay: -4.8s; }
+.tea-fall-delay-4 { animation-delay: -6.1s; }
+.tea-fall-delay-5 { animation-delay: -7.7s; }
+.tea-fall-delay-6 { animation-delay: -2.4s; }
+.tea-fall-delay-7 { animation-delay: -5.6s; }
+.tea-fall-delay-8 { animation-delay: -8.4s; }
+
+@keyframes tea-dust {
+  0% {
+    transform: translate3d(-14vw, 0, 0);
+    opacity: 0;
+  }
+  14% {
+    opacity: 0.18;
+  }
+  100% {
+    transform: translate3d(138vw, 0, 0);
+    opacity: 0;
+  }
+}
+
+.tea-dust {
+  animation: tea-dust 16s linear infinite;
+  filter: blur(0.2px);
+}
+
+.tea-dust-delay-1 { animation-delay: -2s; }
+.tea-dust-delay-2 { animation-delay: -5s; }
+.tea-dust-delay-3 { animation-delay: -8s; }
+.tea-dust-delay-4 { animation-delay: -11s; }
+.tea-dust-delay-5 { animation-delay: -14s; }
+
+@keyframes tea-mist {
+  0%, 100% {
+    opacity: 0.28;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: translate3d(0, -6px, 0) scale(1.04);
+  }
+}
+
+.tea-mist {
+  animation: tea-mist 10s ease-in-out infinite;
+}
+
+.tea-mist-delay-1 {
+  animation-delay: -4s;
+}
+
+@keyframes tea-leaf-sway {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate3d(6px, -2px, 0) rotate(12deg);
+  }
+  50% {
+    transform: translate3d(-4px, 4px, 0) rotate(-10deg);
+  }
+  75% {
+    transform: translate3d(8px, -1px, 0) rotate(16deg);
+  }
+}
+
+.tea-leaf {
+  animation: tea-leaf-sway 7.5s ease-in-out infinite;
+  filter: drop-shadow(0 8px 12px rgba(15, 77, 50, 0.12));
+}
+
+.tea-leaf-delay-1 { animation-delay: -0.5s; }
+.tea-leaf-delay-2 { animation-delay: -1.4s; }
+.tea-leaf-delay-3 { animation-delay: -2.2s; }
+.tea-leaf-delay-4 { animation-delay: -3.1s; }
+.tea-leaf-delay-5 { animation-delay: -4s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .tea-fall,
+  .tea-dust,
+  .tea-mist,
+  .tea-leaf {
+    animation: none;
   }
 }
 

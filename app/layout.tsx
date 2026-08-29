@@ -1,22 +1,9 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Be_Vietnam_Pro } from "next/font/google";
 import "./globals.css";
 import { Footer } from "@/components/footer";
 import { ToastProvider } from "@/components/toast";
 import { OrganizationJsonLd, WebSiteJsonLd } from "@/components/seo";
 import { brand } from "@/data/site";
-
-const display = Cormorant_Garamond({
-  subsets: ["latin", "vietnamese"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-display",
-});
-
-const body = Be_Vietnam_Pro({
-  subsets: ["latin", "vietnamese"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-body",
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(brand.website),
@@ -63,7 +50,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="vi" className={`${display.variable} ${body.variable}`}>
+    <html lang="vi">
       <body>
         <ToastProvider>
           <OrganizationJsonLd />
