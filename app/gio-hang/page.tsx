@@ -124,13 +124,13 @@ export default function CartPage() {
           </div>
           <h1 className="mt-4 section-title text-[clamp(2rem,5vw,4.6rem)]">Thanh toán đơn hàng</h1>
           <p className="mt-4 max-w-[60ch] text-[15px] leading-8 text-[var(--muted)] md:text-base">
-            Hoàn tất đơn hàng mô phỏng ngay trên website. Thông tin được lưu local để sau này có thể chuyển sang API đặt hàng hoặc cổng thanh toán thật.
+            Hoàn tất đơn hàng nhanh gọn với trải nghiệm mua sắm rõ ràng, tiện lợi và phù hợp cho khách hàng Hòa Phúc.
           </p>
           <div className="mt-6 grid gap-3 sm:grid-cols-3">
             {[
-              "Xác nhận nhanh qua fanpage / Zalo",
-              "Lưu thông tin nhận hàng local",
-              "Sẵn sàng nối thanh toán thật sau này",
+              "Xem lại sản phẩm đã chọn trước khi đặt",
+              "Điền thông tin giao hàng trong vài bước",
+              "Áp dụng mã ưu đãi nếu bạn có",
             ].map((item) => (
               <div key={item} className="rounded-[22px] border border-[rgba(15,77,50,0.12)] bg-white/60 p-4 text-sm leading-7 text-[var(--green-dark)]">
                 {item}
@@ -258,11 +258,11 @@ export default function CartPage() {
             </button>
             {submitted ? (
               <div className="mt-4 rounded-[22px] bg-[rgba(15,77,50,0.08)] p-4 text-sm leading-7 text-[var(--green-dark)]">
-                Đơn hàng mô phỏng đã được tạo. Bạn có thể kết nối bước tiếp theo sang Zalo/Facebook hoặc API đơn hàng thật.
+                Đơn hàng của bạn đã được ghi nhận. Chúng tôi sẽ tiếp tục hoàn thiện luồng xác nhận và giao hàng trong các bước sau.
               </div>
             ) : null}
             <p className="mt-4 text-xs leading-6 text-[var(--muted)]">
-              Mẹo tăng tỉ lệ chốt: rút ngắn form hơn nữa khi bật luồng checkout thật, chỉ giữ họ tên, số điện thoại và địa chỉ.
+              Mẹo nhỏ: giữ form ngắn gọn để khách có thể hoàn tất đặt hàng nhanh hơn trên mobile.
             </p>
           </section>
 
