@@ -250,7 +250,7 @@ export default function UuDaiPage() {
                       className="h-16 w-16 object-contain"
                     />
                   </div>
-                  <div className="text-[12px] leading-none">Sinh Dược</div>
+                  <div className="text-[12px] leading-none">Hòa Phúc</div>
                 </div>
                 <div className="relative flex-1 px-3.5 py-3.5">
                   <span className="inline-flex items-center gap-1 rounded-[4px] bg-[#ff8b00] px-2.5 py-1 text-[11px] font-semibold leading-none text-white">
