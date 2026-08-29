@@ -82,8 +82,8 @@ export function HomePage() {
                 <div className="panel overflow-hidden rounded-[30px] md:rounded-[36px]">
                   <div className="relative bg-[linear-gradient(180deg,#ede2cb,#d5b074)]">
                     <Image
-                      src={products[0].image}
-                      alt="Poster video trà Hòa Phúc"
+                      src="/media/video-tra-hoa-phuc-thumb.jpg"
+                      alt="Khung hình giới thiệu trà Hòa Phúc"
                       width={products[0].imageWidth}
                       height={products[0].imageHeight}
                       className={`h-auto w-full transition-opacity duration-500 ${shouldLoadHeroVideo ? "opacity-0" : "opacity-100"}`}
@@ -100,6 +100,7 @@ export function HomePage() {
                         playsInline
                         preload="none"
                         aria-label="Video giới thiệu thương hiệu Hòa Phúc"
+                        onCanPlay={() => setShouldLoadHeroVideo(true)}
                       />
                     ) : (
                       <div className="absolute inset-x-0 bottom-0 bg-[linear-gradient(180deg,rgba(15,77,50,0),rgba(15,77,50,0.58))] px-4 py-4 text-white md:px-6 md:py-5">

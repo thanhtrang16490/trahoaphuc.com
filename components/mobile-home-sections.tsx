@@ -27,6 +27,7 @@ const utilityItems = [
 export function MobileHomeSections() {
   const blogCarouselRef = useRef<HTMLDivElement | null>(null);
   const [activeBlogIndex, setActiveBlogIndex] = useState(0);
+  const [heroVideoReady, setHeroVideoReady] = useState(false);
 
   useEffect(() => {
     const container = blogCarouselRef.current;
@@ -81,11 +82,11 @@ export function MobileHomeSections() {
         <section className="pt-0">
           <div className="relative aspect-[16/9] w-screen overflow-hidden bg-[linear-gradient(180deg,#ecffe6,#d3f0b3)]">
             <Image
-              src={products[0].image}
-              alt="Banner trà Hòa Phúc"
+              src="/media/video-tra-hoa-phuc-thumb.jpg"
+              alt="Khung hình giới thiệu trà Hòa Phúc"
               fill
               sizes="100vw"
-              className="object-cover transition-opacity duration-300"
+              className={`object-cover transition-opacity duration-300 ${heroVideoReady ? "opacity-0" : "opacity-100"}`}
               priority
             />
             <video
@@ -98,6 +99,7 @@ export function MobileHomeSections() {
               playsInline
               preload="none"
               aria-label="Hero video trà Hòa Phúc"
+              onCanPlay={() => setHeroVideoReady(true)}
             />
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(124,180,0,0.18),rgba(9,45,27,0.46))]" />
           </div>
