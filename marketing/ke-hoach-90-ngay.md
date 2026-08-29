@@ -1,4 +1,4 @@
-# Kế hoạch Triển khai 90 Ngày - Trà Hoà Phúc
+# Kế hoạch Triển khai 90 Ngày - Nông Sản Hoà Phúc
 
 ## Mục tiêu
 
@@ -12,6 +12,7 @@
 ### Việc cần làm
 
 - Chốt định vị thương hiệu.
+- Đồng bộ tên thương hiệu Nông Sản Hòa Phúc trên toàn bộ kênh.
 - Chụp ảnh sản phẩm, quay video ngắn.
 - Tạo TikTok Shop, Shopee, Facebook catalog.
 - Mở Zalo OA.
@@ -27,6 +28,7 @@
 - Có đủ gian hàng và trang giới thiệu.
 - Có tối thiểu 15-20 video/ngắn sẵn để đăng.
 - Có bảng giá và mô tả chuẩn.
+- Có bộ mô tả riêng cho từng nhóm sản phẩm đang có trên site.
 
 ## Giai đoạn 2: Ngày 31-60
 
@@ -39,6 +41,7 @@
 - Tổ chức 2-3 buổi livestream/tuần.
 - Mời khách cũ tham gia đánh giá, phản hồi.
 - Tìm 5-10 đại lý thử nghiệm.
+- Bám nội dung theo 4 nhóm: trà thảo mộc, dưỡng sinh, đặc sản vùng miền và câu chuyện thương hiệu.
 
 ### Output mong muốn
 
@@ -56,6 +59,7 @@
 - Làm chương trình mua lại 15-30-45 ngày.
 - Chốt thêm đại lý hoặc cộng tác viên.
 - Đưa các combo bán chạy lên top gian hàng.
+- Gom các bài blog, FAQ và nội dung hỗ trợ vào website để kéo SEO.
 
 ### Output mong muốn
 
@@ -85,4 +89,4 @@
 - [ ] Bộ nội dung 30 ngày.
 - [ ] Bộ câu trả lời inbox.
 - [ ] File theo dõi KPI.
-
+- [ ] Nội dung mô tả từng nhóm sản phẩm theo đúng website.

@@ -184,6 +184,40 @@ export function MobileHomeSections() {
       </section>
 
       <section className="px-4 pt-4">
+        <div className="overflow-hidden rounded-[28px] bg-[linear-gradient(180deg,#163a23,#2f6f2f)] p-4 text-white shadow-[0_18px_40px_rgba(15,77,50,0.22)]">
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/75">Đại lý</div>
+              <h2 className="mt-2 text-[24px] font-semibold leading-[1.02]">Mở đại lý cùng Hòa Phúc</h2>
+              <p className="mt-2 max-w-[34ch] text-[13px] leading-6 text-white/78">
+                Chính sách linh hoạt, hình ảnh đồng bộ và hỗ trợ ra đơn cho kênh bán online lẫn offline.
+              </p>
+            </div>
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[18px] bg-white/12 text-white">
+              <Storefront size={24} weight="bold" />
+            </div>
+          </div>
+
+          <div className="mt-4 grid grid-cols-2 gap-3">
+            <Link
+              href="/dang-ky-dai-ly"
+              className="flex h-12 items-center justify-center rounded-[16px] bg-white text-[14px] font-semibold text-[var(--green-dark)]"
+            >
+              Đăng ký ngay
+            </Link>
+            <a
+              href="https://www.facebook.com/nongsanhoaphucnb/"
+              target="_blank"
+              rel="noreferrer"
+              className="flex h-12 items-center justify-center rounded-[16px] border border-white/20 bg-white/8 text-[14px] font-semibold text-white"
+            >
+              Nhắn fanpage
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section className="px-4 pt-4">
         <div
           className="rounded-[28px] bg-white p-5 shadow-[0_14px_32px_rgba(15,77,50,0.08)]"
           style={{ contentVisibility: "auto", containIntrinsicSize: "320px" }}

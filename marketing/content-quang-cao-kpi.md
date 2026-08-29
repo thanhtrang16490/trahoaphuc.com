@@ -1,10 +1,10 @@
-# Bộ Content, Quảng Cáo và KPI - Trà Hoà Phúc
+# Bộ Content, Quảng Cáo và KPI - Nông Sản Hoà Phúc
 
 ## 1. Trụ cột nội dung
 
 ### Trụ cột 1: Câu chuyện thương hiệu
 
-- Trà Hoà Phúc là ai.
+- Nông Sản Hoà Phúc là ai.
 - Vì sao ra đời.
 - Gắn với Ninh Bình như thế nào.
 - Tại sao khách nên tin.
@@ -16,6 +16,7 @@
 - Khi nào nên uống.
 - Cách bảo quản trà.
 - Gợi ý dùng trà làm quà.
+- Gợi ý dùng trà theo từng dịp: dùng hằng ngày, biếu tặng, tiếp khách.
 
 ### Trụ cột 3: Sản phẩm và chuyển đổi
 
@@ -24,6 +25,7 @@
 - Quy trình đóng gói.
 - Feedback khách.
 - Combo bán chạy.
+- Nội dung phân nhóm theo website: trà thảo mộc, dưỡng sinh, đặc sản vùng miền.
 
 ## 2. Kế hoạch content theo tuần
 
@@ -59,6 +61,7 @@
 - Trang câu chuyện thương hiệu.
 - Trang đại lý/cộng tác viên.
 - Trang liên hệ và mua hàng.
+- Trang ưu đãi và trang chính sách để tăng niềm tin khi chốt đơn.
 
 ## 6. Gợi ý content cho Zalo
 
@@ -67,6 +70,7 @@
 - Gợi ý sản phẩm theo dịp lễ.
 - Voucher cho khách cũ.
 - Chăm sóc khách sau mua.
+- Tệp khách cũ từ Facebook và website cần được kéo về Zalo để tăng mua lại.
 
 ## 7. Khung quảng cáo
 
@@ -75,18 +79,21 @@
 - Lead ads để thu khách quan tâm.
 - Inbox ads để chốt đơn.
 - Remarketing cho người xem video, tương tác page, truy cập website.
+- Tách nhóm quảng cáo theo từng nhóm sản phẩm có sẵn trên website.
 
 ### TikTok Ads
 
 - Đẩy video có tỷ lệ giữ chân tốt.
 - Chạy cho sản phẩm bán nhanh hoặc combo.
 - Kết hợp livestream và affiliate nếu có.
+- Ưu tiên các video kể chuyện sản phẩm thật, tránh quá nhiều quảng cáo cứng.
 
 ### Shopee Ads
 
 - Đẩy từ khóa sản phẩm chính.
 - Tăng hiển thị cho combo bán chạy.
 - Tối ưu review và tỷ lệ chuyển đổi.
+- Tên sản phẩm và mô tả nên khớp với thông tin trên website để giảm lệch kỳ vọng.
 
 ## 8. KPI theo kênh
 
@@ -148,4 +155,3 @@
 - Tỷ lệ khách quay lại.
 - Sản phẩm bán chạy nhất.
 - Nội dung hiệu quả nhất.
-

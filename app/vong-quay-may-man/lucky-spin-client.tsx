@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, Sparkle, Trophy } from "@phosphor-icons/react";
+import { addLoyaltyPoints, readLoyaltyPoints, subscribeLoyalty } from "@/components/loyalty-store";
+import { useToast } from "@/components/toast";
 
 const prizes = [
   { label: "Giảm 5%", color: "#f7b731" },
@@ -17,6 +19,14 @@ export function LuckySpinClient() {
   const [rotation, setRotation] = useState(0);
   const [spinning, setSpinning] = useState(false);
   const [result, setResult] = useState("Sẵn sàng quay thưởng");
+  const [points, setPoints] = useState(0);
+  const { showToast } = useToast();
+
+  useEffect(() => {
+    const syncPoints = () => setPoints(readLoyaltyPoints());
+    syncPoints();
+    return subscribeLoyalty(syncPoints);
+  }, []);
 
   const prizeCount = prizes.length;
   const sliceAngle = 360 / prizeCount;
@@ -38,6 +48,13 @@ export function LuckySpinClient() {
     setRotation(targetAngle);
     window.setTimeout(() => {
       setResult(`Bạn nhận được: ${prizes[winningIndex].label}`);
+      const addedPoints = winningIndex === 1 ? 1500 : winningIndex === 3 ? 1000 : winningIndex === 0 ? 500 : winningIndex === 4 ? 300 : 100;
+      const nextPoints = addLoyaltyPoints(addedPoints);
+      setPoints(nextPoints);
+      showToast({
+        title: "Cộng điểm thành công",
+        message: `+${addedPoints} điểm, số dư hiện tại ${nextPoints} điểm`,
+      });
       setSpinning(false);
     }, 4200);
   };
@@ -77,7 +94,8 @@ export function LuckySpinClient() {
               </div>
 
               <p className="mt-3 text-[13px] leading-6 text-[var(--muted)]">
-                Mỗi lượt quay mang đến một ưu đãi may mắn để bạn dùng ngay cho đơn hàng Hòa Phúc.
+                Mỗi lượt quay mang đến ưu đãi may mắn và cộng điểm thưởng vào ví điểm của bạn. 1 điểm = 1 đồng, có thể
+                dùng để đổi quà hoặc voucher.
               </p>
 
               <div className="mt-5 flex justify-center">
@@ -130,6 +148,13 @@ export function LuckySpinClient() {
 
               <div className="mt-4 rounded-[20px] bg-white px-4 py-3 text-center text-[14px] font-semibold text-[var(--green-dark)] shadow-[0_10px_24px_rgba(15,77,50,0.08)]">
                 {result}
+              </div>
+
+              <div className="mt-3 rounded-[20px] border border-[rgba(15,77,50,0.1)] bg-white/80 px-4 py-3 text-center">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--green)]">Điểm thưởng</div>
+                <div className="mt-1 text-[18px] font-semibold text-[var(--green-dark)]">
+                  {points} điểm <span className="text-[12px] font-medium text-[var(--muted)]">(1 điểm = 1 đồng)</span>
+                </div>
               </div>
 
               <div className="mt-4 grid grid-cols-2 gap-3 text-[12px]">

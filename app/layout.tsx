@@ -44,11 +44,20 @@ export const metadata: Metadata = {
     siteName: brand.displayName,
     locale: "vi_VN",
     type: "website",
+    images: [
+      {
+        url: "/media/video-tra-hoa-phuc-thumb.jpg",
+        width: 1280,
+        height: 720,
+        alt: "Hòa Phúc - Nông sản sạch từ thiên nhiên",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: brand.displayName,
     description: `${brand.legalName} (MST ${brand.taxId}), đồng bộ với fanpage chính thức.`,
+    images: ["/media/video-tra-hoa-phuc-thumb.jpg"],
   },
 };
 

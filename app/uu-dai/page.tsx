@@ -5,9 +5,11 @@ import Link from "next/link";
 import { BreadcrumbJsonLd } from "@/components/seo";
 import { addProductToCart } from "@/components/cart-store";
 import { useToast } from "@/components/toast";
+import { canRedeem, readLoyaltyPoints, redeemLoyaltyReward, subscribeLoyalty } from "@/components/loyalty-store";
 import { products } from "@/data/products";
 import { formatCurrency, getProductPrice } from "@/data/pricing";
 import { useMobileScrollVisibility } from "@/components/use-mobile-scroll-visibility";
+import { useEffect, useState } from "react";
 
 function IconShell({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return <span className={`inline-flex items-center justify-center ${className}`}>{children}</span>;
@@ -123,18 +125,24 @@ const specialOffers = [
 
 const pointRewards = [
   {
+    id: "monthly-gift",
     title: "Ưu đãi đặc biệt trong tháng",
     description: "Ưu đãi siêu quà tặng nhân dịp 20-11",
-    points: "3000 điểm",
+    points: 3000,
+    pointsLabel: "3000 điểm",
     status: "Chưa đủ điểm",
     color: "from-[#0f8aa6] to-[#48d3b6]",
+    type: "gift" as const,
   },
   {
+    id: "special-voucher",
     title: "Ưu đãi đặc biệt",
     description: "1 món quà cho đơn hàng phù hợp",
-    points: "1100 điểm",
+    points: 1100,
+    pointsLabel: "1100 điểm",
     status: "Chưa đủ điểm",
     color: "from-[#7bbd28] to-[#d8f26c]",
+    type: "voucher" as const,
   },
 ];
 
@@ -145,6 +153,13 @@ export default function UuDaiPage() {
   const featuredPrice = getProductPrice(featuredVoucher.slug);
   const { hidden } = useMobileScrollVisibility();
   const { showToast } = useToast();
+  const [points, setPoints] = useState(0);
+
+  useEffect(() => {
+    const syncPoints = () => setPoints(readLoyaltyPoints());
+    syncPoints();
+    return subscribeLoyalty(syncPoints);
+  }, []);
 
   const addOfferToCart = (slug: string, title: string) => {
     const product = products.find((item) => item.slug === slug);
@@ -153,6 +168,28 @@ export default function UuDaiPage() {
     showToast({
       title: "Đã thêm ưu đãi vào giỏ hàng",
       message: `${title} · ${product.name}`,
+    });
+  };
+
+  const redeemReward = (reward: (typeof pointRewards)[number]) => {
+    const redeemed = redeemLoyaltyReward({
+      title: reward.title,
+      type: reward.type,
+      pointsCost: reward.points,
+    });
+
+    if (!redeemed) {
+      showToast({
+        title: "Chưa đủ điểm",
+        message: `Bạn cần ${reward.points} điểm để đổi ${reward.title}.`,
+      });
+      return;
+    }
+
+    setPoints(readLoyaltyPoints());
+    showToast({
+      title: "Đổi thưởng thành công",
+      message: `${reward.title} đã được lưu vào lịch sử đổi thưởng.`,
     });
   };
 
@@ -185,7 +222,7 @@ export default function UuDaiPage() {
               Đặt hàng để tận hưởng ưu đãi
             </h1>
             <p className="mt-1 text-[13px] leading-6 text-[var(--muted)]">
-              (*) Quà tặng sẽ tự động thêm vào giỏ hàng bạn nhé!
+              (*) Quà tặng có thể thêm vào giỏ hàng hoặc đổi bằng điểm thưởng ngay trên trang này.
             </p>
           </div>
 
@@ -296,7 +333,8 @@ export default function UuDaiPage() {
               <div>
                 <h2 className="text-[22px] font-semibold leading-none tracking-[-0.03em] text-[var(--green-dark)]">Đổi Điểm Lấy Quà</h2>
                 <p className="mt-1.5 text-[13px] leading-6 text-[var(--muted)]">
-                  Bạn có <span className="font-semibold text-[#9ec200]">0 điểm</span> <span className="text-[18px] text-[var(--muted)]">?</span>
+                  Bạn có <span className="font-semibold text-[#9ec200]">{points} điểm</span>{" "}
+                  <span className="text-[18px] text-[var(--muted)]">(1 điểm = 1 đồng)</span>
                 </p>
               </div>
             </div>
@@ -306,7 +344,7 @@ export default function UuDaiPage() {
               style={{ WebkitOverflowScrolling: "touch" }}
             >
               {pointRewards.map((reward) => (
-                <article key={reward.title} className="min-w-[84%] max-w-[84%] snap-start overflow-hidden rounded-[22px] bg-white shadow-[0_10px_24px_rgba(15,77,50,0.08)] first:ml-1">
+                <article key={reward.id} className="min-w-[84%] max-w-[84%] snap-start overflow-hidden rounded-[22px] bg-white shadow-[0_10px_24px_rgba(15,77,50,0.08)] first:ml-1">
                   <div className={`relative aspect-[16/10] bg-gradient-to-br ${reward.color}`}>
                     <div className="absolute left-3 top-3 rounded-full bg-[#ff8b00] px-3 py-1 text-[11px] font-semibold text-white shadow-[0_8px_18px_rgba(0,0,0,0.12)]">
                       <span className="inline-flex items-center gap-1">
@@ -320,7 +358,7 @@ export default function UuDaiPage() {
                     <div className="absolute left-4 bottom-3 rounded-full bg-[#ffcc2f] px-3 py-1 text-[13px] font-semibold text-[#7a4d00] shadow-[0_8px_18px_rgba(0,0,0,0.12)]">
                       <span className="inline-flex items-center gap-1">
                         <LineDollarIcon className="h-3.5 w-3.5" />
-                        {reward.points}
+                        {reward.pointsLabel}
                       </span>
                     </div>
                   </div>
@@ -331,10 +369,18 @@ export default function UuDaiPage() {
                       <span>☆</span>
                       <span>Còn 100 suất</span>
                     </div>
-                    <button className="mt-3.5 flex h-11 w-full items-center justify-center rounded-[14px] bg-[#e5e5ec] text-[14px] font-semibold text-[#8b8b95]">
+                    <button
+                      type="button"
+                      className={`mt-3.5 flex h-11 w-full items-center justify-center rounded-[14px] text-[14px] font-semibold ${
+                        canRedeem(reward.points)
+                          ? "bg-[linear-gradient(180deg,#0f4d32,#063b27)] text-white"
+                          : "bg-[#e5e5ec] text-[#8b8b95]"
+                      }`}
+                      onClick={() => redeemReward(reward)}
+                    >
                       <span className="inline-flex items-center gap-1">
                         <LineGiftIcon className="h-3.5 w-3.5" />
-                        Chưa đủ điểm
+                        {canRedeem(reward.points) ? "Đổi ngay" : "Chưa đủ điểm"}
                       </span>
                     </button>
                   </div>
@@ -394,7 +440,9 @@ export default function UuDaiPage() {
                 <LineTrophyIcon className="h-5 w-5 text-[#e39d09]" />
                 <h2 className="text-[22px] font-semibold text-[var(--green-dark)]">Đổi Điểm Lấy Quà</h2>
               </div>
-              <p className="mt-2 text-[13px] leading-6 text-[var(--muted)]">Bạn có 0 điểm</p>
+              <p className="mt-2 text-[13px] leading-6 text-[var(--muted)]">
+                Bạn có <span className="font-semibold text-[var(--green-dark)]">{points} điểm</span> để đổi quà hoặc voucher.
+              </p>
             </article>
           </div>
         </div>

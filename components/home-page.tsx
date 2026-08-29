@@ -199,6 +199,42 @@ export function HomePage() {
           </section>
         ) : null}
 
+        <section className="section pb-6 md:pb-24" style={{ contentVisibility: "auto", containIntrinsicSize: "280px" }}>
+          <div className="container">
+            <div className="rounded-[34px] bg-[linear-gradient(135deg,#12331f,#2d6e2e_60%,#9fd20f)] p-6 text-white shadow-[0_20px_50px_rgba(15,77,50,0.2)] md:p-8">
+              <div className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
+                <div>
+                  <div className="eyebrow text-[11px] md:text-xs">
+                    <span className="h-px w-8 bg-white/70" />
+                    Đại lý phân phối
+                  </div>
+                  <h2 className="mt-4 text-[clamp(2rem,4.5vw,4.4rem)] font-semibold leading-[0.96] tracking-[-0.05em]">
+                    Mở rộng kinh doanh cùng Hòa Phúc.
+                  </h2>
+                  <p className="mt-4 max-w-[58ch] text-[15px] leading-8 text-white/84 md:text-base">
+                    Đăng ký đại lý để nhận tư vấn chính sách, hỗ trợ hình ảnh bán hàng và danh mục sản phẩm phù hợp cho
+                    khu vực của bạn.
+                  </p>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+                  <Link href="/dang-ky-dai-ly" className="button button-primary justify-center bg-white text-[var(--green-dark)]">
+                    Đăng ký đại lý
+                  </Link>
+                  <a
+                    href="https://www.facebook.com/nongsanhoaphucnb/"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="button button-secondary justify-center border-white/30 bg-white/10 text-white hover:bg-white/15"
+                  >
+                    Nhắn tin fanpage
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {homePageSections.featuredProducts ? (
           <section id="san-pham-noi-bat" className="section pt-6 md:pt-24" style={{ contentVisibility: "auto", containIntrinsicSize: "980px" }}>
             <div className="container">

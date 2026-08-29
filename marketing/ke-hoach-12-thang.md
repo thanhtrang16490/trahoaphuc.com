@@ -1,8 +1,8 @@
-# Kế hoạch Marketing 12 Tháng - Trà Hoà Phúc
+# Kế hoạch Marketing 12 Tháng - Nông Sản Hoà Phúc
 
 ## 1. Mục tiêu năm
 
-- Xây thương hiệu Trà Hoà Phúc thành một nhãn trà địa phương có thể mua online toàn quốc.
+- Xây thương hiệu Nông Sản Hoà Phúc thành một nhãn nông sản - trà thảo mộc địa phương có thể mua online toàn quốc.
 - Tạo doanh số đều từ 4 nguồn chính: TikTok Shop, Shopee, Facebook, website.
 - Xây hệ thống giữ khách bằng Zalo OA/Mini App.
 - Phát triển kênh đại lý và cộng tác viên tại Ninh Bình và khu vực lân cận.
@@ -11,8 +11,8 @@
 
 Đề xuất định vị:
 
-- Trà địa phương sạch, dễ uống, phù hợp dùng hằng ngày.
-- Sản phẩm quà biếu mang dấu ấn Ninh Bình.
+- Nông sản sạch, trà thảo mộc và quà biếu mang dấu ấn Ninh Bình.
+- Sản phẩm dễ uống, dễ hiểu, phù hợp dùng hằng ngày.
 - Thương hiệu thân thiện, dễ tiếp cận, tập trung trải nghiệm thật và sự tin cậy.
 
 ## 3. Vai trò từng kênh
@@ -37,6 +37,7 @@
 ### Quý 1
 
 - Hoàn thiện nhận diện thương hiệu.
+- Đồng bộ tên gọi và thông điệp giữa website, fanpage, sàn và Zalo.
 - Chuẩn hoá bộ ảnh, video, mô tả sản phẩm.
 - Mở TikTok Shop, Shopee, Zalo OA.
 - Làm website bản đầu.
@@ -48,6 +49,7 @@
 - Chạy quảng cáo Facebook và TikTok có kiểm soát.
 - Bắt đầu chương trình review, combo dùng thử, combo quà biếu.
 - Kích hoạt đại lý thử nghiệm.
+- Tập trung các dòng đang có trên site: trà thảo mộc, dưỡng sinh, bát bảo và các gói quà.
 
 ### Quý 3
 
@@ -55,6 +57,7 @@
 - Mở rộng affiliate/KOC.
 - Làm nội dung SEO cho website.
 - Xây chương trình khách hàng thân thiết.
+- Phát triển nội dung blog xoay quanh câu chuyện thương hiệu, cách dùng trà và quà biếu.
 
 ### Quý 4
 
@@ -62,6 +65,7 @@
 - Mở rộng tệp đại lý.
 - Tăng ngân sách cho remarketing và chăm sóc khách cũ.
 - Đánh giá lại toàn bộ phễu để lập kế hoạch năm sau.
+- Chuẩn bị bộ hàng Tết/đi lễ/biếu tặng nếu danh mục sản phẩm cho phép.
 
 ## 6. Ngân sách gợi ý
 
@@ -87,4 +91,3 @@
 3. Làm website cơ bản có thể bán hàng.
 4. Mở Zalo OA.
 5. Thiết kế combo sản phẩm bán chạy.
-
