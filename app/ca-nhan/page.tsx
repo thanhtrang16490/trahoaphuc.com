@@ -24,7 +24,7 @@ const utilities = [
 const specialOffers = [
   {
     title: "Giảm 5% cho đơn hàng đầu tiên",
-    description: "Áp dụng cho lần đầu mua hàng trên Mini App",
+    description: "Áp dụng cho lần đầu mua hàng",
     expiry: "HSD: 01-09-2026",
     icon: "%",
     cta: "Dùng ngay",
@@ -186,15 +186,10 @@ export default function ProfilePage() {
           </section>
 
           <section className="mt-4 overflow-hidden rounded-[22px] bg-white shadow-[0_10px_24px_rgba(15,77,50,0.08)]">
-            <div className="border-b border-[rgba(15,77,50,0.08)] px-4 py-3">
-              <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--muted)]">Được phát triển bởi</div>
-              <div className="mt-2 text-[18px] font-semibold tracking-[-0.03em] text-[var(--green-dark)]">trigminiapp.com</div>
-              <div className="mt-1 text-[12px] leading-6 text-[var(--muted)]">Nền tảng mini app Zalo</div>
-            </div>
             <div className="px-4 py-3 text-[13px] leading-6 text-[var(--green-dark)]">
-              🚀 Đưa doanh nghiệp của bạn lên Zalo với Mini App với trọn gói giải pháp chỉ 15 triệu
+              Liên hệ nhanh để nhận tư vấn, demo và hỗ trợ triển khai giải pháp cho doanh nghiệp.
               <br />
-              👉 Inbox ngay để nhận demo miễn phí!
+              Chúng tôi luôn sẵn sàng hỗ trợ bạn trong mọi giai đoạn mua hàng và vận hành.
             </div>
             <div className="px-4 pb-4">
               <a
@@ -203,7 +198,7 @@ export default function ProfilePage() {
                 rel="noreferrer"
                 className="flex h-11 items-center justify-center rounded-[14px] bg-[var(--green)] text-[14px] font-semibold text-white"
               >
-                💬 Liên hệ nhà phát triển
+                Liên hệ hỗ trợ
               </a>
             </div>
           </section>
@@ -270,7 +265,7 @@ export default function ProfilePage() {
               <Link href="/lien-he" className="flex items-center justify-between px-4 py-3.5 text-[13px] text-[var(--green-dark)]">
                 <span className="flex items-center gap-3">
                   <span className="text-[20px]">💬</span>
-                  <span>Liên hệ và hỗ trợ qua Zalo OA</span>
+                  <span>Liên hệ và hỗ trợ</span>
                 </span>
                 <span className="text-[20px] leading-none text-[var(--muted)]">›</span>
               </Link>
