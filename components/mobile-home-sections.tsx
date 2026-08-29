@@ -107,7 +107,10 @@ export function MobileHomeSections() {
       ) : null}
 
       <section className="px-4 pt-3">
-        <div className="rounded-[28px] border border-[rgba(15,77,50,0.08)] bg-white p-4 shadow-[0_14px_34px_rgba(15,77,50,0.08)]">
+        <div
+          className="rounded-[28px] border border-[rgba(15,77,50,0.08)] bg-white p-4 shadow-[0_14px_34px_rgba(15,77,50,0.08)]"
+          style={{ contentVisibility: "auto", containIntrinsicSize: "420px" }}
+        >
           <div className="flex items-center justify-between gap-4">
             <div className="flex min-w-0 items-center gap-3">
               <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[rgba(15,77,50,0.08)] text-[var(--green)]">
@@ -156,7 +159,10 @@ export function MobileHomeSections() {
       </section>
 
       <section className="px-4 pt-4">
-        <div className="rounded-[24px] bg-[linear-gradient(90deg,#dbf46f,#e8f8c0)] p-4 shadow-[0_12px_28px_rgba(92,160,0,0.12)]">
+        <div
+          className="rounded-[24px] bg-[linear-gradient(90deg,#dbf46f,#e8f8c0)] p-4 shadow-[0_12px_28px_rgba(92,160,0,0.12)]"
+          style={{ contentVisibility: "auto", containIntrinsicSize: "120px" }}
+        >
           <div className="flex items-center justify-between gap-3">
             <div className="min-w-0">
               <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--green)]">Ưu đãi</div>
@@ -175,7 +181,10 @@ export function MobileHomeSections() {
       </section>
 
       <section className="px-4 pt-4">
-        <div className="rounded-[28px] bg-white p-5 shadow-[0_14px_32px_rgba(15,77,50,0.08)]">
+        <div
+          className="rounded-[28px] bg-white p-5 shadow-[0_14px_32px_rgba(15,77,50,0.08)]"
+          style={{ contentVisibility: "auto", containIntrinsicSize: "320px" }}
+        >
           <div className="flex items-end justify-between gap-4">
             <div>
               <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--green)]">Danh mục</div>
@@ -201,7 +210,10 @@ export function MobileHomeSections() {
 
       {homePageSections.blogTeaser ? (
         <section className="pt-8">
-          <div className="bg-white px-5 py-5 shadow-[0_14px_32px_rgba(15,77,50,0.08)]">
+          <div
+            className="bg-white px-5 py-5 shadow-[0_14px_32px_rgba(15,77,50,0.08)]"
+            style={{ contentVisibility: "auto", containIntrinsicSize: "460px" }}
+          >
             <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--green)]">Tin tức</div>
             <h2 className="mt-2 text-[26px] font-semibold leading-[1.05] text-[var(--green-dark)]">Bài viết gần đây</h2>
             <div
@@ -241,7 +253,7 @@ export function MobileHomeSections() {
 
       {homePageSections.featuredProducts ? (
         <section id="san-pham-mobile" className="px-4 pt-6">
-          <div className="flex items-end justify-between gap-4">
+          <div className="flex items-end justify-between gap-4" style={{ contentVisibility: "auto", containIntrinsicSize: "90px" }}>
             <div>
               <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--green)]">Sản phẩm</div>
               <h2 className="mt-2 text-[28px] font-semibold leading-[1.05] text-[var(--green-dark)]">Sản phẩm nổi bật</h2>

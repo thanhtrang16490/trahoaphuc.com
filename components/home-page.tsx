@@ -48,7 +48,7 @@ export function HomePage() {
 
         <div className="hidden md:block">
         {homePageSections.hero ? (
-          <section className="section pt-6 md:pt-16">
+          <section className="section pt-6 md:pt-16" style={{ contentVisibility: "auto", containIntrinsicSize: "760px" }}>
             <div className="container grid items-center gap-8 lg:grid-cols-[1.02fr_0.98fr] lg:gap-10">
               <div className="order-2 lg:order-1">
                 <div className="eyebrow text-[11px] md:text-xs">
@@ -118,7 +118,7 @@ export function HomePage() {
         ) : null}
 
         {homePageSections.brandStory ? (
-          <section id="ve-hoa-phuc" className="section pt-4 md:pt-8">
+          <section id="ve-hoa-phuc" className="section pt-4 md:pt-8" style={{ contentVisibility: "auto", containIntrinsicSize: "760px" }}>
             <div className="container grid gap-6 lg:grid-cols-[0.94fr_1.06fr]">
               <div className="panel overflow-hidden rounded-[28px] md:rounded-[32px]">
                 <Image
@@ -163,7 +163,7 @@ export function HomePage() {
         ) : null}
 
         {homePageSections.categoryRail ? (
-          <section className="section py-6 md:py-24">
+          <section className="section py-6 md:py-24" style={{ contentVisibility: "auto", containIntrinsicSize: "560px" }}>
             <div className="container">
               <div className="flex items-end justify-between gap-6">
                 <div>
@@ -197,7 +197,7 @@ export function HomePage() {
         ) : null}
 
         {homePageSections.featuredProducts ? (
-          <section id="san-pham-noi-bat" className="section pt-6 md:pt-24">
+          <section id="san-pham-noi-bat" className="section pt-6 md:pt-24" style={{ contentVisibility: "auto", containIntrinsicSize: "980px" }}>
             <div className="container">
               <div className="eyebrow text-[11px] md:text-xs">
                 <span className="h-px w-8 bg-[var(--green)]" />
