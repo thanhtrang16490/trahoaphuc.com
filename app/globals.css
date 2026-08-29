@@ -128,6 +128,17 @@ img { max-width: 100%; display: block; }
   50% { transform: translateY(-12px) rotateX(2deg) rotateY(-4deg); }
 }
 
+@keyframes toast-in {
+  0% {
+    transform: translateY(16px) scale(0.96);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
 @media (max-width: 900px) {
   .section { padding: 72px 0; }
 }

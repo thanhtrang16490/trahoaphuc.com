@@ -3,11 +3,13 @@
 import Link from "next/link";
 import { useState } from "react";
 import { brand } from "@/data/site";
+import { authenticateMockUser, saveAuthUser } from "@/components/auth-store";
 
 type Mode = "login" | "register";
 
 export function AuthForm({ mode }: { mode: Mode }) {
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const isLogin = mode === "login";
 
@@ -32,6 +34,27 @@ export function AuthForm({ mode }: { mode: Mode }) {
             className="mt-8 grid gap-4"
             onSubmit={(event) => {
               event.preventDefault();
+              const form = event.currentTarget;
+              const identifier = (form.elements.namedItem("email") as HTMLInputElement | null)?.value ?? "";
+              const password = (form.elements.namedItem("password") as HTMLInputElement | null)?.value ?? "";
+              const name = (form.elements.namedItem("name") as HTMLInputElement | null)?.value ?? "";
+              const phone = (form.elements.namedItem("phone") as HTMLInputElement | null)?.value ?? "";
+              setError(null);
+
+              if (isLogin) {
+                const user = authenticateMockUser({ identifier, password });
+                if (!user) {
+                  setError("Sai thông tin đăng nhập. Với mock local, bạn có thể dùng admin / admin để vào tài khoản quản trị.");
+                  setSubmitted(false);
+                  return;
+                }
+
+                saveAuthUser(user);
+                setSubmitted(true);
+                return;
+              }
+
+              saveAuthUser({ name, email: identifier, phone, role: "customer" });
               setSubmitted(true);
             }}
           >
@@ -42,7 +65,13 @@ export function AuthForm({ mode }: { mode: Mode }) {
               </div>
             ) : null}
 
-            <input className="input" placeholder="Email" type="email" name="email" />
+            <input
+              className="input"
+              placeholder={isLogin ? "Email hoặc tên đăng nhập" : "Email"}
+              type={isLogin ? "text" : "email"}
+              name="email"
+              autoComplete={isLogin ? "username" : "email"}
+            />
             <input className="input" placeholder="Mật khẩu" type="password" name="password" />
 
             {!isLogin ? (
@@ -56,6 +85,12 @@ export function AuthForm({ mode }: { mode: Mode }) {
               {isLogin ? "Đăng nhập" : "Tạo tài khoản"}
             </button>
           </form>
+
+          {error ? (
+            <div className="mt-5 rounded-[24px] border border-[rgba(166,61,61,0.16)] bg-[rgba(166,61,61,0.08)] p-4 text-sm leading-7 text-[#7a1f1f]">
+              {error}
+            </div>
+          ) : null}
 
           {submitted ? (
             <div className="mt-5 rounded-[24px] border border-[rgba(15,77,50,0.12)] bg-[rgba(15,77,50,0.06)] p-4 text-sm leading-7 text-[var(--green-dark)]">
@@ -129,4 +164,3 @@ export function AuthForm({ mode }: { mode: Mode }) {
     </main>
   );
 }
-

@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { List, MagnifyingGlass, ShoppingCartSimple, UserCircle, X, Plus, Minus, Trash, House, Package, Tag, CirclesFour, FacebookLogo } from "@phosphor-icons/react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
+import type { CartItem } from "./cart-store";
 import { clearCart, readCart, removeItem, subscribeCart, updateItem } from "./cart-store";
 import { formatCurrency } from "@/data/pricing";
 import { brand } from "@/data/site";
@@ -29,13 +30,27 @@ const mobileTabs = [
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
-  const [tick, setTick] = useState(0);
+  const [items, setItems] = useState<CartItem[]>([]);
+  const [badgeBump, setBadgeBump] = useState(false);
 
-  useEffect(() => subscribeCart(() => setTick((value) => value + 1)), []);
-
-  const items = useMemo(() => readCart(), [tick]);
+  useEffect(() => {
+    const syncCart = () => setItems(readCart());
+    syncCart();
+    return subscribeCart(syncCart);
+  }, []);
   const count = items.reduce((sum, item) => sum + item.quantity, 0);
   const subtotal = items.reduce((sum, item) => sum + item.quantity * item.price, 0);
+
+  useEffect(() => {
+    if (count === 0) {
+      setBadgeBump(false);
+      return;
+    }
+
+    setBadgeBump(true);
+    const timer = window.setTimeout(() => setBadgeBump(false), 220);
+    return () => window.clearTimeout(timer);
+  }, [count]);
 
   return (
     <>
@@ -70,7 +85,11 @@ export function Header() {
             <button aria-label="Giỏ hàng" className="hidden md:inline-flex panel pill relative p-3" onClick={() => setCartOpen(true)}>
               <ShoppingCartSimple size={18} weight="bold" />
               {count > 0 ? (
-                <span className="absolute -right-1 -top-1 min-w-5 rounded-full bg-[var(--green)] px-1 text-[10px] font-bold leading-5 text-white">
+                <span
+                  className={`absolute -right-1 -top-1 min-w-5 rounded-full bg-[var(--green)] px-1 text-[10px] font-bold leading-5 text-white transition-transform duration-200 ${
+                    badgeBump ? "scale-110" : "scale-100"
+                  }`}
+                >
                   {count}
                 </span>
               ) : null}

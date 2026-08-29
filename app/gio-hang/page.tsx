@@ -1,18 +1,30 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
+import type { CartItem } from "@/components/cart-store";
 import { clearCart, readCart, readCheckoutInfo, removeItem, saveCheckoutInfo, setItemQuantity, subscribeCart } from "@/components/cart-store";
 import { formatCurrency } from "@/data/pricing";
+import type { AuthUser } from "@/components/auth-store";
+import { isMockAdminUser, readAuthUser, saveAuthUser, subscribeAuth } from "@/components/auth-store";
 
 export default function CartPage() {
-  const [tick, setTick] = useState(0);
+  const [items, setItems] = useState<CartItem[]>([]);
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState(() => readCheckoutInfo());
+  const [authUser, setAuthUser] = useState<AuthUser | null>(null);
 
-  useEffect(() => subscribeCart(() => setTick((value) => value + 1)), []);
+  useEffect(() => {
+    const syncCart = () => setItems(readCart());
+    syncCart();
+    return subscribeCart(syncCart);
+  }, []);
 
-  const items = useMemo(() => readCart(), [tick]);
+  useEffect(() => {
+    const syncAuth = () => setAuthUser(readAuthUser());
+    syncAuth();
+    return subscribeAuth(syncAuth);
+  }, []);
   const subtotal = items.reduce((sum, item) => sum + item.quantity * item.price, 0);
   const shipping = subtotal > 0 ? 30000 : 0;
   const total = subtotal + shipping;
@@ -80,6 +92,59 @@ export default function CartPage() {
         </section>
 
         <aside className="space-y-6">
+          <section className="card rounded-[32px] p-6 md:p-8">
+            <div className="eyebrow text-[11px] md:text-xs">
+              <span className="h-px w-8 bg-[var(--green)]" />
+              Tài khoản mua hàng
+            </div>
+            {authUser ? (
+              <div className="mt-4 rounded-[24px] bg-[rgba(15,77,50,0.06)] p-5">
+                <div className="text-lg font-semibold text-[var(--green-dark)]">Xin chào, {authUser.name || "thành viên"}</div>
+                <div className="mt-2 text-sm leading-7 text-[var(--muted)]">
+                  Bạn đang đăng nhập bằng <span className="font-semibold text-[var(--green-dark)]">{authUser.email}</span>.
+                  Có thể mua nhanh với dữ liệu đã lưu sẵn.
+                </div>
+                {isMockAdminUser(authUser) ? (
+                  <div className="mt-3 inline-flex rounded-full bg-[rgba(15,77,50,0.1)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--green-dark)]">
+                    Tài khoản quản trị
+                  </div>
+                ) : null}
+                <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+                  <button
+                    className="button button-primary justify-center"
+                    onClick={() => {
+                      handleChange("name", authUser.name);
+                      handleChange("phone", authUser.phone);
+                    }}
+                  >
+                    Dùng thông tin tài khoản
+                  </button>
+                  <button
+                    className="button button-secondary justify-center"
+                    onClick={() => setAuthUser(null)}
+                  >
+                    Dùng khách lẻ
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="mt-4 rounded-[24px] border border-[rgba(15,77,50,0.12)] bg-[rgba(15,77,50,0.04)] p-5">
+                <div className="text-sm font-semibold text-[var(--green-dark)]">Bạn đã có tài khoản?</div>
+                <p className="mt-2 text-sm leading-7 text-[var(--muted)]">
+                  Đăng nhập để mua nhanh, lưu địa chỉ và theo dõi đơn hàng dễ hơn.
+                </p>
+                <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+                  <Link href="/dang-nhap" className="button button-primary justify-center">
+                    Đăng nhập để mua nhanh
+                  </Link>
+                  <Link href="/dang-ky-thanh-vien" className="button button-secondary justify-center">
+                    Đăng ký tài khoản
+                  </Link>
+                </div>
+              </div>
+            )}
+          </section>
+
           <section className="card rounded-[32px] p-6 md:p-8">
             <h2 className="text-2xl font-semibold text-[var(--green-dark)]">Thông tin nhận hàng</h2>
             <div className="mt-5 grid gap-4">

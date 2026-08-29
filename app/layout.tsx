@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Cormorant_Garamond, Be_Vietnam_Pro } from "next/font/google";
 import "./globals.css";
 import { Footer } from "@/components/footer";
+import { ToastProvider } from "@/components/toast";
 import { OrganizationJsonLd, WebSiteJsonLd } from "@/components/seo";
 import { brand } from "@/data/site";
 
@@ -55,10 +56,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="vi" className={`${display.variable} ${body.variable}`}>
       <body>
-        <OrganizationJsonLd />
-        <WebSiteJsonLd />
-        {children}
-        <Footer />
+        <ToastProvider>
+          <OrganizationJsonLd />
+          <WebSiteJsonLd />
+          {children}
+          <Footer />
+        </ToastProvider>
       </body>
     </html>
   );

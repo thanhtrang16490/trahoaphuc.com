@@ -3,25 +3,51 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { House, MagnifyingGlass, ShoppingCartSimple, UserCircle, Tag, MessengerLogo } from "@phosphor-icons/react";
-import { addProductToCart } from "@/components/cart-store";
+import type { CartItem } from "@/components/cart-store";
+import { addProductToCart, readCart, subscribeCart } from "@/components/cart-store";
+import { useToast } from "@/components/toast";
 import { getProductBySlug } from "@/data/product-utils";
 import { brand } from "@/data/site";
+import { useMobileScrollVisibility } from "@/components/use-mobile-scroll-visibility";
 
 const bottomNav = [
   { href: "/", label: "Trang chủ", icon: House },
-  { href: "/san-pham", label: "Tìm kiếm", icon: MagnifyingGlass },
-  { href: "/tin-tuc", label: "Ưu đãi", icon: Tag },
+  { href: "/tim-kiem", label: "Tìm kiếm", icon: MagnifyingGlass },
+  { href: "/uu-dai", label: "Ưu đãi", icon: Tag },
   { href: "/gio-hang", label: "Giỏ hàng", icon: ShoppingCartSimple },
-  { href: "/dang-nhap", label: "Cá nhân", icon: UserCircle },
+  { href: "/ca-nhan", label: "Cá nhân", icon: UserCircle },
 ];
 
 export function Footer() {
   const pathname = usePathname();
   const router = useRouter();
+  const { showToast } = useToast();
+  const [items, setItems] = useState<CartItem[]>([]);
+  const [badgeBump, setBadgeBump] = useState(false);
+  const { hidden } = useMobileScrollVisibility();
   const isProductDetail = pathname.startsWith("/san-pham/");
   const currentProductSlug = isProductDetail ? pathname.split("/").filter(Boolean)[1] : null;
   const currentProduct = currentProductSlug ? getProductBySlug(currentProductSlug) : undefined;
+  const cartCount = items.reduce((sum, item) => sum + item.quantity, 0);
+
+  useEffect(() => {
+    const syncCart = () => setItems(readCart());
+    syncCart();
+    return subscribeCart(syncCart);
+  }, []);
+
+  useEffect(() => {
+    if (cartCount === 0) {
+      setBadgeBump(false);
+      return;
+    }
+
+    setBadgeBump(true);
+    const timer = window.setTimeout(() => setBadgeBump(false), 220);
+    return () => window.clearTimeout(timer);
+  }, [cartCount]);
 
   const handleBuyNow = () => {
     if (!currentProduct) {
@@ -30,13 +56,17 @@ export function Footer() {
     }
 
     addProductToCart(currentProduct);
+    showToast({
+      title: "Đã thêm vào giỏ hàng",
+      message: `${currentProduct.name} · Mua ngay`,
+    });
     router.push("/gio-hang");
   };
 
   return (
     <footer className="border-t border-[rgba(15,77,50,0.12)] bg-transparent md:bg-[rgba(246,241,231,0.72)]">
       <div className="md:hidden">
-        <div className="fixed inset-x-0 bottom-0 z-40">
+        <div className={`fixed inset-x-0 bottom-0 z-40 transition-transform duration-300 ease-out ${hidden ? "translate-y-full" : "translate-y-0"}`}>
           <div className="mx-auto max-w-screen-sm px-3 pb-[calc(env(safe-area-inset-bottom)+10px)] pt-2">
             {isProductDetail ? (
               <div className="relative overflow-hidden rounded-[28px] border border-[rgba(255,255,255,0.55)] bg-[rgba(255,255,255,0.68)] p-1.5 shadow-[0_18px_42px_rgba(15,77,50,0.14)] backdrop-blur-2xl">
@@ -53,8 +83,17 @@ export function Footer() {
                     href="/gio-hang"
                     className="flex min-h-[56px] items-center justify-center gap-2 rounded-[20px] bg-transparent text-[10px] font-semibold text-[var(--green-dark)]"
                   >
-                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-transparent text-[var(--green-dark)]">
+                    <span className="relative flex h-9 w-9 items-center justify-center rounded-full bg-transparent text-[var(--green-dark)]">
                       <ShoppingCartSimple size={20} weight="bold" />
+                      {cartCount > 0 ? (
+                        <span
+                          className={`absolute -right-1 -top-1 min-w-5 rounded-full bg-[var(--green)] px-1 text-[10px] font-bold leading-5 text-white shadow-[0_8px_16px_rgba(15,77,50,0.18)] transition-transform duration-200 ${
+                            badgeBump ? "scale-110" : "scale-100"
+                          }`}
+                        >
+                          {cartCount}
+                        </span>
+                      ) : null}
                     </span>
                     <span className="text-[14px] leading-none">Giỏ hàng</span>
                   </Link>
@@ -91,13 +130,22 @@ export function Footer() {
                       className="relative z-10 flex min-h-[56px] flex-col items-center justify-center rounded-[20px] text-[10px] font-semibold transition-all duration-200 bg-transparent text-[var(--green-dark)]"
                     >
                       <span
-                        className={`flex h-9 w-9 items-center justify-center rounded-full transition-all duration-200 ${
+                        className={`relative flex h-9 w-9 items-center justify-center rounded-full transition-all duration-200 ${
                           active
                             ? "bg-[var(--green)] text-white shadow-[0_10px_18px_rgba(15,77,50,0.18)]"
                             : "bg-transparent text-[var(--green-dark)]"
                         }`}
                       >
                         <Icon size={20} weight={active ? "fill" : "bold"} />
+                        {item.href === "/gio-hang" && cartCount > 0 ? (
+                          <span
+                            className={`absolute -right-1 -top-1 min-w-5 rounded-full bg-[var(--green)] px-1 text-[10px] font-bold leading-5 text-white shadow-[0_8px_16px_rgba(15,77,50,0.18)] transition-transform duration-200 ${
+                              badgeBump ? "scale-110" : "scale-100"
+                            }`}
+                          >
+                            {cartCount}
+                          </span>
+                        ) : null}
                       </span>
                       <span className={`mt-1 leading-none ${active ? "text-[var(--green-dark)]" : "text-[var(--green-dark)]/80"}`}>{item.label}</span>
                     </Link>
