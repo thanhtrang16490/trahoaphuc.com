@@ -13,12 +13,12 @@ import { products } from "@/data/products";
 const quickActions = [
   { label: ["Lịch sử", "Đơn hàng"], href: "/gio-hang", icon: ShoppingBagOpen },
   { label: ["Đăng Ký", "Đại Lý"], href: "/dang-ky-dai-ly", icon: Storefront },
-  { label: ["Vòng quay", "May mắn"], href: "/tin-tuc", icon: Gift },
+  { label: ["Vòng quay", "May mắn"], href: "/vong-quay-may-man", icon: Gift },
   { label: ["Hội viên", "Thân thiết"], href: "/dang-ky-thanh-vien", icon: Medal },
 ];
 
 const utilityItems = [
-  { label: "Vòng quay may mắn", href: "/tin-tuc" },
+  { label: "Vòng quay may mắn", href: "/vong-quay-may-man" },
   { label: "Hội viên thân thiết", href: "/dang-ky-thanh-vien" },
   { label: "Lịch sử đơn hàng", href: "/gio-hang" },
   { label: "Lịch sử điểm thưởng", href: "/dang-nhap" },
