@@ -58,16 +58,23 @@ export function MobileHomeSections() {
     <div className="md:hidden">
       <section className="bg-[linear-gradient(180deg,#86b900,#70a800)] px-4 pb-4 pt-3 text-white shadow-[0_14px_30px_rgba(92,160,0,0.18)]">
         <div className="flex items-start justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-[16px] bg-white text-[18px] font-black text-[var(--green)] shadow-[0_10px_20px_rgba(0,0,0,0.12)]">
-                H
-              </div>
-              <div>
-                <div className="text-[12px] font-semibold uppercase tracking-[0.18em] text-white/78">Nông Sản Hòa Phúc</div>
-                <div className="mt-1 text-[12px] text-white/88">Trà sạch, quà biếu đẹp, mua nhanh và tiện lợi</div>
-              </div>
+          <div className="flex items-center gap-3">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-[16px] bg-white shadow-[0_10px_20px_rgba(0,0,0,0.12)]">
+              <Image
+                src="/brand/hoaphuc-mobile-logo.png"
+                alt="Logo Hòa Phúc"
+                width={96}
+                height={96}
+                className="h-full w-full object-cover"
+                priority
+              />
+            </div>
+            <div>
+              <div className="text-[12px] font-semibold uppercase tracking-[0.18em] text-white/78">Nông Sản Hòa Phúc</div>
+              <div className="mt-1 text-[12px] text-white/88">Trà sạch, quà biếu đẹp, mua nhanh và tiện lợi</div>
             </div>
           </div>
+        </div>
       </section>
 
       {homePageSections.hero ? (
