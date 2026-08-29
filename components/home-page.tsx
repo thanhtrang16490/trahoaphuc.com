@@ -92,7 +92,6 @@ export function HomePage() {
                     {shouldLoadHeroVideo ? (
                       <video
                         className="absolute inset-0 h-full w-full object-cover"
-                        src="/media/video-tra-hoa-phuc.mp4"
                         poster="/media/video-tra-hoa-phuc-thumb.jpg"
                         autoPlay
                         muted
@@ -101,7 +100,11 @@ export function HomePage() {
                         preload="none"
                         aria-label="Video giới thiệu thương hiệu Hòa Phúc"
                         onCanPlay={() => setShouldLoadHeroVideo(true)}
-                      />
+                      >
+                        <source src="/media/video-tra-hoa-phuc.webm" type="video/webm" />
+                        <source src="/media/video-tra-hoa-phuc-optimized.mp4" type="video/mp4" />
+                        <source src="/media/video-tra-hoa-phuc.mp4" type="video/mp4" />
+                      </video>
                     ) : (
                       <div className="absolute inset-x-0 bottom-0 bg-[linear-gradient(180deg,rgba(15,77,50,0),rgba(15,77,50,0.58))] px-4 py-4 text-white md:px-6 md:py-5">
                         <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/85">

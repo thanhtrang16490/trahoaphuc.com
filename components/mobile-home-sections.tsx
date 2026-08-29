@@ -91,7 +91,6 @@ export function MobileHomeSections() {
             />
             <video
               className="absolute inset-0 h-full w-full object-cover"
-              src="/media/video-tra-hoa-phuc.mp4"
               poster="/media/video-tra-hoa-phuc-thumb.jpg"
               autoPlay
               muted
@@ -100,7 +99,11 @@ export function MobileHomeSections() {
               preload="none"
               aria-label="Hero video trà Hòa Phúc"
               onCanPlay={() => setHeroVideoReady(true)}
-            />
+            >
+              <source src="/media/video-tra-hoa-phuc.webm" type="video/webm" />
+              <source src="/media/video-tra-hoa-phuc-optimized.mp4" type="video/mp4" />
+              <source src="/media/video-tra-hoa-phuc.mp4" type="video/mp4" />
+            </video>
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(124,180,0,0.18),rgba(9,45,27,0.46))]" />
           </div>
         </section>
