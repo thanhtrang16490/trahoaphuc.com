@@ -2,175 +2,163 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { BreadcrumbJsonLd } from "@/components/seo";
+import { BreadcrumbJsonLd, ArticleJsonLd } from "@/components/seo";
 import { blogPosts, getBlogPostBySlug } from "@/data/blog";
+import { formatDateLong } from "@/lib/date";
+
+type PageProps = {
+  params: Promise<{ slug: string }>;
+};
 
 export function generateStaticParams() {
   return blogPosts.map((post) => ({ slug: post.slug }));
 }
 
-export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
-  const post = getBlogPostBySlug(params.slug);
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const post = getBlogPostBySlug(slug);
   if (!post) return {};
 
   return {
     title: post.title,
     description: post.excerpt,
+    alternates: { canonical: `/tin-tuc/${post.slug}` },
     openGraph: {
       title: post.title,
       description: post.excerpt,
-      images: [post.coverImage],
+      images: [{ url: post.coverImage, alt: post.title }],
+      url: `https://hoaphucfarm.com/tin-tuc/${post.slug}`,
     },
   };
 }
 
-export default function BlogDetailPage({ params }: { params: { slug: string } }) {
-  const post = getBlogPostBySlug(params.slug);
+export default async function BlogDetailPage({ params }: PageProps) {
+  const { slug } = await params;
+  const post = getBlogPostBySlug(slug);
   if (!post) notFound();
-  const lead = post.content[0];
+
+  const relatedPosts = blogPosts.filter((item) => item.slug !== post.slug).slice(0, 3);
+  const publishedDate = formatDateLong(post.date);
 
   return (
-    <main className="section pt-10 md:pt-14 pb-[calc(env(safe-area-inset-bottom)+96px)] md:pb-24">
-      <BreadcrumbJsonLd
-        items={[
-          { name: "Trang chủ", href: "/" },
-          { name: "Tin tức", href: "/tin-tuc" },
-          { name: post.title, href: `/tin-tuc/${post.slug}` },
-        ]}
+    <main className="section !pt-0 md:pt-14 pb-[calc(env(safe-area-inset-bottom)+96px)] md:pb-24">
+      <BreadcrumbJsonLd items={[{ name: "Trang chủ", href: "/" }, { name: "Tin tức", href: "/tin-tuc" }, { name: post.title, href: `/tin-tuc/${post.slug}` }]} />
+      <ArticleJsonLd
+        title={post.title}
+        description={post.excerpt}
+        url={`https://hoaphucfarm.com/tin-tuc/${post.slug}`}
+        image={post.coverImage}
+        datePublished={post.date}
+        dateModified={post.date}
+        authorName="Nông Sản Hòa Phúc"
       />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Article",
-            headline: post.title,
-            description: post.excerpt,
-            image: [post.coverImage],
-            datePublished: post.date,
-            author: {
-              "@type": "Organization",
-              name: "Nông Sản Hòa Phúc",
-            },
-            publisher: {
-              "@type": "Organization",
-              name: "Nông Sản Hòa Phúc",
-            },
-            mainEntityOfPage: `https://hoaphucfarm.com/tin-tuc/${post.slug}`,
-          }),
-        }}
-      />
+
       <div className="container">
-        <div className="max-w-4xl">
-          <Link href="/tin-tuc" className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--green)]">
-            Tất cả bài viết
-          </Link>
-          <div className="mt-4 flex flex-wrap gap-3 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
-            <span className="rounded-full bg-[rgba(15,77,50,0.08)] px-3 py-1 text-[var(--green-dark)]">{post.category}</span>
-            <span>{post.date}</span>
-            <span>{post.readTime}</span>
-            {post.sourceUrl ? <span>{post.sourceName ?? "Facebook fanpage"}</span> : null}
-          </div>
-          <h1 className="mt-4 section-title text-[clamp(2rem,5vw,4.8rem)]">{post.title}</h1>
-          <p className="mt-5 max-w-[68ch] text-[15px] leading-8 text-[var(--muted)] md:text-lg">
-            {post.excerpt}
-          </p>
-          {lead ? (
-            <div className="mt-6 rounded-[28px] border border-[rgba(15,77,50,0.12)] bg-[rgba(15,77,50,0.05)] p-5 md:p-6">
-              <div className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--brown)]">Tóm tắt nhanh</div>
-              <p className="mt-3 text-sm leading-7 text-[var(--green-dark)] md:text-base">{lead}</p>
+        <div className="md:hidden">
+          <div className="-mx-4 sticky top-0 z-40 border-b border-[rgba(15,77,50,0.08)] bg-[rgba(255,255,255,0.92)]/95 px-4 py-3 backdrop-blur-xl">
+            <div className="flex items-center gap-3">
+              <Link
+                href="/tin-tuc"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-[rgba(15,77,50,0.12)] bg-white text-[var(--green-dark)] shadow-[0_10px_18px_rgba(15,77,50,0.08)]"
+                aria-label="Quay lại tin tức"
+              >
+                <span className="text-[18px] leading-none">‹</span>
+              </Link>
+              <div className="min-w-0">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--green)]">Tin tức</div>
+                <div className="truncate text-[16px] font-semibold leading-tight text-[var(--green-dark)]">Bài viết chi tiết</div>
+              </div>
             </div>
-          ) : null}
+          </div>
         </div>
 
-        <div className="mt-8 overflow-hidden rounded-[32px]">
-          <Image src={post.coverImage} alt={post.title} width={1400} height={1050} className="h-auto w-full" priority />
-        </div>
+        <article className="grid gap-8 lg:grid-cols-[1.02fr_0.98fr]">
+          <div className="overflow-hidden rounded-[28px] bg-white shadow-[0_18px_42px_rgba(15,77,50,0.08)]">
+            <div className="relative aspect-[16/10] bg-[linear-gradient(180deg,#edd9ad,#d4ae6a)]">
+              <Image src={post.coverImage} alt={post.title} fill className="object-cover" priority />
+            </div>
+            <div className="px-5 py-5 md:px-8 md:py-8">
+              <div className="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
+                <span className="rounded-full bg-[rgba(15,77,50,0.06)] px-3 py-1 text-[var(--green-dark)]">{post.category}</span>
+                <span>{publishedDate}</span>
+                <span>{post.readTime}</span>
+              </div>
+              <h1 className="mt-4 text-[clamp(2rem,5vw,3.8rem)] font-semibold leading-[1.02] tracking-[-0.04em] text-[var(--green-dark)]">
+                {post.title}
+              </h1>
+              <p className="mt-4 text-[16px] leading-8 text-[var(--muted)]">{post.excerpt}</p>
 
-        <article className="mt-10 grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
-          <div className="card rounded-[32px] p-6 md:p-8 lg:p-10">
-            <div className="space-y-6 text-[15px] leading-8 text-[var(--muted)] md:text-base">
-              {post.content.map((paragraph, index) => (
-                <p key={paragraph}>
-                  {index === 0 ? <span className="font-semibold text-[var(--green-dark)]">{paragraph}</span> : paragraph}
+              <div className="mt-6 space-y-4 text-[16px] leading-8 text-[var(--green-dark)]">
+                {post.content.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+              </div>
+
+              <div className="mt-7 rounded-[24px] border border-[rgba(15,77,50,0.1)] bg-[rgba(15,77,50,0.04)] p-4 md:p-5">
+                <div className="text-sm font-semibold text-[var(--green-dark)]">Nguồn bài viết</div>
+                <p className="mt-1 text-sm leading-7 text-[var(--muted)]">
+                  Nội dung được tổng hợp từ fanpage chính thức của Hòa Phúc để đồng bộ thông tin thương hiệu.
                 </p>
-              ))}
-            </div>
-            <div className="mt-8 grid gap-4 sm:grid-cols-2">
-              {[
-                "Nội dung biên tập từ các bài đăng công khai trên fanpage.",
-                "Giữ tinh thần thương hiệu, đồng thời tối ưu cho SEO và hành trình mua hàng.",
-              ].map((item) => (
-                <div key={item} className="rounded-[24px] border border-[rgba(15,77,50,0.12)] bg-white/60 p-4 text-sm leading-7 text-[var(--green-dark)]">
-                  {item}
-                </div>
-              ))}
+                {post.sourceUrl ? (
+                  <a
+                    href={post.sourceUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-4 inline-flex items-center rounded-full bg-[var(--green)] px-4 py-2.5 text-sm font-semibold text-white"
+                  >
+                    Xem bài gốc trên fanpage
+                  </a>
+                ) : null}
+              </div>
             </div>
           </div>
 
-          <aside className="card rounded-[32px] p-6 md:p-8 lg:p-10">
-            <div className="eyebrow text-[11px] md:text-xs">
-              <span className="h-px w-8 bg-[var(--green)]" />
-              Khám phá thêm
-            </div>
-            <h2 className="mt-4 text-3xl font-semibold leading-[1.02] tracking-[-0.03em] text-[var(--green-dark)] md:text-4xl">
-              Bài viết cùng chủ đề
-            </h2>
-            <div className="mt-6 space-y-4">
-              {blogPosts
-                .filter((item) => item.slug !== post.slug)
-                .slice(0, 3)
-                .map((item) => (
+          <aside className="space-y-6">
+            <section className="rounded-[28px] bg-white p-5 shadow-[0_18px_42px_rgba(15,77,50,0.08)] md:p-6">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--green)]">Thông tin bài viết</div>
+              <div className="mt-3 space-y-3 text-sm leading-7 text-[var(--green-dark)]">
+                <div className="flex items-center justify-between gap-4">
+                  <span className="text-[var(--muted)]">Danh mục</span>
+                  <span className="font-semibold">{post.category}</span>
+                </div>
+                <div className="flex items-center justify-between gap-4">
+                  <span className="text-[var(--muted)]">Ngày đăng</span>
+                  <span className="font-semibold">{publishedDate}</span>
+                </div>
+                <div className="flex items-center justify-between gap-4">
+                  <span className="text-[var(--muted)]">Thời gian đọc</span>
+                  <span className="font-semibold">{post.readTime}</span>
+                </div>
+              </div>
+            </section>
+
+            <section className="rounded-[28px] bg-white p-5 shadow-[0_18px_42px_rgba(15,77,50,0.08)] md:p-6">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--green)]">Bài viết liên quan</div>
+              <div className="mt-4 grid gap-4">
+                {relatedPosts.map((item) => (
                   <Link
                     key={item.slug}
                     href={`/tin-tuc/${item.slug}`}
-                    className="block rounded-[24px] border border-[rgba(15,77,50,0.12)] bg-white/60 p-4"
+                    className="overflow-hidden rounded-[22px] border border-[rgba(15,77,50,0.08)] bg-[rgba(15,77,50,0.02)] transition-transform duration-300 hover:-translate-y-0.5"
                   >
-                    <div className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--brown)]">
-                      {item.category}
+                    <div className="flex gap-3 p-3">
+                      <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-[18px] bg-[linear-gradient(180deg,#edd9ad,#d4ae6a)]">
+                        <Image src={item.coverImage} alt={item.title} fill className="object-cover" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--brown)]">
+                          {item.category}
+                        </div>
+                        <div className="mt-1 line-clamp-2 text-sm font-semibold leading-6 text-[var(--green-dark)]">
+                          {item.title}
+                        </div>
+                        <div className="mt-1 text-xs text-[var(--muted)]">{formatDateLong(item.date)}</div>
+                      </div>
                     </div>
-                    <div className="mt-2 text-sm font-semibold leading-6 text-[var(--green-dark)]">{item.title}</div>
                   </Link>
                 ))}
-            </div>
-
-            <div className="mt-8 rounded-[28px] bg-[rgba(15,77,50,0.06)] p-5">
-              <div className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">CTA</div>
-              <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
-                Xem sản phẩm hoặc liên hệ fanpage để được tư vấn chọn trà phù hợp hơn.
-              </p>
-              <div className="mt-4 flex flex-col gap-3">
-                <Link href="/san-pham" className="button button-primary justify-center">
-                  Xem sản phẩm
-                </Link>
-                <a
-                  href="https://www.facebook.com/nongsanhoaphucnb/"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="button button-secondary justify-center"
-                >
-                  Nhắn fanpage
-                </a>
               </div>
-              {post.sourceUrl ? (
-                <a
-                  href={post.sourceUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-4 block text-xs font-semibold uppercase tracking-[0.16em] text-[var(--green)] underline decoration-[rgba(15,77,50,0.22)] underline-offset-4"
-                >
-                  Xem bài gốc trên fanpage
-                </a>
-              ) : null}
-            </div>
-
-            <div className="mt-6 rounded-[28px] border border-[rgba(15,77,50,0.12)] bg-white/60 p-5">
-              <div className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">Từ fanpage</div>
-              <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
-                Bài viết này được biên tập từ nội dung công khai trên fanpage chính thức để đồng bộ thương hiệu, tăng độ tin
-                cậy và giúp khách dễ xem lại trên website.
-              </p>
-            </div>
+            </section>
           </aside>
         </article>
       </div>

@@ -101,6 +101,49 @@ export function ProductJsonLd({
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />;
 }
 
+export function ArticleJsonLd({
+  title,
+  description,
+  url,
+  image,
+  datePublished,
+  dateModified,
+  authorName,
+}: {
+  title: string;
+  description: string;
+  url: string;
+  image: string;
+  datePublished: string;
+  dateModified: string;
+  authorName: string;
+}) {
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    description,
+    image,
+    datePublished,
+    dateModified,
+    author: {
+      "@type": "Organization",
+      name: authorName,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: authorName,
+      logo: {
+        "@type": "ImageObject",
+        url: "https://hoaphucfarm.com/icon.png",
+      },
+    },
+    mainEntityOfPage: url,
+  };
+
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />;
+}
+
 export function FAQJsonLd({ questions }: { questions: Array<{ question: string; answer: string }> }) {
   const data = {
     "@context": "https://schema.org",
