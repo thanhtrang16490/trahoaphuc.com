@@ -86,7 +86,7 @@ export function Header() {
               <ShoppingCartSimple size={18} weight="bold" />
               {count > 0 ? (
                 <span
-                  className={`absolute -right-1 -top-1 min-w-5 rounded-full bg-[var(--green)] px-1 text-[10px] font-bold leading-5 text-white transition-transform duration-200 ${
+                  className={`absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--green)] px-1 text-[10px] font-bold leading-none text-white transition-transform duration-200 ${
                     badgeBump ? "scale-110" : "scale-100"
                   }`}
                 >

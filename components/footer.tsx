@@ -87,7 +87,7 @@ export function Footer() {
                       <ShoppingCartSimple size={20} weight="bold" />
                       {cartCount > 0 ? (
                         <span
-                          className={`absolute -right-1 -top-1 min-w-5 rounded-full bg-[var(--green)] px-1 text-[10px] font-bold leading-5 text-white shadow-[0_8px_16px_rgba(15,77,50,0.18)] transition-transform duration-200 ${
+                          className={`absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--green)] px-1 text-[10px] font-bold leading-none text-white shadow-[0_8px_16px_rgba(15,77,50,0.18)] transition-transform duration-200 ${
                             badgeBump ? "scale-110" : "scale-100"
                           }`}
                         >
@@ -139,7 +139,7 @@ export function Footer() {
                         <Icon size={20} weight={active ? "fill" : "bold"} />
                         {item.href === "/gio-hang" && cartCount > 0 ? (
                           <span
-                            className={`absolute -right-1 -top-1 min-w-5 rounded-full bg-[var(--green)] px-1 text-[10px] font-bold leading-5 text-white shadow-[0_8px_16px_rgba(15,77,50,0.18)] transition-transform duration-200 ${
+                            className={`absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--green)] px-1 text-[10px] font-bold leading-none text-white shadow-[0_8px_16px_rgba(15,77,50,0.18)] transition-transform duration-200 ${
                               badgeBump ? "scale-110" : "scale-100"
                             }`}
                           >
