@@ -91,7 +91,7 @@ export function MobileHomeSections() {
             <video
               className="absolute inset-0 h-full w-full object-cover"
               src="/media/video-tra-hoa-phuc.mp4"
-              poster={products[0].image}
+              poster="/media/video-tra-hoa-phuc-thumb.jpg"
               autoPlay
               muted
               loop
