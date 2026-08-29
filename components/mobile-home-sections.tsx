@@ -155,7 +155,7 @@ export function MobileHomeSections() {
               <div className="mt-1 text-[13px] leading-6 text-[var(--muted)]">Mua hàng để tận hưởng ưu đãi ngay bạn nhé!</div>
             </div>
             <Link
-              href="/tin-tuc"
+              href="/uu-dai"
               className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-[var(--green)] shadow-[0_10px_20px_rgba(15,77,50,0.12)]"
               aria-label="Xem ưu đãi"
             >
