@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Check, Plus, ShoppingBagOpen, Tag, X } from "@phosphor-icons/react";
+import { Check, Plus, ShoppingBagOpen, ShoppingCartSimple, Tag, X } from "@phosphor-icons/react";
 import type { CartItem } from "@/components/cart-store";
 import { addProductToCart, clearCart, readCart, readCheckoutInfo, removeItem, saveCheckoutInfo, setItemQuantity, subscribeCart } from "@/components/cart-store";
 import { formatCurrency, getProductPrice } from "@/data/pricing";
@@ -11,6 +11,7 @@ import type { AuthUser } from "@/components/auth-store";
 import { isMockAdminUser, readAuthUser, saveAuthUser, subscribeAuth } from "@/components/auth-store";
 import { useToast } from "@/components/toast";
 import { MobileBackHeader } from "@/components/mobile-back-header";
+import { ModalShell } from "@/components/modal-shell";
 
 const couponCatalog = {
   HOAPHUC5: { label: "Giảm 5%", type: "percent" as const, value: 0.05, minSubtotal: 0, note: "Áp dụng cho mọi đơn hàng" },
@@ -45,6 +46,8 @@ export default function CartPage() {
   const [couponPickerOpen, setCouponPickerOpen] = useState(false);
   const [quickAddOpen, setQuickAddOpen] = useState(false);
   const [quickAddQuery, setQuickAddQuery] = useState("");
+  const [formError, setFormError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { showToast } = useToast();
 
   useEffect(() => {
@@ -74,12 +77,34 @@ export default function CartPage() {
   const handleChange = (field: keyof typeof form, value: string) => {
     const next = { ...form, [field]: value };
     setForm(next);
+    if (formError) setFormError("");
     saveCheckoutInfo(next);
+  };
+
+  const validateCheckout = () => {
+    if (!form.name.trim() || !form.phone.trim() || !form.address.trim()) {
+      setFormError("Vui lòng điền họ tên, số điện thoại và địa chỉ nhận hàng.");
+      const firstMissing = !form.name.trim() ? "checkout-name" : !form.phone.trim() ? "checkout-phone" : "checkout-address";
+      document.getElementById(firstMissing)?.focus();
+      return false;
+    }
+    if (!/^(0|\+84)\d{8,10}$/.test(form.phone.replace(/[.\s-]/g, ""))) {
+      setFormError("Số điện thoại chưa đúng định dạng. Bạn hãy kiểm tra lại nhé.");
+      document.getElementById("checkout-phone")?.focus();
+      return false;
+    }
+    return true;
   };
 
   const handleSubmit = () => {
     if (!items.length) return;
-    setSubmitted(true);
+    if (!validateCheckout()) return;
+    setIsSubmitting(true);
+    window.setTimeout(() => {
+      setIsSubmitting(false);
+      setSubmitted(true);
+      showToast({ title: "Đã ghi nhận đơn hàng", message: "Hòa Phúc sẽ liên hệ để xác nhận thông tin giao hàng." });
+    }, 500);
   };
 
   const applyCouponCode = (value: string) => {
@@ -130,7 +155,7 @@ export default function CartPage() {
   };
 
   return (
-    <main className="section !overflow-x-clip !pt-0 pb-[calc(env(safe-area-inset-bottom)+96px)] md:overflow-visible md:pt-14 md:pb-24">
+    <main className="section !overflow-x-clip !pt-0 pb-[calc(env(safe-area-inset-bottom)+160px)] md:overflow-visible md:pt-14 md:pb-24">
       <MobileBackHeader href="/" section="Giỏ hàng" title="Thanh toán đơn hàng" />
       <div className="container grid gap-8 lg:grid-cols-[1.08fr_0.92fr]">
         <section>
@@ -256,11 +281,12 @@ export default function CartPage() {
           <section className="card rounded-[32px] p-6 md:p-8">
             <h2 className="text-2xl font-semibold text-[var(--green-dark)]">Thông tin nhận hàng</h2>
             <div className="mt-5 grid gap-4">
-              <input className="rounded-[18px] border border-[rgba(15,77,50,0.14)] bg-white/70 px-4 py-3 text-sm outline-none" placeholder="Họ và tên" value={form.name} onChange={(e) => handleChange("name", e.target.value)} />
-              <input className="rounded-[18px] border border-[rgba(15,77,50,0.14)] bg-white/70 px-4 py-3 text-sm outline-none" placeholder="Số điện thoại" value={form.phone} onChange={(e) => handleChange("phone", e.target.value)} />
-              <input className="rounded-[18px] border border-[rgba(15,77,50,0.14)] bg-white/70 px-4 py-3 text-sm outline-none" placeholder="Địa chỉ giao hàng" value={form.address} onChange={(e) => handleChange("address", e.target.value)} />
-              <textarea className="min-h-28 rounded-[18px] border border-[rgba(15,77,50,0.14)] bg-white/70 px-4 py-3 text-sm outline-none" placeholder="Ghi chú" value={form.note} onChange={(e) => handleChange("note", e.target.value)} />
+              <input id="checkout-name" required autoComplete="name" className="rounded-[18px] border border-[rgba(15,77,50,0.14)] bg-white/70 px-4 py-3 text-sm outline-none focus:border-[var(--green)]" placeholder="Họ và tên *" value={form.name} onChange={(e) => handleChange("name", e.target.value)} />
+              <input id="checkout-phone" required inputMode="tel" autoComplete="tel" className="rounded-[18px] border border-[rgba(15,77,50,0.14)] bg-white/70 px-4 py-3 text-sm outline-none focus:border-[var(--green)]" placeholder="Số điện thoại *" value={form.phone} onChange={(e) => handleChange("phone", e.target.value)} />
+              <input id="checkout-address" required autoComplete="street-address" className="rounded-[18px] border border-[rgba(15,77,50,0.14)] bg-white/70 px-4 py-3 text-sm outline-none focus:border-[var(--green)]" placeholder="Địa chỉ giao hàng *" value={form.address} onChange={(e) => handleChange("address", e.target.value)} />
+              <textarea autoComplete="off" className="min-h-28 rounded-[18px] border border-[rgba(15,77,50,0.14)] bg-white/70 px-4 py-3 text-sm outline-none focus:border-[var(--green)]" placeholder="Ghi chú cho người giao hàng (không bắt buộc)" value={form.note} onChange={(e) => handleChange("note", e.target.value)} />
             </div>
+            {formError ? <div role="alert" className="mt-3 rounded-[14px] bg-[rgba(200,80,70,0.08)] px-3 py-2 text-sm leading-6 text-[#b44840]">{formError}</div> : null}
             <div className="mt-5 rounded-[24px] border border-[rgba(15,77,50,0.12)] bg-[rgba(15,77,50,0.03)] p-4">
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2 text-sm font-semibold text-[var(--green-dark)]"><Tag size={18} weight="duotone" className="text-[var(--green)]" /> Mã giảm giá</div>
@@ -290,9 +316,13 @@ export default function CartPage() {
                 </div>
               ) : null}
             </div>
-            <button className="button button-primary mt-5 w-full justify-center" onClick={handleSubmit} disabled={!items.length}>
-              Xác nhận đặt hàng
+            <button className="button button-primary mt-5 w-full justify-center" onClick={handleSubmit} disabled={!items.length || submitted || isSubmitting}>
+              {isSubmitting ? "Đang ghi nhận..." : submitted ? "Đã ghi nhận" : "Xác nhận đặt hàng"}
             </button>
+            <div className="mt-4 flex items-center gap-2 text-xs leading-5 text-[var(--muted)]">
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[rgba(15,77,50,0.08)] text-[var(--green)]">✓</span>
+              Thanh toán khi nhận hàng. Hòa Phúc sẽ gọi xác nhận trước khi gửi.
+            </div>
             {submitted ? (
               <div className="mt-4 rounded-[22px] bg-[rgba(15,77,50,0.08)] p-4 text-sm leading-7 text-[var(--green-dark)]">
                 Đơn hàng của bạn đã được ghi nhận. Chúng tôi sẽ tiếp tục hoàn thiện luồng xác nhận và giao hàng trong các bước sau.
@@ -324,22 +354,27 @@ export default function CartPage() {
         </aside>
       </div>
 
-      {couponPickerOpen ? (
-        <div className="fixed inset-0 z-[80] flex items-end bg-[rgba(6,31,20,0.42)] p-0 backdrop-blur-[2px] md:items-center md:p-4" onClick={() => setCouponPickerOpen(false)}>
-          <section
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="coupon-picker-title"
-            className="w-full max-w-lg animate-[toast-in_320ms_cubic-bezier(0.22,1,0.36,1)] rounded-t-[28px] bg-[var(--surface-strong)] p-5 shadow-[0_-20px_60px_rgba(15,77,50,0.2)] md:rounded-[28px]"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--green)]">Ưu đãi của bạn</div>
-                <h2 id="coupon-picker-title" className="mt-1 text-2xl font-semibold text-[var(--green-dark)]">Chọn mã giảm giá</h2>
-              </div>
-              <button type="button" onClick={() => setCouponPickerOpen(false)} aria-label="Đóng mã giảm giá" className="flex h-9 w-9 items-center justify-center rounded-full bg-[rgba(15,77,50,0.06)] text-[var(--green-dark)]"><X size={18} weight="bold" /></button>
+      {items.length ? (
+        <div className="fixed inset-x-0 bottom-[calc(env(safe-area-inset-bottom)+58px)] z-30 px-3 md:hidden">
+          <div className="mx-auto flex max-w-screen-sm items-center gap-3 rounded-[20px] border border-white/70 bg-[rgba(255,255,255,0.88)] px-3 py-2 shadow-[0_16px_36px_rgba(15,77,50,0.18)] backdrop-blur-xl">
+            <div className="min-w-0 flex-1">
+              <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--muted)]">Tổng thanh toán</div>
+              <div className="mt-0.5 truncate text-[17px] font-semibold text-[var(--green-dark)]">{formatCurrency(total)}</div>
             </div>
+            <button
+              type="button"
+              onClick={handleSubmit}
+              disabled={submitted || isSubmitting}
+              className="inline-flex h-11 shrink-0 items-center gap-2 rounded-[14px] bg-[var(--green)] px-4 text-sm font-semibold text-white shadow-[0_10px_20px_rgba(15,77,50,0.16)] transition-transform active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-55"
+            >
+              <ShoppingCartSimple size={18} weight="bold" className={isSubmitting ? "animate-pulse" : ""} /> {isSubmitting ? "Đang xử lý..." : submitted ? "Đã ghi nhận" : "Đặt hàng"}
+            </button>
+          </div>
+        </div>
+      ) : null}
+
+      {couponPickerOpen ? (
+        <ModalShell eyebrow="Ưu đãi của bạn" title="Chọn mã giảm giá" onClose={() => setCouponPickerOpen(false)} className="max-w-lg">
             <div className="mt-5 space-y-3">
               {Object.entries(couponCatalog).map(([code, offer]) => {
                 const eligible = subtotal >= offer.minSubtotal;
@@ -362,26 +397,11 @@ export default function CartPage() {
               })}
             </div>
             <p className="mt-4 text-xs leading-5 text-[var(--muted)]">Mã mock dành cho trải nghiệm thử nghiệm, điều kiện sẽ được kiểm tra theo giá trị đơn hàng hiện tại.</p>
-          </section>
-        </div>
+        </ModalShell>
       ) : null}
 
       {quickAddOpen ? (
-        <div className="fixed inset-0 z-[80] flex items-end bg-[rgba(6,31,20,0.42)] p-0 backdrop-blur-[2px] md:items-center md:p-4" onClick={() => setQuickAddOpen(false)}>
-          <section
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="quick-add-title"
-            className="flex max-h-[88dvh] w-full max-w-2xl flex-col overflow-hidden rounded-t-[28px] bg-[var(--surface-strong)] shadow-[0_-20px_60px_rgba(15,77,50,0.2)] md:rounded-[28px]"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div className="flex items-start justify-between gap-4 border-b border-[rgba(15,77,50,0.08)] p-5">
-              <div>
-                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--green)]">Mua nhanh</div>
-                <h2 id="quick-add-title" className="mt-1 text-2xl font-semibold text-[var(--green-dark)]">Thêm sản phẩm vào giỏ</h2>
-              </div>
-              <button type="button" onClick={() => setQuickAddOpen(false)} aria-label="Đóng thêm sản phẩm" className="flex h-9 w-9 items-center justify-center rounded-full bg-[rgba(15,77,50,0.06)] text-[var(--green-dark)]"><X size={18} weight="bold" /></button>
-            </div>
+        <ModalShell eyebrow="Mua nhanh" title="Thêm sản phẩm vào giỏ" onClose={() => setQuickAddOpen(false)}>
             <div className="border-b border-[rgba(15,77,50,0.08)] px-5 py-3">
               <input autoFocus value={quickAddQuery} onChange={(event) => setQuickAddQuery(event.target.value)} placeholder="Tìm trà hoặc đặc sản..." className="h-11 w-full rounded-[16px] border border-[rgba(15,77,50,0.12)] bg-white px-4 text-sm text-[var(--green-dark)] outline-none focus:border-[var(--green)]" />
             </div>
@@ -397,8 +417,7 @@ export default function CartPage() {
                 </div>
               )) : <div className="col-span-full py-8 text-center text-sm text-[var(--muted)]">Không tìm thấy sản phẩm phù hợp.</div>}
             </div>
-          </section>
-        </div>
+        </ModalShell>
       ) : null}
     </main>
   );

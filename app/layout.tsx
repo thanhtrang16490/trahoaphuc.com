@@ -5,6 +5,7 @@ import { Header } from "@/components/header";
 import { ToastProvider } from "@/components/toast";
 import { OrganizationJsonLd, WebSiteJsonLd } from "@/components/seo";
 import { brand } from "@/data/site";
+import { MobileShell } from "@/components/mobile-shell";
 
 export const metadata: Metadata = {
   metadataBase: new URL(brand.website),
@@ -63,7 +64,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <OrganizationJsonLd />
           <WebSiteJsonLd />
           <Header />
-          {children}
+          <MobileShell>{children}</MobileShell>
           <Footer />
         </ToastProvider>
       </body>

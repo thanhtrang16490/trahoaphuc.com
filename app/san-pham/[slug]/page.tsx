@@ -81,7 +81,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
   const price = getProductPrice(product.slug);
 
   return (
-    <main className="section !pt-0 md:pt-14 pb-[calc(env(safe-area-inset-bottom)+96px)] md:pb-24">
+    <main className="section !pt-0 pb-[calc(env(safe-area-inset-bottom)+136px)] md:pt-14 md:pb-24">
       <BreadcrumbJsonLd
         items={[
           { name: "Trang chủ", href: "/" },
@@ -362,15 +362,15 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
         </div>
 
         <div className="mt-6 md:hidden">
-          <div className="fixed inset-x-0 bottom-[calc(env(safe-area-inset-bottom)+72px)] z-40 px-4">
-            <div className="mx-auto flex max-w-screen-sm gap-3 rounded-[24px] border border-[rgba(15,77,50,0.12)] bg-[rgba(248,243,233,0.96)] p-3 backdrop-blur-xl">
-              <Link href="/gio-hang" className="button button-secondary flex-1 justify-center text-sm">
-                Xem giỏ hàng
-              </Link>
-              <div className="flex-1">
-                <AddToCartButton slug={product.slug} />
-              </div>
-            </div>
+              <div className="fixed inset-x-0 bottom-[calc(env(safe-area-inset-bottom)+58px)] z-40 px-3">
+                <div className="mx-auto flex max-w-screen-sm gap-3 rounded-[24px] border border-[rgba(15,77,50,0.12)] bg-[rgba(248,243,233,0.96)] p-3 backdrop-blur-xl">
+                  <Link href="/gio-hang" className="button button-secondary flex-1 justify-center text-sm">
+                    Xem giỏ hàng
+                  </Link>
+                  <div className="flex-1">
+                    <AddToCartButton slug={product.slug} buyNow />
+                  </div>
+                </div>
           </div>
         </div>
 

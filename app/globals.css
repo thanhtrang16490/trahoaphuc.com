@@ -150,6 +150,28 @@ html :where(h1, h2, h3, h4, [id]) { scroll-margin-top: 96px; }
   .button { gap: 8px; padding: 12px 16px; }
 }
 
+@media (max-width: 767px) {
+  .mobile-route-view {
+    animation: mobile-route-enter 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    transform-origin: 50% 0;
+  }
+}
+
+@keyframes mobile-route-enter {
+  from { opacity: 0; transform: translateX(14px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes modal-backdrop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes sheet-in {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .button:hover { transform: translateY(-1px); }
 .button:active { transform: translateY(0) scale(0.98); }
 
@@ -172,6 +194,8 @@ html :where(h1, h2, h3, h4, [id]) { scroll-margin-top: 96px; }
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+  .mobile-route-view { animation: none; }
+  .modal-backdrop-in, .sheet-in { animation: none; }
 }
 
 .grid-bento {
