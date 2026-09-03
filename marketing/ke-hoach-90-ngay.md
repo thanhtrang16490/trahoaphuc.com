@@ -1,92 +1,90 @@
-# Kế hoạch Triển khai 90 Ngày - Nông Sản Hoà Phúc
+# Kế hoạch triển khai 90 ngày - Nông Sản Hòa Phúc
 
-## Mục tiêu
+## Mục tiêu của 90 ngày đầu
 
-- Có mặt trên các kênh bán hàng chính.
-- Có bộ content đủ để chạy tối thiểu 90 ngày.
-- Có những đơn hàng đầu tiên từ online.
-- Có tệp khách hàng để chăm sóc lại.
+- Biến website thành trung tâm thông tin và chuyển đổi có thể đo lường.
+- Kiểm chứng 3 hướng nhu cầu: trà dùng hằng ngày, quà biếu, đặc sản/dưỡng sinh.
+- Có thư viện nội dung đủ dùng trong 30 ngày và quy trình tái sử dụng.
+- Tạo dữ liệu nền về đơn hàng, CPA, sản phẩm bán tốt và tỷ lệ mua lại.
 
-## Giai đoạn 1: Ngày 1-30
+## Giai đoạn 1: Ngày 1-30 - Chuẩn hóa
 
-### Việc cần làm
+### Tuần 1: Chốt nền tảng
 
-- Chốt định vị thương hiệu.
-- Đồng bộ tên thương hiệu Nông Sản Hòa Phúc trên toàn bộ kênh.
-- Chụp ảnh sản phẩm, quay video ngắn.
-- Tạo TikTok Shop, Shopee, Facebook catalog.
-- Mở Zalo OA.
-- Xây website bản đầu.
-- Thiết lập pixel, mã UTM, file theo dõi đơn hàng.
-- Soạn sẵn các combo:
-  - Combo dùng thử.
-  - Combo bán chạy.
-  - Combo quà biếu.
+- Chốt định vị, thông điệp, quy tắc claim và bộ từ khóa thương hiệu.
+- Đối chiếu catalog 9 sản phẩm, giá, ảnh, quy cách, tồn kho và CTA.
+- Kiểm tra toàn bộ link website: sản phẩm, giỏ hàng, Shopee, liên hệ, hội viên, đại lý và affiliate.
+- Thiết lập bảng đo lường: ngày, kênh, campaign, sản phẩm, chi phí, đơn, doanh thu, lợi nhuận.
 
-### Output mong muốn
+### Tuần 2: Chuẩn hóa tài sản bán hàng
 
-- Có đủ gian hàng và trang giới thiệu.
-- Có tối thiểu 15-20 video/ngắn sẵn để đăng.
-- Có bảng giá và mô tả chuẩn.
-- Có bộ mô tả riêng cho từng nhóm sản phẩm đang có trên site.
+- Tạo 3 template ảnh/video: dùng hằng ngày, quà biếu, vùng nguyên liệu.
+- Chụp/quay mỗi sản phẩm theo 4 góc: bao bì thật, cận cảnh, bối cảnh sử dụng, quy cách.
+- Viết mô tả ngắn, FAQ, kịch bản tư vấn và phản hồi từ chối phổ biến.
+- Chuẩn hóa ảnh đại diện, logo vector, tên thương hiệu và link Shopee.
 
-## Giai đoạn 2: Ngày 31-60
+### Tuần 3: Xây thư viện nội dung
 
-### Việc cần làm
+- Sản xuất tối thiểu 12 video ngắn và 8 bài social.
+- Viết 2 bài blog theo cụm “cách chọn trà làm quà” và “trà thảo mộc dùng hằng ngày”.
+- Tạo landing/collection cho trà thảo mộc, quà biếu và sản phẩm vùng miền nếu cần.
+- Chuẩn bị combo nhưng chỉ công bố sau khi xác nhận giá và tồn kho.
 
-- Đăng đều nội dung trên TikTok và Facebook.
-- Chạy quảng cáo lead/inbox Facebook.
-- Chạy thử quảng cáo TikTok hoặc đẩy video tốt nhất.
-- Bán thử trên Shopee để lấy review đầu tiên.
-- Tổ chức 2-3 buổi livestream/tuần.
-- Mời khách cũ tham gia đánh giá, phản hồi.
-- Tìm 5-10 đại lý thử nghiệm.
-- Bám nội dung theo 4 nhóm: trà thảo mộc, dưỡng sinh, đặc sản vùng miền và câu chuyện thương hiệu.
+### Tuần 4: Kiểm tra chuyển đổi
 
-### Output mong muốn
+- Kiểm tra mobile/PC, tốc độ ảnh, CTA và luồng thêm giỏ.
+- Gắn UTM cho link social/Shopee/affiliate.
+- Xuất bản nội dung đầu tiên và ghi nhận baseline 7 ngày.
+- Chỉ chạy ads sau khi pixel/analytics và trang đích đã được kiểm tra.
 
-- Có đơn online mỗi ngày hoặc cách ngày.
-- Có review thật.
-- Có tệp khách hàng đầu tiên trong Zalo OA.
-
-## Giai đoạn 3: Ngày 61-90
+## Giai đoạn 2: Ngày 31-60 - Kiểm chứng
 
 ### Việc cần làm
 
-- Nhân rộng nội dung hiệu quả nhất.
-- Tối ưu landing page/website.
-- Tối ưu quảng cáo theo chi phí đơn hàng.
-- Làm chương trình mua lại 15-30-45 ngày.
-- Chốt thêm đại lý hoặc cộng tác viên.
-- Đưa các combo bán chạy lên top gian hàng.
-- Gom các bài blog, FAQ và nội dung hỗ trợ vào website để kéo SEO.
+- Đăng 3-5 nội dung/tuần: 1 thương hiệu, 1 kiến thức, 1 sản phẩm, 1 quà biếu, 1 review/hậu trường nếu có.
+- Test 3 thông điệp với cùng ngân sách nhỏ và cùng thời gian:
+  - “Vị trà dễ gần cho khoảng nghỉ mỗi ngày.”
+  - “Món quà Việt chỉn chu từ Cúc Phương.”
+  - “Chọn đúng dòng trà theo nhu cầu và quy cách.”
+- Tối ưu 4 trang có ý định mua cao nhất dựa trên dữ liệu thực tế.
+- Mời khách đã mua đánh giá thật; không dùng review dựng hoặc cam kết quá mức.
+- Thử 1-2 buổi live/tuần khi có người phụ trách chốt đơn.
+- Bắt đầu tuyển nhóm đại lý/affiliate nhỏ, cấp bộ ảnh và link có UTM.
 
-### Output mong muốn
+### Tiêu chí qua giai đoạn
 
-- Có 1-2 kênh chính tạo doanh thu ổn định.
-- Có bộ dữ liệu khách hàng để remarketing.
-- Có mô hình vận hành lặp lại được.
+- Biết ít nhất 2 loại nội dung có tỷ lệ click/tin nhắn tốt.
+- Biết sản phẩm nào có lượt xem, thêm giỏ và đơn tốt nhất.
+- Có dữ liệu chi phí trên click, lead và đơn; nếu chưa có thì chưa scale ngân sách.
 
-## Lịch làm việc tuần mẫu
+## Giai đoạn 3: Ngày 61-90 - Tối ưu và lặp lại
 
-- Thứ 2: đăng bài thương hiệu và sản phẩm.
-- Thứ 3: quay video ngắn.
-- Thứ 4: chạy quảng cáo và tối ưu.
-- Thứ 5: livestream hoặc đăng review.
-- Thứ 6: bài kiến thức và chốt sale.
-- Thứ 7: đẩy combo hoặc ưu đãi.
-- Chủ nhật: tổng kết số liệu.
+### Việc cần làm
 
-## Checklist tối thiểu
+- Dồn 70% nguồn lực nội dung vào 20% chủ đề có tín hiệu tốt nhất.
+- Tạo chuỗi sau mua: hướng dẫn sử dụng, hỏi trải nghiệm, mời đánh giá, gợi ý mua lại.
+- Phân nhóm khách theo sản phẩm đã mua, mục đích dùng và kênh vào.
+- Tối ưu combo theo giá trị đơn trung bình và biên lợi nhuận, không chỉ theo số lượng sản phẩm.
+- Xây 4 bài pillar/cluster cho blog và liên kết nội bộ tới trang sản phẩm.
+- Đánh giá từng kênh theo lợi nhuận đóng góp, quyết định giữ, thử lại hoặc dừng.
 
-- [ ] Tên thương hiệu và thông điệp.
-- [ ] Ảnh sản phẩm chuẩn.
-- [ ] Video ngắn.
-- [ ] Website bản đầu.
-- [ ] TikTok Shop.
-- [ ] Shopee.
-- [ ] Zalo OA.
-- [ ] Bộ nội dung 30 ngày.
-- [ ] Bộ câu trả lời inbox.
-- [ ] File theo dõi KPI.
-- [ ] Nội dung mô tả từng nhóm sản phẩm theo đúng website.
+## Lịch vận hành tuần mẫu
+
+| Ngày | Việc chính | Đầu ra |
+|---|---|---|
+| Thứ 2 | Kiểm tra số liệu và tồn kho | Bảng ưu tiên tuần |
+| Thứ 3 | Quay/chỉnh video | 2 video ngắn |
+| Thứ 4 | Bài kiến thức/thương hiệu | 1 bài social hoặc blog |
+| Thứ 5 | Sản phẩm/feedback | 1 nội dung chuyển đổi |
+| Thứ 6 | Tư vấn/live/affiliate | Tin nhắn, đơn hoặc lead |
+| Thứ 7 | Combo/quà biếu | 1 nội dung offer |
+| Chủ nhật | Tổng kết | Báo cáo giữ/tắt/tăng |
+
+## Checklist trước khi xuất bản
+
+- [ ] Tên sản phẩm, ảnh, giá và quy cách khớp website.
+- [ ] Có một CTA và một đường dẫn đích rõ ràng.
+- [ ] Có UTM nếu là chiến dịch.
+- [ ] Không có claim điều trị, thay thế thuốc hoặc số liệu chưa xác minh.
+- [ ] Nội dung có người duyệt và ngày cập nhật.
+- [ ] Đã kiểm tra hiển thị trên mobile và PC.
