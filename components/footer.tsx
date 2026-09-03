@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { House, MagnifyingGlass, ShoppingCartSimple, UserCircle, Tag, MessengerLogo, FacebookLogo, Storefront } from "@phosphor-icons/react";
+import { House, PlayCircle, ShoppingCartSimple, UserCircle, Tag, MessengerLogo, FacebookLogo, Storefront } from "@phosphor-icons/react";
 import type { CartItem } from "@/components/cart-store";
 import { addProductToCart, readCart, subscribeCart } from "@/components/cart-store";
 import { useToast } from "@/components/toast";
@@ -14,7 +14,7 @@ import { useMobileScrollVisibility } from "@/components/use-mobile-scroll-visibi
 
 const bottomNav = [
   { href: "/", label: "Trang chủ", icon: House },
-  { href: "/tim-kiem", label: "Tìm kiếm", icon: MagnifyingGlass },
+  { href: "/feed", label: "Feed", icon: PlayCircle },
   { href: "/uu-dai", label: "Ưu đãi", icon: Tag },
   { href: "/gio-hang", label: "Giỏ hàng", icon: ShoppingCartSimple },
   { href: "/ca-nhan", label: "Cá nhân", icon: UserCircle },
@@ -67,7 +67,7 @@ export function Footer() {
     <footer className="border-t border-[rgba(15,77,50,0.12)] bg-transparent md:bg-[rgba(246,241,231,0.72)]">
       <div className="md:hidden">
         <div className={`fixed inset-x-0 bottom-0 z-40 transition-transform duration-300 ease-out ${hidden ? "translate-y-full" : "translate-y-0"}`}>
-          <div className="mx-auto max-w-screen-sm px-3 pb-[calc(env(safe-area-inset-bottom)+10px)] pt-2">
+          <div className={`mx-auto max-w-screen-sm ${isProductDetail ? "px-3 pb-[calc(env(safe-area-inset-bottom)+10px)] pt-2" : "w-full px-0 pb-[env(safe-area-inset-bottom)] pt-0"}`}>
             {isProductDetail ? (
               <div className="relative overflow-hidden rounded-[28px] border border-[rgba(255,255,255,0.55)] bg-[rgba(255,255,255,0.68)] p-1.5 shadow-[0_18px_42px_rgba(15,77,50,0.14)] backdrop-blur-2xl">
                 <div
@@ -110,7 +110,7 @@ export function Footer() {
                 </div>
               </div>
             ) : (
-              <div className="liquid-glass-nav relative grid grid-cols-5 gap-1 p-1.5">
+              <div className="liquid-glass-nav relative !rounded-none grid grid-cols-5 gap-1 p-1.5">
                 {bottomNav.map((item) => {
                   const Icon = item.icon;
                   const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { List, MagnifyingGlass, ShoppingCartSimple, UserCircle, X, Plus, Minus, Trash, House, Package, Tag, CirclesFour, FacebookLogo } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
 import type { CartItem } from "./cart-store";
@@ -28,6 +29,8 @@ const mobileTabs = [
 ];
 
 export function Header() {
+  const pathname = usePathname();
+  const isFeed = pathname === "/feed";
   const [menuOpen, setMenuOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
   const [items, setItems] = useState<CartItem[]>([]);
@@ -54,7 +57,18 @@ export function Header() {
 
   return (
     <>
-      <header className="hidden md:block sticky top-0 z-50 border-b border-[rgba(15,77,50,0.1)] bg-[rgba(246,241,231,0.82)] backdrop-blur-xl">
+      <header className={`${isFeed ? "hidden" : ""} sticky top-0 z-50 border-b border-[rgba(15,77,50,0.1)] bg-[rgba(246,241,231,0.88)] backdrop-blur-xl md:hidden`}>
+        <div className="flex items-center justify-between gap-3 px-4 py-3">
+          <Link href="/" className="flex min-w-0 items-center gap-2 text-[var(--green)]">
+            <Image src="/brand/hoaphuc-logo.svg" alt="Logo Hòa Phúc" width={34} height={34} className="h-8 w-8 shrink-0" priority />
+            <span className="truncate text-xs font-semibold uppercase tracking-[0.16em]">Nông Sản Hòa Phúc</span>
+          </Link>
+          <Link href="/tim-kiem" aria-label="Tìm kiếm sản phẩm" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[rgba(15,77,50,0.12)] bg-white/70 text-[var(--green-dark)] shadow-[0_8px_18px_rgba(15,77,50,0.08)]">
+            <MagnifyingGlass size={19} weight="bold" />
+          </Link>
+        </div>
+      </header>
+      <header className={`${isFeed ? "hidden" : ""} hidden md:block sticky top-0 z-50 border-b border-[rgba(15,77,50,0.1)] bg-[rgba(246,241,231,0.82)] backdrop-blur-xl`}>
         <div className="container flex items-center justify-between gap-3 py-3 md:gap-4 md:py-4">
           <button className="panel pill p-3 xl:hidden md:order-3" aria-label="Mở menu" onClick={() => setMenuOpen(true)}>
             <List size={20} weight="bold" />
