@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { ArrowLeft, CheckCircle, Clock, Gift, Headset, Package, ShoppingBag, Star, Storefront, Truck } from "@phosphor-icons/react";
 import { BreadcrumbJsonLd } from "@/components/seo";
 import type { AuthUser } from "@/components/auth-store";
 import { clearAuthUser, isMockAdminUser, readAuthUser, subscribeAuth } from "@/components/auth-store";
@@ -9,16 +10,16 @@ import { brand } from "@/data/site";
 import { useMobileScrollVisibility } from "@/components/use-mobile-scroll-visibility";
 
 const orderStates = [
-  { label: "Đơn hàng mới", icon: "NEW" },
-  { label: "Chờ xác nhận", icon: "◷" },
-  { label: "Đang giao hàng", icon: "🚚" },
-  { label: "Đánh giá", icon: "★" },
+  { label: "Đơn hàng mới", icon: Package },
+  { label: "Chờ xác nhận", icon: Clock },
+  { label: "Đang giao hàng", icon: Truck },
+  { label: "Đánh giá", icon: Star },
 ];
 
 const utilities = [
-  { label: "Hội viên thân thiết", href: "/dang-ky-thanh-vien", icon: "⭐" },
-  { label: "Lịch sử đơn hàng", href: "/gio-hang", icon: "🛒" },
-  { label: "Đăng ký đại lý", href: "/dang-ky-dai-ly", icon: "🏪" },
+  { label: "Hội viên thân thiết", href: "/dang-ky-thanh-vien", icon: Gift },
+  { label: "Lịch sử đơn hàng", href: "/gio-hang", icon: ShoppingBag },
+  { label: "Đăng ký đại lý", href: "/dang-ky-dai-ly", icon: Storefront },
 ];
 
 const specialOffers = [
@@ -65,7 +66,7 @@ export default function ProfilePage() {
                 aria-label="Quay lại trang chủ"
                 className="flex h-10 w-10 items-center justify-center rounded-full border border-[rgba(15,77,50,0.12)] bg-white text-[var(--green-dark)] shadow-[0_10px_18px_rgba(15,77,50,0.08)]"
               >
-                <span className="text-[18px] leading-none">‹</span>
+                <ArrowLeft size={18} weight="bold" />
               </Link>
               <div className="min-w-0">
                 <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--green)]">Cá nhân</div>
@@ -76,7 +77,7 @@ export default function ProfilePage() {
         </div>
 
         <div className="container pt-5">
-          <article className="overflow-hidden rounded-[22px] bg-[linear-gradient(180deg,#9ad400,#7cc100)] p-3 text-white shadow-[0_12px_24px_rgba(124,193,0,0.18)]">
+          <article className="overflow-hidden rounded-[22px] bg-[linear-gradient(145deg,#0f4d32,#247447)] p-3 text-white shadow-[0_16px_30px_rgba(15,77,50,0.18)]">
             <div className="rounded-[18px] border border-[rgba(255,255,255,0.12)] bg-[rgba(255,255,255,0.08)] p-3">
               <div className="flex items-start gap-3">
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[14px] border border-[rgba(255,255,255,0.35)] bg-[rgba(255,255,255,0.16)] text-[18px] font-semibold text-white">
@@ -103,30 +104,30 @@ export default function ProfilePage() {
                       <span className="text-[18px] font-semibold leading-none text-white">{points} điểm</span>
                     </div>
                     <div className="mt-2 flex items-center gap-2.5 text-[13px] leading-6">
-                      <span className="text-[16px] leading-none">✓</span>
+                      <CheckCircle size={16} weight="fill" className="shrink-0 text-[#c9ef63]" />
                       <span>{isMockAdminUser(authUser) ? "Quyền quản trị mock đã sẵn sàng" : "Tài khoản khách hàng đang hoạt động"}</span>
                     </div>
                     <div className="flex items-center gap-2.5 text-[13px] leading-6">
-                      <span className="text-[16px] leading-none">✓</span>
+                      <CheckCircle size={16} weight="fill" className="shrink-0 text-[#c9ef63]" />
                       <span>Đang đồng bộ lịch sử đơn và thông tin mua nhanh</span>
                     </div>
                     <div className="mt-2 flex items-center gap-2.5 text-[13px] leading-6">
-                      <span className="text-[16px] leading-none">✓</span>
+                      <CheckCircle size={16} weight="fill" className="shrink-0 text-[#c9ef63]" />
                       <span>Đang đăng nhập bằng {authUser?.email}</span>
                     </div>
                   </>
                 ) : (
                   <>
                     <div className="flex items-center gap-2.5 text-[13px] leading-6">
-                      <span className="text-[16px] leading-none">✓</span>
+                      <CheckCircle size={16} weight="fill" className="shrink-0 text-[#c9ef63]" />
                       <span>Tích luỹ điểm thưởng mỗi đơn hàng</span>
                     </div>
                     <div className="mt-2 flex items-center gap-2.5 text-[13px] leading-6">
-                      <span className="text-[16px] leading-none">✓</span>
+                      <CheckCircle size={16} weight="fill" className="shrink-0 text-[#c9ef63]" />
                       <span>Đổi điểm lấy voucher & quà tặng</span>
                     </div>
                     <div className="mt-2 flex items-center gap-2.5 text-[13px] leading-6">
-                      <span className="text-[16px] leading-none">✓</span>
+                      <CheckCircle size={16} weight="fill" className="shrink-0 text-[#c9ef63]" />
                       <span>Ưu đãi riêng cho từng hạng thành viên</span>
                     </div>
                   </>
@@ -177,7 +178,7 @@ export default function ProfilePage() {
                   className="flex flex-col items-center rounded-[22px] border border-[rgba(15,77,50,0.08)] bg-white px-3 py-4 text-center shadow-[0_12px_28px_rgba(15,77,50,0.08)]"
                 >
                   <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[rgba(15,77,50,0.06)] text-[24px] text-[var(--green)]">
-                    {item.icon}
+                    {(() => { const Icon = item.icon; return <Icon size={24} weight="duotone" />; })()}
                   </div>
                   <div className="mt-3 text-[12px] leading-5 text-[var(--green-dark)]">{item.label}</div>
                 </div>
@@ -189,7 +190,7 @@ export default function ProfilePage() {
             <div className="px-4 py-3 text-[13px] leading-6 text-[var(--green-dark)]">
               Liên hệ nhanh để nhận tư vấn, demo và hỗ trợ triển khai giải pháp cho doanh nghiệp.
               <br />
-              Chúng tôi luôn sẵn sàng hỗ trợ bạn trong mọi giai đoạn mua hàng và vận hành.
+              Cần hỗ trợ đơn hàng, đổi trả hoặc tư vấn chọn trà? Hòa Phúc luôn sẵn sàng đồng hành cùng bạn.
             </div>
             <div className="px-4 pb-4">
               <a
@@ -198,7 +199,7 @@ export default function ProfilePage() {
                 rel="noreferrer"
                 className="flex h-11 items-center justify-center rounded-[14px] bg-[var(--green)] text-[14px] font-semibold text-white"
               >
-                Liên hệ hỗ trợ
+                <span className="flex items-center gap-2"><Headset size={18} weight="bold" /> Liên hệ hỗ trợ</span>
               </a>
             </div>
           </section>
@@ -218,7 +219,7 @@ export default function ProfilePage() {
                   className="flex flex-col items-center rounded-[22px] border border-[rgba(15,77,50,0.08)] bg-white px-3 py-4 text-center shadow-[0_12px_28px_rgba(15,77,50,0.08)]"
                 >
                   <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[rgba(15,77,50,0.06)] text-[24px] text-[var(--green)]">
-                    {item.icon}
+                    {(() => { const Icon = item.icon; return <Icon size={24} weight="duotone" />; })()}
                   </div>
                   <div className="mt-3 text-[12px] leading-5 text-[var(--green-dark)]">
                     {item.label.split(" ").map((word, index) => (
@@ -247,11 +248,11 @@ export default function ProfilePage() {
                     <p className="mt-1 text-[12px] leading-6 text-[var(--muted)]">{offer.description}</p>
                     <p className="mt-0.5 text-[12px] leading-6 text-[var(--green-dark)]">{offer.expiry}</p>
                   </div>
-                  <button className="flex h-18 w-18 items-center justify-center rounded-[6px] border border-[#a5c614] text-[13px] font-medium leading-tight text-[#7ea700]">
+                  <Link href="/gio-hang" className="flex h-11 w-16 shrink-0 items-center justify-center rounded-[10px] border border-[#a5c614] text-[13px] font-semibold leading-tight text-[#7ea700]">
                     Dùng
                     <br />
                     ngay
-                  </button>
+                  </Link>
                 </div>
               </article>
             ))}
@@ -288,7 +289,7 @@ export default function ProfilePage() {
               <div className="mt-6 grid grid-cols-4 gap-4">
                 {orderStates.map((item) => (
                   <div key={item.label} className="rounded-[24px] border border-[rgba(15,77,50,0.08)] bg-white p-4 text-center">
-                    <div className="text-3xl">{item.icon}</div>
+                    <div className="flex justify-center text-[var(--green)]"><item.icon size={28} weight="duotone" /></div>
                     <div className="mt-3 text-sm font-semibold text-[var(--green-dark)]">{item.label}</div>
                   </div>
                 ))}
@@ -299,7 +300,7 @@ export default function ProfilePage() {
               <div className="mt-6 grid grid-cols-3 gap-4">
                 {utilities.map((item) => (
                   <Link key={item.label} href={item.href} className="rounded-[24px] border border-[rgba(15,77,50,0.08)] bg-white p-4 text-center">
-                    <div className="text-3xl">{item.icon}</div>
+                    <div className="flex justify-center text-[var(--green)]"><item.icon size={28} weight="duotone" /></div>
                     <div className="mt-3 text-sm font-semibold text-[var(--green-dark)]">{item.label}</div>
                   </Link>
                 ))}

@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BreadcrumbJsonLd, ArticleJsonLd } from "@/components/seo";
+import { MobileBackHeader } from "@/components/mobile-back-header";
 import { blogPosts, getBlogPostBySlug } from "@/data/blog";
 import { formatDateLong } from "@/lib/date";
 
@@ -54,23 +55,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
       />
 
       <div className="container">
-        <div className="md:hidden">
-          <div className="-mx-4 sticky top-0 z-40 border-b border-[rgba(15,77,50,0.08)] bg-[rgba(255,255,255,0.92)]/95 px-4 py-3 backdrop-blur-xl">
-            <div className="flex items-center gap-3">
-              <Link
-                href="/tin-tuc"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-[rgba(15,77,50,0.12)] bg-white text-[var(--green-dark)] shadow-[0_10px_18px_rgba(15,77,50,0.08)]"
-                aria-label="Quay lại tin tức"
-              >
-                <span className="text-[18px] leading-none">‹</span>
-              </Link>
-              <div className="min-w-0">
-                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--green)]">Tin tức</div>
-                <div className="truncate text-[16px] font-semibold leading-tight text-[var(--green-dark)]">Bài viết chi tiết</div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <MobileBackHeader href="/tin-tuc" section="Tin tức" title="Bài viết chi tiết" />
 
         <article className="grid gap-8 lg:grid-cols-[1.02fr_0.98fr]">
           <div className="overflow-hidden rounded-[28px] bg-white shadow-[0_18px_42px_rgba(15,77,50,0.08)]">

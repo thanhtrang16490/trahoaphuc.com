@@ -112,7 +112,7 @@ export default function MembershipPage() {
                   <Link href="/dang-nhap" className="button button-primary justify-center bg-white text-[var(--green-dark)]">
                     Đăng nhập hội viên
                   </Link>
-                  <Link href="/uu-dai" className="button button-secondary justify-center border-white/30 bg-white/10 text-white hover:bg-white/15">
+                  <Link href="/ca-nhan" className="button button-secondary justify-center border-white/30 bg-white/10 text-white hover:bg-white/15">
                     Xem điểm đổi quà
                   </Link>
                 </div>

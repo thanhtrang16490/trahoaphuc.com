@@ -31,6 +31,14 @@ const mobileTabs = [
 export function Header() {
   const pathname = usePathname();
   const isFeed = pathname === "/feed";
+  const hasMobileBackHeader =
+    pathname === "/tim-kiem" ||
+    pathname === "/ca-nhan" ||
+    pathname === "/gio-hang" ||
+    pathname === "/muc-san-pham" ||
+    pathname === "/vong-quay-may-man" ||
+    pathname.startsWith("/san-pham/") ||
+    pathname.startsWith("/tin-tuc/");
   const [menuOpen, setMenuOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
   const [items, setItems] = useState<CartItem[]>([]);
@@ -57,7 +65,7 @@ export function Header() {
 
   return (
     <>
-      <header className={`${isFeed ? "hidden" : ""} sticky top-0 z-50 border-b border-[rgba(15,77,50,0.1)] bg-[rgba(246,241,231,0.88)] backdrop-blur-xl md:hidden`}>
+      <header className={`${isFeed || hasMobileBackHeader ? "hidden" : ""} sticky top-0 z-50 border-b border-[rgba(15,77,50,0.1)] bg-[rgba(246,241,231,0.88)] backdrop-blur-xl md:hidden`}>
         <div className="flex items-center justify-between gap-3 px-4 py-3">
           <Link href="/" className="flex min-w-0 items-center gap-2 text-[var(--green)]">
             <Image src="/brand/hoaphuc-logo.svg" alt="Logo Hòa Phúc" width={34} height={34} className="h-8 w-8 shrink-0" priority />

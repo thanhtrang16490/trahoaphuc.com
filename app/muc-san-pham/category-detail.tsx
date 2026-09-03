@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { BreadcrumbJsonLd } from "@/components/seo";
+import { ProductCardActions } from "@/components/product-card-actions";
 import { categories, getCategoryBySlug, getProductsByCategoryName } from "@/data/categories";
 import { formatCurrency, getProductPrice } from "@/data/pricing";
 
@@ -90,6 +91,9 @@ export function CategoryDetailPage({ slug }: { slug: string }) {
                   <p className="mt-2 line-clamp-2 text-[12px] leading-5 text-[var(--muted)] md:mt-3 md:text-sm md:leading-7">
                     {product.shortDescription}
                   </p>
+                  <div className="mt-4 flex justify-end md:mt-5">
+                    <ProductCardActions product={product} />
+                  </div>
                 </div>
               </article>
             );

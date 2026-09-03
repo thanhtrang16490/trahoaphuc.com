@@ -2,17 +2,32 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { Check, Plus, ShoppingBagOpen, Tag, X } from "@phosphor-icons/react";
 import type { CartItem } from "@/components/cart-store";
-import { clearCart, readCart, readCheckoutInfo, removeItem, saveCheckoutInfo, setItemQuantity, subscribeCart } from "@/components/cart-store";
-import { formatCurrency } from "@/data/pricing";
+import { addProductToCart, clearCart, readCart, readCheckoutInfo, removeItem, saveCheckoutInfo, setItemQuantity, subscribeCart } from "@/components/cart-store";
+import { formatCurrency, getProductPrice } from "@/data/pricing";
+import { products } from "@/data/products";
 import type { AuthUser } from "@/components/auth-store";
 import { isMockAdminUser, readAuthUser, saveAuthUser, subscribeAuth } from "@/components/auth-store";
 import { useToast } from "@/components/toast";
+import { MobileBackHeader } from "@/components/mobile-back-header";
 
 const couponCatalog = {
   HOAPHUC5: { label: "Giảm 5%", type: "percent" as const, value: 0.05, minSubtotal: 0, note: "Áp dụng cho mọi đơn hàng" },
   FREESHIP200: { label: "Miễn phí ship", type: "shipping" as const, value: 30000, minSubtotal: 200000, note: "Đơn từ 200.000đ" },
   HOAPHUC10: { label: "Giảm 10%", type: "percent" as const, value: 0.1, minSubtotal: 1000000, note: "Đơn từ 1.000.000đ" },
+  HOAPHUC15: { label: "Giảm 15%", type: "percent" as const, value: 0.15, minSubtotal: 1500000, note: "Ưu đãi thành viên, đơn từ 1.500.000đ" },
+  HOAPHUC100: { label: "Giảm 100.000đ", type: "fixed" as const, value: 100000, minSubtotal: 500000, note: "Voucher quà tặng, đơn từ 500.000đ" },
+  HOAPHUCBI: { label: "Giảm 50.000đ", type: "fixed" as const, value: 50000, minSubtotal: 300000, note: "Mã bí mật, đơn từ 300.000đ" },
+};
+
+const couponSources = {
+  HOAPHUC5: "Mã dành cho khách mới",
+  FREESHIP200: "Mã vận chuyển của Hòa Phúc",
+  HOAPHUC10: "Mã thành viên thân thiết",
+  HOAPHUC15: "Mã thành viên thân thiết",
+  HOAPHUC100: "Voucher quà tặng từ vòng quay",
+  HOAPHUCBI: "Mã bí mật từ vòng quay",
 };
 
 type CouponState = {
@@ -27,6 +42,9 @@ export default function CartPage() {
   const [form, setForm] = useState(() => readCheckoutInfo());
   const [authUser, setAuthUser] = useState<AuthUser | null>(null);
   const [coupon, setCoupon] = useState<CouponState>({ code: "", error: "", appliedCode: "" });
+  const [couponPickerOpen, setCouponPickerOpen] = useState(false);
+  const [quickAddOpen, setQuickAddOpen] = useState(false);
+  const [quickAddQuery, setQuickAddQuery] = useState("");
   const { showToast } = useToast();
 
   useEffect(() => {
@@ -46,10 +64,12 @@ export default function CartPage() {
   const discount = appliedCoupon
     ? appliedCoupon.type === "percent"
       ? Math.round(subtotal * appliedCoupon.value)
-      : Math.min(shipping, appliedCoupon.value)
+      : appliedCoupon.type === "shipping"
+        ? Math.min(shipping, appliedCoupon.value)
+        : Math.min(subtotal, appliedCoupon.value)
     : 0;
   const shippingAfterDiscount = appliedCoupon?.type === "shipping" ? Math.max(0, shipping - discount) : shipping;
-  const total = subtotal + shippingAfterDiscount - (appliedCoupon?.type === "percent" ? discount : 0);
+  const total = subtotal + shippingAfterDiscount - (appliedCoupon?.type === "percent" || appliedCoupon?.type === "fixed" ? discount : 0);
 
   const handleChange = (field: keyof typeof form, value: string) => {
     const next = { ...form, [field]: value };
@@ -62,8 +82,8 @@ export default function CartPage() {
     setSubmitted(true);
   };
 
-  const applyCoupon = () => {
-    const raw = coupon.code.trim().toUpperCase();
+  const applyCouponCode = (value: string) => {
+    const raw = value.trim().toUpperCase();
     if (!raw) {
       setCoupon((current) => ({ ...current, error: "Nhập mã giảm giá nếu bạn có." }));
       return;
@@ -84,11 +104,25 @@ export default function CartPage() {
     }
 
     setCoupon({ code: raw, error: "", appliedCode: raw as keyof typeof couponCatalog });
+    setCouponPickerOpen(false);
     showToast({
       title: "Đã áp dụng mã giảm giá",
       message: `${found.label} được kích hoạt thành công.`,
     });
   };
+
+  const applyCoupon = () => applyCouponCode(coupon.code);
+
+  const addQuickProduct = (slug: string) => {
+    const product = products.find((item) => item.slug === slug);
+    if (!product) return;
+    addProductToCart(product);
+    showToast({ title: "Đã thêm vào giỏ hàng", message: `${product.name} · Số lượng đã cập nhật.` });
+  };
+
+  const quickAddProducts = products.filter((product) =>
+    [product.name, product.category].join(" ").toLowerCase().includes(quickAddQuery.trim().toLowerCase()),
+  );
 
   const removeCoupon = () => {
     setCoupon({ code: "", error: "", appliedCode: "" });
@@ -96,26 +130,8 @@ export default function CartPage() {
   };
 
   return (
-    <main className="section !pt-0 md:pt-14 pb-[calc(env(safe-area-inset-bottom)+96px)] md:pb-24">
-      <div className="container">
-        <div className="md:hidden">
-          <div className="-mx-4 sticky top-0 z-40 border-b border-[rgba(15,77,50,0.08)] bg-[rgba(255,255,255,0.92)]/95 px-4 py-3 backdrop-blur-xl">
-            <div className="flex items-center gap-3">
-              <Link
-                href="/"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-[rgba(15,77,50,0.12)] bg-white text-[var(--green-dark)] shadow-[0_10px_18px_rgba(15,77,50,0.08)]"
-                aria-label="Quay lại trang chủ"
-              >
-                <span className="text-[18px] leading-none">‹</span>
-              </Link>
-              <div className="min-w-0">
-                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--green)]">Giỏ hàng</div>
-                <div className="truncate text-[16px] font-semibold leading-tight text-[var(--green-dark)]">Thanh toán đơn hàng</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <main className="section !overflow-x-clip !pt-0 pb-[calc(env(safe-area-inset-bottom)+96px)] md:overflow-visible md:pt-14 md:pb-24">
+      <MobileBackHeader href="/" section="Giỏ hàng" title="Thanh toán đơn hàng" />
       <div className="container grid gap-8 lg:grid-cols-[1.08fr_0.92fr]">
         <section>
           <div className="eyebrow text-[11px] md:text-xs">
@@ -138,10 +154,28 @@ export default function CartPage() {
             ))}
           </div>
 
-          <div className="mt-8 space-y-4">
+          <div className="mt-8 flex items-center justify-between gap-3">
+            <div>
+              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--green)]">Sản phẩm đã chọn</div>
+              <div className="mt-1 text-sm text-[var(--muted)]">{items.length} sản phẩm trong giỏ</div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setQuickAddOpen(true)}
+              className="inline-flex h-10 shrink-0 items-center gap-2 rounded-full bg-[var(--green)] px-4 text-sm font-semibold text-white shadow-[0_10px_22px_rgba(15,77,50,0.16)] transition-transform active:scale-[0.98]"
+            >
+              <Plus size={17} weight="bold" /> Thêm sản phẩm
+            </button>
+          </div>
+
+          <div className="space-y-4">
             {items.length === 0 ? (
-              <div className="card rounded-[28px] p-8 text-center text-sm text-[var(--muted)]">
-                Giỏ hàng đang trống. <Link href="/san-pham" className="font-semibold text-[var(--green-dark)] underline">Xem sản phẩm</Link>
+              <div className="card rounded-[28px] p-8 text-center">
+                <ShoppingBagOpen size={34} weight="duotone" className="mx-auto text-[var(--green)]" />
+                <div className="mt-3 text-sm text-[var(--muted)]">Giỏ hàng đang trống.</div>
+                <button type="button" onClick={() => setQuickAddOpen(true)} className="mt-4 inline-flex h-10 items-center gap-2 rounded-full bg-[var(--green)] px-4 text-sm font-semibold text-white">
+                  <Plus size={16} weight="bold" /> Thêm sản phẩm
+                </button>
               </div>
             ) : (
               items.map((item) => (
@@ -228,7 +262,10 @@ export default function CartPage() {
               <textarea className="min-h-28 rounded-[18px] border border-[rgba(15,77,50,0.14)] bg-white/70 px-4 py-3 text-sm outline-none" placeholder="Ghi chú" value={form.note} onChange={(e) => handleChange("note", e.target.value)} />
             </div>
             <div className="mt-5 rounded-[24px] border border-[rgba(15,77,50,0.12)] bg-[rgba(15,77,50,0.03)] p-4">
-              <div className="text-sm font-semibold text-[var(--green-dark)]">Mã giảm giá</div>
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2 text-sm font-semibold text-[var(--green-dark)]"><Tag size={18} weight="duotone" className="text-[var(--green)]" /> Mã giảm giá</div>
+                <button type="button" onClick={() => setCouponPickerOpen(true)} className="text-xs font-semibold text-[var(--green)] underline underline-offset-4">Xem mã có sẵn</button>
+              </div>
               <div className="mt-3 flex flex-col gap-3 sm:flex-row">
                 <input
                   className="min-w-0 flex-1 rounded-[18px] border border-[rgba(15,77,50,0.14)] bg-white/90 px-4 py-3 text-sm uppercase outline-none"
@@ -286,6 +323,83 @@ export default function CartPage() {
           </section>
         </aside>
       </div>
+
+      {couponPickerOpen ? (
+        <div className="fixed inset-0 z-[80] flex items-end bg-[rgba(6,31,20,0.42)] p-0 backdrop-blur-[2px] md:items-center md:p-4" onClick={() => setCouponPickerOpen(false)}>
+          <section
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="coupon-picker-title"
+            className="w-full max-w-lg animate-[toast-in_320ms_cubic-bezier(0.22,1,0.36,1)] rounded-t-[28px] bg-[var(--surface-strong)] p-5 shadow-[0_-20px_60px_rgba(15,77,50,0.2)] md:rounded-[28px]"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--green)]">Ưu đãi của bạn</div>
+                <h2 id="coupon-picker-title" className="mt-1 text-2xl font-semibold text-[var(--green-dark)]">Chọn mã giảm giá</h2>
+              </div>
+              <button type="button" onClick={() => setCouponPickerOpen(false)} aria-label="Đóng mã giảm giá" className="flex h-9 w-9 items-center justify-center rounded-full bg-[rgba(15,77,50,0.06)] text-[var(--green-dark)]"><X size={18} weight="bold" /></button>
+            </div>
+            <div className="mt-5 space-y-3">
+              {Object.entries(couponCatalog).map(([code, offer]) => {
+                const eligible = subtotal >= offer.minSubtotal;
+                return (
+                  <button
+                    key={code}
+                    type="button"
+                    disabled={!eligible}
+                    onClick={() => applyCouponCode(code)}
+                    className={`flex w-full items-center gap-3 rounded-[20px] border p-3 text-left transition-transform active:scale-[0.99] ${eligible ? "border-[rgba(15,77,50,0.14)] bg-white hover:-translate-y-0.5" : "border-[rgba(15,77,50,0.08)] bg-[rgba(15,77,50,0.04)] opacity-55"}`}
+                  >
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] bg-[rgba(15,77,50,0.08)] text-[var(--green)]"><Tag size={22} weight="duotone" /></span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-sm font-semibold uppercase tracking-[0.12em] text-[var(--green-dark)]">{code}</span>
+                      <span className="mt-1 block text-xs leading-5 text-[var(--muted)]">{offer.label} · {eligible ? couponSources[code as keyof typeof couponSources] : `Cần đơn từ ${formatCurrency(offer.minSubtotal)}`}</span>
+                    </span>
+                    {eligible ? <Check size={19} weight="bold" className="text-[var(--green)]" /> : null}
+                  </button>
+                );
+              })}
+            </div>
+            <p className="mt-4 text-xs leading-5 text-[var(--muted)]">Mã mock dành cho trải nghiệm thử nghiệm, điều kiện sẽ được kiểm tra theo giá trị đơn hàng hiện tại.</p>
+          </section>
+        </div>
+      ) : null}
+
+      {quickAddOpen ? (
+        <div className="fixed inset-0 z-[80] flex items-end bg-[rgba(6,31,20,0.42)] p-0 backdrop-blur-[2px] md:items-center md:p-4" onClick={() => setQuickAddOpen(false)}>
+          <section
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="quick-add-title"
+            className="flex max-h-[88dvh] w-full max-w-2xl flex-col overflow-hidden rounded-t-[28px] bg-[var(--surface-strong)] shadow-[0_-20px_60px_rgba(15,77,50,0.2)] md:rounded-[28px]"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-4 border-b border-[rgba(15,77,50,0.08)] p-5">
+              <div>
+                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--green)]">Mua nhanh</div>
+                <h2 id="quick-add-title" className="mt-1 text-2xl font-semibold text-[var(--green-dark)]">Thêm sản phẩm vào giỏ</h2>
+              </div>
+              <button type="button" onClick={() => setQuickAddOpen(false)} aria-label="Đóng thêm sản phẩm" className="flex h-9 w-9 items-center justify-center rounded-full bg-[rgba(15,77,50,0.06)] text-[var(--green-dark)]"><X size={18} weight="bold" /></button>
+            </div>
+            <div className="border-b border-[rgba(15,77,50,0.08)] px-5 py-3">
+              <input autoFocus value={quickAddQuery} onChange={(event) => setQuickAddQuery(event.target.value)} placeholder="Tìm trà hoặc đặc sản..." className="h-11 w-full rounded-[16px] border border-[rgba(15,77,50,0.12)] bg-white px-4 text-sm text-[var(--green-dark)] outline-none focus:border-[var(--green)]" />
+            </div>
+            <div className="grid gap-3 overflow-y-auto p-5 sm:grid-cols-2">
+              {quickAddProducts.length ? quickAddProducts.map((product) => (
+                <div key={product.slug} className="flex gap-3 rounded-[20px] border border-[rgba(15,77,50,0.1)] bg-white p-3 shadow-[0_8px_20px_rgba(15,77,50,0.05)]">
+                  <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-[15px] bg-[linear-gradient(180deg,#f2e4c9,#dfc18e)]"><img src={product.image} alt={product.name} className="h-full w-full object-contain" /></div>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="line-clamp-2 text-sm font-semibold leading-5 text-[var(--green-dark)]">{product.name}</h3>
+                    <div className="mt-1 text-sm font-semibold text-[var(--green)]">{formatCurrency(getProductPrice(product.slug))}</div>
+                    <button type="button" onClick={() => addQuickProduct(product.slug)} className="mt-2 inline-flex h-8 items-center gap-1 rounded-full bg-[var(--green)] px-3 text-xs font-semibold text-white"><Plus size={14} weight="bold" /> Thêm</button>
+                  </div>
+                </div>
+              )) : <div className="col-span-full py-8 text-center text-sm text-[var(--muted)]">Không tìm thấy sản phẩm phù hợp.</div>}
+            </div>
+          </section>
+        </div>
+      ) : null}
     </main>
   );
 }

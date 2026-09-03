@@ -4,18 +4,17 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { House, PlayCircle, ShoppingCartSimple, UserCircle, Tag, MessengerLogo, FacebookLogo, Storefront } from "@phosphor-icons/react";
+import { CirclesFour, House, PlayCircle, ShoppingCartSimple, UserCircle, MessengerLogo, FacebookLogo, Storefront, X } from "@phosphor-icons/react";
 import type { CartItem } from "@/components/cart-store";
 import { addProductToCart, readCart, subscribeCart } from "@/components/cart-store";
 import { useToast } from "@/components/toast";
 import { getProductBySlug } from "@/data/product-utils";
 import { brand } from "@/data/site";
-import { useMobileScrollVisibility } from "@/components/use-mobile-scroll-visibility";
 
 const bottomNav = [
   { href: "/", label: "Trang chủ", icon: House },
   { href: "/feed", label: "Feed", icon: PlayCircle },
-  { href: "/uu-dai", label: "Ưu đãi", icon: Tag },
+  { href: "#danh-muc", label: "Danh mục", icon: CirclesFour },
   { href: "/gio-hang", label: "Giỏ hàng", icon: ShoppingCartSimple },
   { href: "/ca-nhan", label: "Cá nhân", icon: UserCircle },
 ];
@@ -26,11 +25,17 @@ export function Footer() {
   const { showToast } = useToast();
   const [items, setItems] = useState<CartItem[]>([]);
   const [badgeBump, setBadgeBump] = useState(false);
-  const { hidden } = useMobileScrollVisibility();
+  const [categoryOpen, setCategoryOpen] = useState(false);
   const isProductDetail = pathname.startsWith("/san-pham/");
   const currentProductSlug = isProductDetail ? pathname.split("/").filter(Boolean)[1] : null;
   const currentProduct = currentProductSlug ? getProductBySlug(currentProductSlug) : undefined;
   const cartCount = items.reduce((sum, item) => sum + item.quantity, 0);
+  const categories = [
+    { href: "/muc-san-pham", label: "Tất cả sản phẩm", description: "Xem toàn bộ danh mục Hòa Phúc" },
+    { href: "/muc-san-pham/tra-thao-moc", label: "Trà thảo mộc", description: "Những vị trà thanh lành mỗi ngày" },
+    { href: "/muc-san-pham/duong-sinh", label: "Dưỡng sinh", description: "Lựa chọn mộc lành cho nhịp sống cân bằng" },
+    { href: "/muc-san-pham/dac-san-vung-mien", label: "Đặc sản vùng miền", description: "Quà tặng mang hương vị Việt" },
+  ];
 
   useEffect(() => {
     const syncCart = () => setItems(readCart());
@@ -49,6 +54,20 @@ export function Footer() {
     return () => window.clearTimeout(timer);
   }, [cartCount]);
 
+  useEffect(() => {
+    if (!categoryOpen) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setCategoryOpen(false);
+    };
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [categoryOpen]);
+
   const handleBuyNow = () => {
     if (!currentProduct) {
       router.push("/gio-hang");
@@ -66,7 +85,7 @@ export function Footer() {
   return (
     <footer className="border-t border-[rgba(15,77,50,0.12)] bg-transparent md:bg-[rgba(246,241,231,0.72)]">
       <div className="md:hidden">
-        <div className={`fixed inset-x-0 bottom-0 z-40 transition-transform duration-300 ease-out ${hidden ? "translate-y-full" : "translate-y-0"}`}>
+        <div className="fixed inset-x-0 bottom-0 z-40">
           <div className={`mx-auto max-w-screen-sm ${isProductDetail ? "px-3 pb-[calc(env(safe-area-inset-bottom)+10px)] pt-2" : "w-full px-0 pb-[env(safe-area-inset-bottom)] pt-0"}`}>
             {isProductDetail ? (
               <div className="relative overflow-hidden rounded-[28px] border border-[rgba(255,255,255,0.55)] bg-[rgba(255,255,255,0.68)] p-1.5 shadow-[0_18px_42px_rgba(15,77,50,0.14)] backdrop-blur-2xl">
@@ -110,25 +129,31 @@ export function Footer() {
                 </div>
               </div>
             ) : (
-              <div className="liquid-glass-nav relative !rounded-none grid grid-cols-5 gap-1 p-1.5">
+              <div className="liquid-glass-nav relative !rounded-none grid grid-cols-5 gap-0 p-1">
                 {bottomNav.map((item) => {
                   const Icon = item.icon;
-                  const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+                  const isCategory = item.href === "#danh-muc";
+                  const active = isCategory ? categoryOpen : item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
 
-                  return (
+                  return isCategory ? (
+                    <button key={item.href} type="button" onClick={() => setCategoryOpen(true)} className="relative z-10 flex min-h-[48px] flex-col items-center justify-center rounded-[16px] bg-transparent text-[10px] font-semibold text-[var(--green-dark)] transition-[transform,background-color] duration-200 active:scale-[0.96]">
+                      <span className={`relative flex h-8 w-8 items-center justify-center rounded-full transition-[transform,background-color,box-shadow] duration-200 ${active ? "bg-[var(--green)] text-white shadow-[0_10px_18px_rgba(15,77,50,0.18)]" : "bg-transparent text-[var(--green-dark)]"}`}><Icon size={18} weight={active ? "fill" : "bold"} /></span>
+                      <span className="mt-1 leading-none text-[var(--green-dark)]">{item.label}</span>
+                    </button>
+                  ) : (
                     <Link
                       key={item.href}
                       href={item.href}
-                      className="relative z-10 flex min-h-[56px] flex-col items-center justify-center rounded-[20px] bg-transparent text-[10px] font-semibold text-[var(--green-dark)] transition-[transform,background-color] duration-200 active:scale-[0.96]"
+                      className="relative z-10 flex min-h-[48px] flex-col items-center justify-center rounded-[16px] bg-transparent text-[10px] font-semibold text-[var(--green-dark)] transition-[transform,background-color] duration-200 active:scale-[0.96]"
                     >
                       <span
-                        className={`relative flex h-9 w-9 items-center justify-center rounded-full transition-[transform,background-color,box-shadow] duration-200 ${
+                        className={`relative flex h-8 w-8 items-center justify-center rounded-full transition-[transform,background-color,box-shadow] duration-200 ${
                           active
                             ? "bg-[var(--green)] text-white shadow-[0_10px_18px_rgba(15,77,50,0.18)]"
                             : "bg-transparent text-[var(--green-dark)]"
                         }`}
                       >
-                        <Icon size={20} weight={active ? "fill" : "bold"} />
+                        <Icon size={18} weight={active ? "fill" : "bold"} />
                         {item.href === "/gio-hang" && cartCount > 0 ? (
                           <span
                             className={`absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--green)] px-1 text-[10px] font-bold leading-none text-white shadow-[0_8px_16px_rgba(15,77,50,0.18)] transition-transform duration-200 ${
@@ -147,6 +172,14 @@ export function Footer() {
             )}
           </div>
         </div>
+        {categoryOpen ? (
+          <div className="fixed inset-0 z-[70] bg-[rgba(6,31,20,0.38)]" role="presentation" onClick={() => setCategoryOpen(false)}>
+            <aside className="h-full w-[min(88vw,380px)] animate-[drawer-in_320ms_cubic-bezier(0.22,1,0.36,1)] bg-[var(--surface-strong)] p-5 shadow-[30px_0_70px_rgba(6,31,20,0.18)]" onClick={(event) => event.stopPropagation()}>
+              <div className="flex items-start justify-between gap-4"><div><div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--green)]">Khám phá</div><h2 className="mt-1 text-2xl font-semibold text-[var(--green-dark)]">Danh mục sản phẩm</h2></div><button type="button" onClick={() => setCategoryOpen(false)} aria-label="Đóng danh mục" className="flex h-9 w-9 items-center justify-center rounded-full bg-[rgba(15,77,50,0.06)] text-[var(--green-dark)]"><X size={18} weight="bold" /></button></div>
+              <nav className="mt-7 grid gap-2" aria-label="Danh mục sản phẩm">{categories.map((category) => <Link key={category.href} href={category.href} onClick={() => setCategoryOpen(false)} className="rounded-[20px] border border-[rgba(15,77,50,0.1)] bg-white px-4 py-4 transition-transform active:scale-[0.98]"><div className="text-sm font-semibold text-[var(--green-dark)]">{category.label}</div><div className="mt-1 text-xs leading-5 text-[var(--muted)]">{category.description}</div></Link>)}</nav>
+            </aside>
+          </div>
+        ) : null}
       </div>
 
       <div className="hidden md:block">

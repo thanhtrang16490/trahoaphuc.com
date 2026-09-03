@@ -152,9 +152,9 @@ export function MobileHomeSections() {
               <div className="mt-1 text-[13px] leading-6 text-[var(--muted)]">Mua hàng để tận hưởng ưu đãi ngay bạn nhé!</div>
             </div>
             <Link
-              href="/uu-dai"
+              href="/ca-nhan"
               className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-[var(--green)] shadow-[0_10px_20px_rgba(15,77,50,0.12)]"
-              aria-label="Xem ưu đãi"
+              aria-label="Xem ưu đãi trong tài khoản"
             >
               <span className="text-2xl leading-none">›</span>
             </Link>
@@ -180,7 +180,7 @@ export function MobileHomeSections() {
           <div className="mt-4 grid grid-cols-2 gap-3">
             <Link
               href="/dang-ky-dai-ly"
-              className="flex h-12 items-center justify-center rounded-[16px] bg-white text-[14px] font-semibold text-[var(--green-dark)]"
+              className="flex h-12 items-center justify-center rounded-[16px] bg-white text-[14px] font-semibold !text-[#0f4d32]"
             >
               Đăng ký ngay
             </Link>
