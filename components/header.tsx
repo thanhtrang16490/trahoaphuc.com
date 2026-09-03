@@ -191,7 +191,7 @@ export function Header() {
                 items.map((item) => (
                   <div key={item.slug} className="flex gap-4 rounded-[24px] border border-[rgba(15,77,50,0.12)] p-3">
                     <div className="h-20 w-20 overflow-hidden rounded-[18px] bg-[rgba(15,77,50,0.08)]">
-                      <img src={item.image} alt={item.name} className="h-full w-full object-cover" />
+                      <Image src={item.image} alt={item.name} width={80} height={80} sizes="80px" className="h-full w-full object-cover" />
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="text-sm font-semibold text-[var(--green-dark)]">{item.name}</div>

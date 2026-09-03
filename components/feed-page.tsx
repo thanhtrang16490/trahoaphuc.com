@@ -45,7 +45,7 @@ const feedItems: FeedItem[] = [
     id: "gift",
     type: "image",
     segment: "gift",
-    src: "/hero-hoaphuc.png",
+    src: "/hero-hoaphuc.webp",
     eyebrow: "Gợi ý quà biếu",
     title: "Một món quà đẹp bắt đầu từ câu chuyện thật.",
     copy: "Trà Bát Bảo Cúc Phương với diện mạo chỉn chu, phù hợp cho những lần thăm hỏi và tri ân.",
@@ -224,7 +224,7 @@ export function FeedPage() {
 
         <div className="h-[100dvh] snap-y snap-mandatory scroll-pb-[calc(env(safe-area-inset-bottom)+96px)] space-y-0 overflow-y-scroll overscroll-none scroll-smooth touch-pan-y md:h-auto md:space-y-5 md:overflow-visible md:overscroll-contain">
           {visibleItems.map((item, index) => (
-            <article key={item.id} className="relative h-[100dvh] snap-always snap-start overflow-hidden rounded-none bg-[#18382a] shadow-none md:h-[min(780px,calc(100vh-170px))] md:rounded-[28px] md:shadow-[0_18px_50px_rgba(0,0,0,0.25)]">
+            <article key={item.id} className="relative h-[100dvh] snap-always snap-start overflow-hidden rounded-none bg-[#18382a] shadow-none md:h-[min(780px,calc(100vh-170px))] md:rounded-[28px] md:shadow-[0_18px_50px_rgba(0,0,0,0.25)]" style={{ contentVisibility: "auto", containIntrinsicSize: "100dvh" }}>
               {item.type === "video" ? (
                 <video
                   ref={(node) => { videoRefs.current[index] = node; }}
@@ -233,7 +233,7 @@ export function FeedPage() {
                   muted={isMuted}
                   loop
                   playsInline
-                  autoPlay
+                  preload="none"
                   onClick={(event) => toggleVideo(event.currentTarget, item.id)}
                   data-feed-id={item.id}
                   aria-label={item.title}
@@ -241,7 +241,7 @@ export function FeedPage() {
                   <source src={item.src} type="video/mp4" />
                 </video>
               ) : (
-                <Image src={item.src} alt={item.title} fill sizes="(max-width: 640px) 100vw, 520px" className="object-cover" priority={index === 1} />
+                <Image src={item.src} alt={item.title} fill sizes="(max-width: 640px) 100vw, 520px" className="object-cover" />
               )}
               <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.14)_0%,transparent_38%,rgba(0,0,0,0.82)_100%)]" aria-hidden="true" />
 

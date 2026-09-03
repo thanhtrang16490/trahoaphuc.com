@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
@@ -6,12 +6,18 @@ import { ToastProvider } from "@/components/toast";
 import { OrganizationJsonLd, WebSiteJsonLd } from "@/components/seo";
 import { brand } from "@/data/site";
 import { MobileShell } from "@/components/mobile-shell";
+import { PwaRegister } from "@/components/pwa-register";
 
 export const metadata: Metadata = {
   metadataBase: new URL(brand.website),
   icons: {
     icon: "/brand/hoaphuc-logo.svg",
     shortcut: "/brand/hoaphuc-logo.svg",
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Hòa Phúc",
   },
   title: {
     default: "Trà thảo mộc Việt & quà biếu Cố đô | Hòa Phúc",
@@ -56,6 +62,11 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  themeColor: "#0f4d32",
+  colorScheme: "light",
+};
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="vi">
@@ -66,6 +77,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <Header />
           <MobileShell>{children}</MobileShell>
           <Footer />
+          <PwaRegister />
         </ToastProvider>
       </body>
     </html>

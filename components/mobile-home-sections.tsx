@@ -244,7 +244,7 @@ export function MobileHomeSections() {
                   data-blog-card
                   className="min-w-[84%] max-w-[84%] snap-start overflow-hidden rounded-[22px] bg-white shadow-[0_10px_24px_rgba(15,77,50,0.08)] first:ml-1"
                 >
-                  <Image src={post.coverImage} alt={post.title} width={1400} height={1050} className="aspect-[16/10] w-full object-cover" />
+                  <Image src={post.coverImage} alt={post.title} width={1400} height={1050} sizes="calc(100vw - 32px)" className="aspect-[16/10] w-full object-cover" />
                   <div className="px-5 py-4">
                     <div className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--brown)]">{post.category}</div>
                     <div className="mt-1.5 line-clamp-2 text-[15px] font-semibold leading-[1.18] text-[var(--green-dark)]">{post.title}</div>
@@ -285,7 +285,7 @@ export function MobileHomeSections() {
                 href={`/san-pham/${product.slug}`}
                 className="overflow-hidden rounded-[22px] border border-[rgba(15,77,50,0.08)] bg-white shadow-[0_12px_28px_rgba(15,77,50,0.08)]"
               >
-                <Image src={product.image} alt={product.name} width={product.imageWidth} height={product.imageHeight} className="h-auto w-full" />
+                <Image src={product.image} alt={product.name} width={product.imageWidth} height={product.imageHeight} sizes="50vw" className="h-auto w-full" />
                 <div className="p-3">
                   <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--brown)]">{product.category}</div>
                   <div className="mt-2 text-[14px] font-semibold leading-snug text-[var(--green-dark)]">{product.name}</div>

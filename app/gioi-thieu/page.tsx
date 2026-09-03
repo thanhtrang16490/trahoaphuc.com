@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     description:
       "Câu chuyện về trà thảo mộc, nông sản Việt và những món quà mang dấu ấn Cố đô từ Hòa Phúc.",
     url: "https://hoaphucfarm.com/gioi-thieu",
-    images: [{ url: "/hero-hoaphuc.png", alt: "Sản phẩm trà thảo mộc Hòa Phúc" }],
+    images: [{ url: "/hero-hoaphuc.webp", alt: "Sản phẩm trà thảo mộc Hòa Phúc" }],
   },
 };
 
@@ -95,7 +95,7 @@ export default function IntroductionPage() {
             <div className="relative overflow-hidden rounded-[38px] bg-[#e9dfc9] p-5 shadow-[0_25px_70px_rgba(39,57,39,0.14)] md:p-8">
               <div className="relative aspect-[4/3] overflow-hidden rounded-[28px] bg-[#f7f1e4]">
                 <Image
-                  src="/hero-hoaphuc.png"
+                  src="/hero-hoaphuc.webp"
                   alt="Sản phẩm trà thảo mộc Hòa Phúc"
                   fill
                   sizes="(max-width: 1024px) 90vw, 55vw"

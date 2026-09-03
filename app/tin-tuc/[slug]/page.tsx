@@ -60,7 +60,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
         <article className="grid gap-8 lg:grid-cols-[1.02fr_0.98fr]">
           <div className="overflow-hidden rounded-[28px] bg-white shadow-[0_18px_42px_rgba(15,77,50,0.08)]">
             <div className="relative aspect-[16/10] bg-[linear-gradient(180deg,#edd9ad,#d4ae6a)]">
-              <Image src={post.coverImage} alt={post.title} fill className="object-cover" priority />
+              <Image src={post.coverImage} alt={post.title} fill sizes="(max-width: 768px) 100vw, 52vw" className="object-cover" priority />
             </div>
             <div className="px-5 py-5 md:px-8 md:py-8">
               <div className="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
@@ -128,7 +128,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
                   >
                     <div className="flex gap-3 p-3">
                       <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-[18px] bg-[linear-gradient(180deg,#edd9ad,#d4ae6a)]">
-                        <Image src={item.coverImage} alt={item.title} fill className="object-cover" />
+                        <Image src={item.coverImage} alt={item.title} fill sizes="80px" className="object-cover" />
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--brown)]">

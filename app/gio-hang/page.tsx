@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Check, Plus, ShoppingBagOpen, ShoppingCartSimple, Tag, X } from "@phosphor-icons/react";
 import type { CartItem } from "@/components/cart-store";
@@ -206,7 +207,7 @@ export default function CartPage() {
               items.map((item) => (
                 <div key={item.slug} className="card flex gap-4 rounded-[28px] p-4">
                   <div className="relative h-24 w-24 overflow-hidden rounded-[20px] bg-[linear-gradient(180deg,#edd9ad,#d4ae6a)]">
-                    <img src={item.image} alt={item.name} className="h-full w-full object-contain" />
+                    <Image src={item.image} alt={item.name} width={96} height={96} sizes="96px" className="h-full w-full object-contain" />
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="text-sm font-semibold text-[var(--green-dark)]">{item.name}</div>
@@ -408,7 +409,7 @@ export default function CartPage() {
             <div className="grid gap-3 overflow-y-auto p-5 sm:grid-cols-2">
               {quickAddProducts.length ? quickAddProducts.map((product) => (
                 <div key={product.slug} className="flex gap-3 rounded-[20px] border border-[rgba(15,77,50,0.1)] bg-white p-3 shadow-[0_8px_20px_rgba(15,77,50,0.05)]">
-                  <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-[15px] bg-[linear-gradient(180deg,#f2e4c9,#dfc18e)]"><img src={product.image} alt={product.name} className="h-full w-full object-contain" /></div>
+                  <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-[15px] bg-[linear-gradient(180deg,#f2e4c9,#dfc18e)]"><Image src={product.image} alt={product.name} fill sizes="80px" className="object-contain" /></div>
                   <div className="min-w-0 flex-1">
                     <h3 className="line-clamp-2 text-sm font-semibold leading-5 text-[var(--green-dark)]">{product.name}</h3>
                     <div className="mt-1 text-sm font-semibold text-[var(--green)]">{formatCurrency(getProductPrice(product.slug))}</div>

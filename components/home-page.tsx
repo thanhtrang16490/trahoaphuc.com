@@ -257,7 +257,6 @@ export function HomePage() {
                   width={products[0].imageWidth}
                   height={products[0].imageHeight}
                   className="h-auto w-full"
-                  priority
                 />
               </div>
               <div className="flex flex-col justify-center">
@@ -383,6 +382,7 @@ export function HomePage() {
                           alt={product.name}
                           width={product.imageWidth}
                           height={product.imageHeight}
+                          sizes="(max-width: 767px) 50vw, (max-width: 1280px) 25vw, 320px"
                           className="aspect-[4/3] h-auto w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
                         />
                     </Link>
