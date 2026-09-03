@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Logo Nông Sản Hòa Phúc</title>
+  <desc id="desc">Biểu tượng đường nét xanh lấy cảm hứng từ người phụ nữ và chiếc lá.</desc>
+  <defs>
+    <linearGradient id="green" x1="112" y1="72" x2="410" y2="448" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#86C52E"/>
+      <stop offset="1" stop-color="#39A94D"/>
+    </linearGradient>
+  </defs>
+  <g fill="none" stroke="url(#green)" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke-width="28" d="M147 118c-2-35 23-65 59-70 42-6 80 25 83 67 1 13-1 25-6 36 25 9 43 33 43 61 0 37-30 67-67 67-16 0-31-6-43-16"/>
+    <path stroke-width="28" d="M144 119c-18-14-44-13-61 3-22 21-22 56 0 77 21 21 55 21 77 0"/>
+    <path stroke-width="28" d="M167 188c-54 37-88 91-88 153 0 78 63 141 141 141 70 0 128-52 138-119 4-24 1-49-8-72"/>
+    <path stroke-width="25" d="M218 288c43-3 76 27 76 68 0 29-15 54-38 67"/>
+  </g>
+  <path fill="url(#green)" d="M357 205c12-61 59-97 119-82-39 8-68 31-89 67 30-27 65-43 104-43-12 49-43 81-88 93-18 5-34-8-37-35-2-1-6 0-9 0Z"/>
+</svg>

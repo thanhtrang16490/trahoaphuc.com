@@ -1,11 +1,15 @@
 import type { Product } from "./products";
 
 const priceMap: Record<string, number> = {
-  "tra-duong-tam-an-nhien": 168000,
-  "tra-thanh-nhiet-hoa-phuc": 178000,
-  "tra-gao-lut-la-sen": 185000,
-  "tra-bat-bao-cuc-phuong": 195000,
-  "tra-thanh-nhiet-mat-gan": 172000,
+  "tra-thanh-nhiet-hoa-phuc": 130000,
+  "tra-duong-tam-an-nhien": 140000,
+  "tra-gao-lut-la-sen": 130000,
+  "tra-bat-bao-cuc-phuong": 140000,
+  "tra-thanh-nhiet-mat-gan": 130000,
+  "tra-gao-lut-la-sen-tui": 130000,
+  "tra-duong-tam-an-nhien-tui": 140000,
+  "thao-duoc-ngam-chan": 129000,
+  "mat-ong-hoa-phuc": 180000,
 };
 
 export function getProductPrice(slug: string) {

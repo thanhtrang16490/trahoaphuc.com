@@ -62,11 +62,11 @@ export function MobileHomeSections() {
           <div className="flex items-center gap-3">
             <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-[16px] bg-white shadow-[0_10px_20px_rgba(0,0,0,0.12)]">
               <Image
-                src="/brand/hoaphuc-mobile-logo.png"
+                src="/brand/hoaphuc-logo.svg"
                 alt="Logo Hòa Phúc"
                 width={96}
                 height={96}
-                className="h-full w-full object-cover"
+                className="h-full w-full object-contain p-2"
                 priority
               />
             </div>

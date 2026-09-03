@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">Trà Dưỡng Tâm An Nhiên dạng túi</title>
+  <desc id="desc">Ảnh minh họa sản phẩm đang chờ ảnh chụp riêng.</desc>
+  <rect width="1200" height="900" fill="#f8edc9"/>
+  <circle cx="970" cy="160" r="270" fill="#f4c94e"/>
+  <path d="M0 720 C260 600 430 760 680 650 S970 590 1200 700 V900 H0Z" fill="#8c4b16"/>
+  <rect x="310" y="150" width="580" height="590" rx="34" fill="#fffdf8" stroke="#8c4b16" stroke-width="8"/>
+  <rect x="350" y="190" width="500" height="510" rx="20" fill="#e6a51c"/>
+  <text x="600" y="290" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#6b3511">NÔNG SẢN</text>
+  <text x="600" y="335" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#6b3511">HÒA PHÚC</text>
+  <text x="600" y="450" text-anchor="middle" font-family="Georgia, serif" font-size="54" font-weight="700" fill="#6b3511">TRÀ DƯỠNG TÂM</text>
+  <text x="600" y="510" text-anchor="middle" font-family="Georgia, serif" font-size="54" font-weight="700" fill="#6b3511">AN NHIÊN</text>
+  <text x="600" y="610" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" fill="#6b3511">ẢNH MINH HỌA - ĐANG CẬP NHẬT</text>
+</svg>

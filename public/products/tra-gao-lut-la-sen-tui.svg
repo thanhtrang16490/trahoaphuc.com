@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">Trà Gạo Lứt Lá Sen Hòa Phúc dạng túi</title>
+  <desc id="desc">Ảnh minh họa sản phẩm đang chờ ảnh chụp riêng.</desc>
+  <rect width="1200" height="900" fill="#eef4d7"/>
+  <circle cx="930" cy="140" r="250" fill="#d5e9a0"/>
+  <path d="M0 690 C250 610 380 730 620 650 S950 580 1200 680 V900 H0Z" fill="#0f4d32"/>
+  <rect x="310" y="150" width="580" height="590" rx="34" fill="#fffdf8" stroke="#0f4d32" stroke-width="8"/>
+  <rect x="350" y="190" width="500" height="510" rx="20" fill="#9fd20f"/>
+  <text x="600" y="290" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#0f4d32">NÔNG SẢN</text>
+  <text x="600" y="335" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#0f4d32">HÒA PHÚC</text>
+  <text x="600" y="450" text-anchor="middle" font-family="Georgia, serif" font-size="54" font-weight="700" fill="#063b27">TRÀ GẠO LỨT</text>
+  <text x="600" y="510" text-anchor="middle" font-family="Georgia, serif" font-size="54" font-weight="700" fill="#063b27">LÁ SEN</text>
+  <text x="600" y="610" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" fill="#063b27">ẢNH MINH HỌA - ĐANG CẬP NHẬT</text>
+</svg>

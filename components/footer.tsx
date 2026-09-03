@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { House, MagnifyingGlass, ShoppingCartSimple, UserCircle, Tag, MessengerLogo } from "@phosphor-icons/react";
+import { House, MagnifyingGlass, ShoppingCartSimple, UserCircle, Tag, MessengerLogo, FacebookLogo, Storefront } from "@phosphor-icons/react";
 import type { CartItem } from "@/components/cart-store";
 import { addProductToCart, readCart, subscribeCart } from "@/components/cart-store";
 import { useToast } from "@/components/toast";
@@ -110,15 +110,7 @@ export function Footer() {
                 </div>
               </div>
             ) : (
-              <div className="relative grid grid-cols-5 gap-1 overflow-hidden rounded-[28px] border border-[rgba(255,255,255,0.55)] bg-[rgba(255,255,255,0.68)] p-1.5 shadow-[0_18px_42px_rgba(15,77,50,0.14)] backdrop-blur-2xl">
-                <div
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.72)_0%,rgba(255,255,255,0.18)_28%,rgba(255,255,255,0.04)_48%,rgba(255,255,255,0.22)_72%,rgba(255,255,255,0.68)_100%)]"
-                />
-                <div
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-x-3 top-1 h-px bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.9),transparent)]"
-                />
+              <div className="liquid-glass-nav relative grid grid-cols-5 gap-1 p-1.5">
                 {bottomNav.map((item) => {
                   const Icon = item.icon;
                   const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
@@ -127,10 +119,10 @@ export function Footer() {
                     <Link
                       key={item.href}
                       href={item.href}
-                      className="relative z-10 flex min-h-[56px] flex-col items-center justify-center rounded-[20px] text-[10px] font-semibold transition-all duration-200 bg-transparent text-[var(--green-dark)]"
+                      className="relative z-10 flex min-h-[56px] flex-col items-center justify-center rounded-[20px] bg-transparent text-[10px] font-semibold text-[var(--green-dark)] transition-[transform,background-color] duration-200 active:scale-[0.96]"
                     >
                       <span
-                        className={`relative flex h-9 w-9 items-center justify-center rounded-full transition-all duration-200 ${
+                        className={`relative flex h-9 w-9 items-center justify-center rounded-full transition-[transform,background-color,box-shadow] duration-200 ${
                           active
                             ? "bg-[var(--green)] text-white shadow-[0_10px_18px_rgba(15,77,50,0.18)]"
                             : "bg-transparent text-[var(--green-dark)]"
@@ -166,6 +158,42 @@ export function Footer() {
             <p className="mt-4 max-w-[50ch] text-sm leading-7 text-[var(--muted)]">
               Mã số thuế {brand.taxId}. {brand.description} Đồng bộ nhận diện cho website, app và mini app trong tương lai.
             </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <a
+                href={brand.facebook}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Facebook"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-[rgba(15,77,50,0.12)] bg-white/70 text-[var(--green-dark)] transition-transform duration-200 hover:-translate-y-0.5 hover:text-[var(--green)]"
+              >
+                <MessengerLogo size={19} weight="fill" />
+              </a>
+              <a
+                href={brand.facebook}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Fanpage Facebook"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-[rgba(15,77,50,0.12)] bg-white/70 text-[var(--green-dark)] transition-transform duration-200 hover:-translate-y-0.5 hover:text-[var(--green)]"
+              >
+                <FacebookLogo size={19} weight="fill" />
+              </a>
+              <a
+                href="/lien-he"
+                aria-label="Liên hệ"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-[rgba(15,77,50,0.12)] bg-white/70 text-[var(--green-dark)] transition-transform duration-200 hover:-translate-y-0.5 hover:text-[var(--green)]"
+              >
+                <UserCircle size={19} weight="bold" />
+              </a>
+              <a
+                href={brand.shopee}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Shopee"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-[rgba(15,77,50,0.12)] bg-white/70 text-[var(--green-dark)] transition-transform duration-200 hover:-translate-y-0.5 hover:text-[var(--green)]"
+              >
+                <Storefront size={19} weight="bold" />
+              </a>
+            </div>
           </div>
 
           <div>
@@ -180,9 +208,6 @@ export function Footer() {
           <div>
             <div className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--green-dark)]">Kết nối</div>
             <div className="mt-4 grid gap-4 text-sm text-[var(--muted)]">
-              <a className="inline-flex items-center gap-2" href={brand.facebook} target="_blank" rel="noreferrer">
-                Fanpage {brand.displayName}
-              </a>
               <a className="inline-flex items-center gap-2" href={`tel:${brand.phone.replace(/\s+/g, "")}`}>
                 {brand.phone}
               </a>

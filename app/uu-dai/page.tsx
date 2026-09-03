@@ -280,11 +280,11 @@ export default function UuDaiPage() {
                 <div className="flex w-[118px] shrink-0 flex-col items-center justify-center gap-2 bg-[#ff3c0e] px-3 text-center text-white">
                   <div className="flex h-20 w-20 items-center justify-center rounded-full bg-white">
                     <Image
-                      src="/brand/hoaphuc-mobile-logo.png"
+                      src="/brand/hoaphuc-logo.svg"
                       alt={featuredVoucher.name}
                       width={96}
                       height={96}
-                      className="h-16 w-16 rounded-full object-cover"
+                      className="h-16 w-16 rounded-full object-contain p-2"
                     />
                   </div>
                   <div className="text-[12px] leading-none">Hòa Phúc</div>

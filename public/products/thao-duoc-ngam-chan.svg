@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">Thảo dược ngâm chân Hòa Phúc</title>
+  <desc id="desc">Ảnh minh họa sản phẩm đang chờ ảnh chụp riêng.</desc>
+  <rect width="1200" height="900" fill="#dfeecb"/>
+  <path d="M0 680 C250 580 430 730 700 620 S990 590 1200 680 V900 H0Z" fill="#356d38"/>
+  <rect x="310" y="150" width="580" height="590" rx="34" fill="#fffdf8" stroke="#356d38" stroke-width="8"/>
+  <rect x="350" y="190" width="500" height="510" rx="20" fill="#b6d878"/>
+  <text x="600" y="290" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#164928">NÔNG SẢN</text>
+  <text x="600" y="335" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#164928">HÒA PHÚC</text>
+  <text x="600" y="450" text-anchor="middle" font-family="Georgia, serif" font-size="50" font-weight="700" fill="#164928">THẢO DƯỢC</text>
+  <text x="600" y="510" text-anchor="middle" font-family="Georgia, serif" font-size="50" font-weight="700" fill="#164928">NGÂM CHÂN</text>
+  <text x="600" y="610" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" fill="#164928">ẢNH MINH HỌA - ĐANG CẬP NHẬT</text>
+</svg>

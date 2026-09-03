@@ -4,26 +4,35 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Leaf, Package, ShieldCheck, TreePalm } from "@phosphor-icons/react";
-import { Header } from "./header";
 import { AddToCartButton } from "./add-to-cart-button";
 import { MobileHomeSections } from "./mobile-home-sections";
 import { products } from "@/data/products";
 import { categories } from "@/data/categories";
 import { blogPosts } from "@/data/blog";
 import { homePageSections } from "@/data/home-page";
+import { formatCurrency, getProductPrice } from "@/data/pricing";
 
 export function HomePage() {
   const heroRef = useRef<HTMLDivElement | null>(null);
   const [shouldLoadHeroVideo, setShouldLoadHeroVideo] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   useEffect(() => {
     const node = heroRef.current;
     if (!node) return;
 
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const syncMotionPreference = () => setPrefersReducedMotion(motionQuery.matches);
+    syncMotionPreference();
+    motionQuery.addEventListener("change", syncMotionPreference);
+    if (motionQuery.matches) {
+      return () => motionQuery.removeEventListener("change", syncMotionPreference);
+    }
+
     const isMobile = window.matchMedia("(max-width: 767px)").matches;
     if (!isMobile) {
       setShouldLoadHeroVideo(true);
-      return;
+      return () => motionQuery.removeEventListener("change", syncMotionPreference);
     }
 
     const observer = new IntersectionObserver(
@@ -37,13 +46,21 @@ export function HomePage() {
     );
 
     observer.observe(node);
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      motionQuery.removeEventListener("change", syncMotionPreference);
+    };
   }, []);
 
   return (
     <>
-      <Header />
-      <main className="pb-[calc(env(safe-area-inset-bottom)+84px)] md:pb-0">
+      <a
+        href="#main-content"
+        className="sr-only z-[100] rounded-full bg-[var(--green)] px-4 py-3 text-sm font-semibold text-white focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
+      >
+        Bỏ qua đến nội dung chính
+      </a>
+      <main id="main-content" className="pb-[calc(env(safe-area-inset-bottom)+84px)] md:pb-0">
         <MobileHomeSections />
 
         <div className="hidden md:block">
@@ -105,34 +122,28 @@ export function HomePage() {
                         Quà tặng tinh hoa Cố đô
                       </div>
 
-                      <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-[rgba(15,77,50,0.12)] bg-white/70 px-3 py-1.5 text-[12px] font-semibold text-[var(--green-dark)] backdrop-blur">
-                        <span className="text-[var(--green)]">✦</span>
-                        Sang trọng, ý nghĩa, phù hợp biếu tặng và tri ân
-                      </div>
-
-                      <h1 className="mt-5 max-w-[11ch] font-[family-name:Georgia] text-[clamp(3.1rem,6.6vw,6.3rem)] leading-[0.9] tracking-[-0.065em] text-[var(--green-dark)]">
-                        Tinh hoa Cố đô, món quà đẹp từ Hòa Phúc.
+                      <h1 className="mt-5 max-w-[17ch] font-[family-name:Georgia] text-[clamp(3rem,5.4vw,5.6rem)] leading-[0.94] tracking-[-0.055em] text-pretty text-[var(--green-dark)]">
+                        Trà thảo mộc Việt, món quà đẹp để biếu tặng.
                       </h1>
-                      <p className="mt-5 max-w-[62ch] section-copy text-[15px] md:text-[1.02rem] lg:text-[1.06rem]">
-                        Hòa Phúc mang đến trà thảo mộc và nông sản Việt được tuyển chọn kỹ, đóng gói tinh tế để trở
-                        thành món quà trang nhã, đậm hồn Cố đô, dễ trao tặng và dễ ghi nhớ.
+                      <p className="mt-5 max-w-[48ch] section-copy text-[15px] md:text-[1.02rem] lg:text-[1.06rem]">
+                        Chọn trà thảo mộc và nông sản Việt từ Cúc Phương, Ninh Bình cho những món quà tinh tế, dễ trao tặng.
                       </p>
 
                       <div className="mt-7 flex flex-wrap gap-3 md:gap-4">
                         <a className="button button-primary px-5 py-3 text-sm md:px-6 md:py-4 md:text-base" href="#san-pham-noi-bat">
-                          Chọn quà ngay <ArrowRight size={18} />
+                          Xem quà biếu <ArrowRight size={18} />
                         </a>
                         <a className="button button-secondary px-5 py-3 text-sm md:px-6 md:py-4 md:text-base" href="/gioi-thieu">
-                          Khám phá tinh hoa Cố đô
+                          Câu chuyện Hòa Phúc
                         </a>
                       </div>
 
                       <div className="mt-8 grid max-w-2xl grid-cols-2 gap-3 sm:grid-cols-4 md:gap-4">
                         {[
-                          { value: "100%", label: "Tự nhiên" },
-                          { value: "4+", label: "Nhóm sản phẩm" },
-                          { value: "01", label: "Một câu chuyện" },
-                          { value: "365", label: "Dùng hằng ngày" },
+                          { value: "30", label: "Túi lọc / hộp" },
+                          { value: "4", label: "Nhóm sản phẩm" },
+                          { value: "VN", label: "Nguồn gốc rõ" },
+                          { value: "Zalo", label: "Tư vấn chọn quà" },
                         ].map((item) => (
                           <div
                             key={item.label}
@@ -162,11 +173,11 @@ export function HomePage() {
                               width={products[0].imageWidth}
                               height={products[0].imageHeight}
                               className={`h-full w-full object-cover transition-opacity duration-500 ${
-                                shouldLoadHeroVideo ? "opacity-0" : "opacity-100"
+                                shouldLoadHeroVideo && !prefersReducedMotion ? "opacity-0" : "opacity-100"
                               }`}
                               priority
                             />
-                            {shouldLoadHeroVideo ? (
+                            {shouldLoadHeroVideo && !prefersReducedMotion ? (
                               <video
                                 className="absolute inset-0 h-full w-full object-cover"
                                 poster="/media/video-tra-hoa-phuc-thumb.jpg"
@@ -174,9 +185,9 @@ export function HomePage() {
                                 muted
                                 loop
                                 playsInline
-                                preload="none"
+                                controls
+                                preload="metadata"
                                 aria-label="Video giới thiệu thương hiệu Hòa Phúc"
-                                onCanPlay={() => setShouldLoadHeroVideo(true)}
                               >
                                 <source src="/media/video-tra-hoa-phuc.webm" type="video/webm" />
                                 <source src="/media/video-tra-hoa-phuc-optimized.mp4" type="video/mp4" />
@@ -188,7 +199,7 @@ export function HomePage() {
                                   Video thương hiệu
                                 </div>
                                 <div className="mt-1 text-sm font-semibold md:text-base">
-                                  Đang tải trải nghiệm video Hòa Phúc...
+                                  Đang tải trải nghiệm video Hòa Phúc…
                                 </div>
                               </div>
                             )}
@@ -218,7 +229,23 @@ export function HomePage() {
                 </div>
               </div>
             </section>
-        ) : null}
+          ) : null}
+
+          <section className="border-b border-[rgba(15,77,50,0.1)] bg-white/45" aria-label="Lý do chọn Hòa Phúc">
+            <div className="container grid gap-3 py-5 md:grid-cols-4 md:gap-5 md:py-7">
+              {[
+                { title: "Nguồn gốc Việt Nam", copy: "Từ Cúc Phương, Ninh Bình và các vùng nguyên liệu trong nước." },
+                { title: "Đóng gói quà biếu", copy: "Bao bì kraft chỉn chu cho dịp tặng, tri ân và gặp gỡ." },
+                { title: "Dùng được mỗi ngày", copy: "Hương vị dễ uống, phù hợp để chăm sóc những khoảng nghỉ nhỏ." },
+                { title: "Tư vấn chọn quà", copy: "Nhắn Zalo hoặc gọi hotline để chọn sản phẩm phù hợp." },
+              ].map((item) => (
+                <div key={item.title} className="border-l border-[rgba(15,77,50,0.16)] pl-4 md:pl-5">
+                  <h3 className="text-sm font-semibold text-[var(--green-dark)]">{item.title}</h3>
+                  <p className="mt-1 text-xs leading-6 text-[var(--muted)]">{item.copy}</p>
+                </div>
+              ))}
+            </div>
+          </section>
 
         {homePageSections.brandStory ? (
           <section id="ve-hoa-phuc" className="section pt-4 md:pt-8" style={{ contentVisibility: "auto", containIntrinsicSize: "760px" }}>
@@ -277,8 +304,7 @@ export function HomePage() {
                   <h2 className="mt-4 section-title text-[clamp(1.8rem,4.5vw,4.6rem)]">Phân nhóm rõ ràng, trình bày cao cấp.</h2>
                 </div>
                 <p className="hidden max-w-[34ch] text-sm leading-7 text-[var(--muted)] lg:block">
-                  Cấu trúc danh mục được tối ưu cho hành trình mua hàng, đồng thời tạo nền tảng tốt cho SEO theo từng cụm
-                  sản phẩm.
+                  Tìm đúng loại trà theo nhu cầu sử dụng, dịp tặng và câu chuyện vùng miền bạn muốn trao gửi.
                 </p>
               </div>
               <div className="mt-6 -mx-4 flex gap-3 overflow-x-auto px-4 pb-2 md:mt-8 md:grid md:gap-5 md:overflow-visible md:px-0 md:grid-cols-2 xl:grid-cols-4">
@@ -342,57 +368,54 @@ export function HomePage() {
                 <span className="h-px w-8 bg-[var(--green)]" />
                 Sản phẩm nổi bật
               </div>
-              <h2 className="mt-4 section-title text-[clamp(1.8rem,4.5vw,4.6rem)]">Sản phẩm được yêu thích</h2>
-              <div className="mt-6 grid gap-4 md:mt-8 md:grid-cols-2 md:gap-6">
-                {products.map((product) => (
-                  <article key={product.slug} className="card relative overflow-hidden rounded-[28px] md:rounded-[32px]">
-                    <Link href={`/san-pham/${product.slug}`} className="absolute inset-0 z-0" aria-label={product.name} />
-                    <div className="grid gap-0 lg:grid-cols-[0.94fr_1.06fr]">
-                      <div className="relative z-10">
+              <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
+                <h2 className="section-title text-[clamp(1.8rem,4.5vw,4.6rem)]">Sản phẩm được yêu thích</h2>
+                <Link href="/san-pham" className="button button-secondary px-4 py-3 text-sm md:px-5">
+                  Xem toàn bộ <ArrowRight size={17} aria-hidden="true" />
+                </Link>
+              </div>
+              <div className="mt-6 grid gap-4 md:mt-8 md:grid-cols-2 md:gap-6 xl:grid-cols-4">
+                {products.slice(0, 4).map((product) => (
+                  <article key={product.slug} className="card flex h-full min-w-0 flex-col overflow-hidden rounded-[28px] md:rounded-[32px]">
+                    <Link href={`/san-pham/${product.slug}`} className="group block" aria-label={`Xem ${product.name}`}>
                         <Image
                           src={product.image}
                           alt={product.name}
                           width={product.imageWidth}
                           height={product.imageHeight}
-                          className="h-auto w-full"
+                          className="aspect-[4/3] h-auto w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
                         />
+                    </Link>
+                    <div className="flex flex-1 min-w-0 flex-col p-5 md:p-6">
+                      <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--brown)] md:text-xs">
+                        {product.category}
                       </div>
-                      <div className="relative z-10 p-5 md:p-7 lg:p-8">
-                        <div className="flex items-start justify-between gap-3">
-                          <div>
-                            <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--brown)] md:text-sm">
-                              {product.category}
-                            </div>
-                            <h3 className="mt-3 text-[1.45rem] font-semibold leading-[1.02] tracking-[-0.03em] text-[var(--green-dark)] md:mt-4 md:text-3xl">
-                              {product.name}
-                            </h3>
+                      <Link href={`/san-pham/${product.slug}`} className="mt-3 block min-w-0">
+                        <h3 className="line-clamp-2 min-h-[2.3em] text-[1.35rem] font-semibold leading-[1.08] tracking-[-0.03em] text-[var(--green-dark)] transition-colors hover:text-[var(--green)] md:text-2xl">
+                          {product.name}
+                        </h3>
+                      </Link>
+                      <p className="mt-3 line-clamp-2 min-h-[3.5rem] text-sm leading-7 text-[var(--muted)]">{product.shortDescription}</p>
+                      <div className="mt-4 flex items-center justify-between gap-3 border-t border-[rgba(15,77,50,0.1)] pt-4">
+                        <div className="min-w-0">
+                          <div className="text-xl font-semibold tracking-[-0.04em] text-[var(--green-dark)]">
+                            {formatCurrency(getProductPrice(product.slug))}
                           </div>
-                          <div className="rounded-full border border-[rgba(15,77,50,0.12)] bg-white/70 px-3 py-1 text-[11px] font-semibold text-[var(--green-dark)] md:px-4 md:py-1.5 md:text-xs">
-                            {product.packageLabel}
-                          </div>
+                          <div className="mt-1 truncate text-xs text-[var(--muted)]">{product.packageLabel}</div>
                         </div>
-                        <p className="mt-3 text-sm leading-7 text-[var(--muted)] md:mt-4">{product.shortDescription}</p>
-                        <div className="mt-4 flex flex-wrap gap-2 md:mt-6">
-                          {product.ingredients.slice(0, 3).map((item) => (
-                            <span
-                              key={item}
-                              className="pill border border-[rgba(15,77,50,0.12)] bg-white/60 px-3 py-1 text-[10px] font-semibold text-[var(--green)] md:text-xs"
-                            >
-                              {item}
-                            </span>
-                          ))}
-                        </div>
-                        <div className="mt-1 text-sm text-[var(--muted)]">{product.origin}</div>
-                        <div className="mt-5 flex flex-col gap-3 sm:flex-row md:mt-7">
-                          <Link
-                            href={`/san-pham/${product.slug}`}
-                            className="button button-secondary relative z-10 w-full justify-center px-4 py-3 text-sm md:w-auto md:px-6 md:text-base"
-                          >
-                            Xem chi tiết <ArrowRight size={18} />
-                          </Link>
-                          <div className="relative z-10 w-full md:w-auto">
-                            <AddToCartButton slug={product.slug} />
-                          </div>
+                        <span className="shrink-0 rounded-full bg-[rgba(15,77,50,0.06)] px-3 py-1 text-xs font-semibold text-[var(--green)]">
+                          {product.origin}
+                        </span>
+                      </div>
+                      <div className="mt-auto grid grid-cols-2 gap-2 pt-5">
+                        <Link
+                          href={`/san-pham/${product.slug}`}
+                          className="button button-secondary min-w-0 justify-center whitespace-nowrap px-2 py-3 text-xs md:text-sm"
+                        >
+                          Chi tiết
+                        </Link>
+                        <div className="min-w-0">
+                          <AddToCartButton slug={product.slug} className="md:w-full" />
                         </div>
                       </div>
                     </div>
@@ -405,51 +428,67 @@ export function HomePage() {
 
         {homePageSections.brandProof ? (
           <section id="cau-chuyen" className="section pt-8 md:pt-24">
-            <div className="container grid gap-8 lg:grid-cols-3">
-              <div className="lg:col-span-2">
+            <div className="container grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+              <div className="relative overflow-hidden rounded-[32px] bg-[linear-gradient(145deg,#dcebb8,#f6f1e7_52%,#d8b77b)] p-5 md:p-7">
+                <div className="absolute inset-x-8 top-8 h-40 rounded-full bg-white/35 blur-3xl" />
+                <div className="absolute -bottom-16 -left-8 h-56 w-56 rounded-full bg-[rgba(15,77,50,0.12)] blur-3xl" />
+                <div className="relative grid min-h-[360px] grid-cols-2 items-center gap-3 md:min-h-[456px] md:gap-5">
+                  <div className="relative z-10 overflow-hidden rounded-[26px] border border-white/60 bg-white/65 p-2 shadow-[0_24px_50px_rgba(15,77,50,0.15)]">
+                    <Image
+                      src={products[3].boxImage}
+                      alt="Hộp Trà Bát Bảo Cúc Phương Hòa Phúc"
+                      width={products[3].boxImageWidth}
+                      height={products[3].boxImageHeight}
+                      className="aspect-[4/3] w-full rounded-[20px] bg-[#f4eee2] object-contain"
+                    />
+                  </div>
+                  <div className="relative z-10 overflow-hidden rounded-[26px] border border-white/70 bg-white/75 p-2 shadow-[0_24px_50px_rgba(15,77,50,0.18)]">
+                    <Image
+                      src={products[1].boxImage}
+                      alt="Hộp Trà Thanh Nhiệt Hòa Phúc"
+                      width={products[1].boxImageWidth}
+                      height={products[1].boxImageHeight}
+                      className="aspect-[4/3] w-full rounded-[20px] bg-[#f4eee2] object-contain"
+                    />
+                  </div>
+                  <div className="absolute bottom-4 left-4 z-20 rounded-full border border-white/70 bg-[var(--green-dark)] px-4 py-2 text-xs font-semibold text-white shadow-[0_12px_24px_rgba(15,77,50,0.2)] md:bottom-6 md:left-6">
+                    Từ Cúc Phương, Ninh Bình
+                  </div>
+                </div>
+              </div>
+              <div>
                 <div className="eyebrow text-[11px] md:text-xs">
                   <span className="h-px w-8 bg-[var(--green)]" />
-                  Câu chuyện Hòa Phúc
+                  Câu chuyện về trà Hòa Phúc
                 </div>
                 <h2 className="mt-4 section-title text-[clamp(1.8rem,4.5vw,4.6rem)]">
-                  Mộc mạc nhưng cao cấp, thiên nhiên nhưng hiện đại.
+                  Từ vùng nguyên liệu Việt đến món quà bạn muốn trao tặng.
                 </h2>
                 <p className="mt-4 section-copy text-[15px] md:text-[1.02rem]">
-                  Website này được xây dựng như một storefront premium với cấu trúc SEO rõ ràng, hình ảnh lớn, nhịp
-                  khoảng trắng sang trọng và hero video tạo ấn tượng ngay khi mở trang. Đây là nền tảng tốt để mở rộng
-                  thêm blog, câu chuyện vùng nguyên liệu, tin tức và trang chi tiết sản phẩm trong các vòng tiếp theo.
+                  Hòa Phúc bắt đầu từ tình yêu với nông sản Việt và những khoảng nghỉ giản dị mỗi ngày. Mỗi dòng trà
+                  được chọn lọc từ thảo mộc quen thuộc, phối trộn để có vị dễ uống, rồi kể lại bằng bao bì chỉn chu mang
+                  dấu ấn Cố đô.
                 </p>
-              </div>
-              <div className="card rounded-[28px] p-6 md:p-7">
-                <h3 className="text-xl font-semibold text-[var(--green-dark)]">Điểm nhấn triển khai</h3>
-                <ul className="mt-5 space-y-4 text-sm leading-7 text-[var(--muted)]">
-                  <li>SEO metadata đầy đủ, canonical và Open Graph.</li>
-                  <li>Dữ liệu sản phẩm lưu local trong `data/products.ts`.</li>
-                  <li>Hero video tối ưu cho mobile với poster và lazy-load theo section.</li>
-                  <li>Thông tin thương hiệu đồng bộ với fanpage Nông Sản Hòa Phúc | Nho Quan.</li>
-                  <li>Responsive tốt cho mobile, tablet và desktop.</li>
-                </ul>
-                <div className="mt-6 rounded-[24px] border border-[rgba(15,77,50,0.12)] bg-white/55 p-4">
-                  <div className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">Kênh chính thức</div>
-                  <a
-                    href="https://www.facebook.com/nongsanhoaphucnb/"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-2 block text-sm font-semibold text-[var(--green-dark)] underline decoration-[rgba(15,77,50,0.24)] underline-offset-4"
-                  >
-                    Fanpage Nông Sản Hòa Phúc | Nho Quan
-                  </a>
-                  <div className="mt-2 text-sm text-[var(--muted)]">Hotline/Zalo: +84 36 669 7135</div>
+                <div className="mt-7 grid gap-3 md:grid-cols-3 md:gap-4">
+                  {[
+                    { step: "01", title: "Chọn từ vùng đất lành", copy: "Ưu tiên thảo mộc và nông sản có câu chuyện rõ ràng." },
+                    { step: "02", title: "Giữ vị dễ gần", copy: "Phối trộn cân bằng để bạn dễ thưởng thức mỗi ngày." },
+                    { step: "03", title: "Trao một điều đẹp", copy: "Đóng gói chỉn chu cho những dịp cần sự tinh tế." },
+                  ].map((item) => (
+                    <div key={item.step} className="rounded-[22px] border border-[rgba(15,77,50,0.1)] bg-white/65 p-4">
+                      <div className="text-xs font-semibold tracking-[0.18em] text-[var(--brown)]">{item.step}</div>
+                      <h3 className="mt-3 text-sm font-semibold leading-5 text-[var(--green-dark)]">{item.title}</h3>
+                      <p className="mt-2 text-xs leading-6 text-[var(--muted)]">{item.copy}</p>
+                    </div>
+                  ))}
                 </div>
-                <div className="mt-4 rounded-[24px] border border-[rgba(15,77,50,0.12)] bg-white/55 p-4">
-                  <div className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">Thông tin doanh nghiệp</div>
-                  <div className="mt-2 text-sm leading-7 text-[var(--green-dark)]">
-                    CÔNG TY TNHH NÔNG SẢN HOÀ PHÚC
-                    <br />
-                    MST: 2700963962
-                    <br />
-                    Người đại diện: VŨ HUYỀN TRANG
-                  </div>
+                <div className="mt-7 flex flex-wrap gap-3">
+                  <Link href="/gioi-thieu/cau-chuyen-thuong-hieu" className="button button-primary px-5 py-3 text-sm">
+                    Đọc câu chuyện <ArrowRight size={17} aria-hidden="true" />
+                  </Link>
+                  <Link href="/san-pham" className="button button-secondary px-5 py-3 text-sm">
+                    Chọn trà phù hợp
+                  </Link>
                 </div>
               </div>
             </div>

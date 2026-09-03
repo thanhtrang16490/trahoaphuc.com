@@ -23,7 +23,7 @@ export function OrganizationJsonLd() {
     name: "CÔNG TY TNHH NÔNG SẢN HOÀ PHÚC",
     alternateName: "Nông Sản Hòa Phúc | Nho Quan",
     url: "https://hoaphucfarm.com",
-    logo: "https://hoaphucfarm.com/icon.png",
+    logo: "https://hoaphucfarm.com/brand/hoaphuc-logo.svg",
     sameAs: ["https://www.facebook.com/nongsanhoaphucnb/"],
     contactPoint: [
       {
@@ -135,7 +135,7 @@ export function ArticleJsonLd({
       name: authorName,
       logo: {
         "@type": "ImageObject",
-        url: "https://hoaphucfarm.com/icon.png",
+        url: "https://hoaphucfarm.com/brand/hoaphuc-logo.svg",
       },
     },
     mainEntityOfPage: url,

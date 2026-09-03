@@ -47,12 +47,12 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   return (
     <ToastContext.Provider value={value}>
       {children}
-      <div className="pointer-events-none fixed inset-x-0 top-4 z-[100] flex justify-center px-4 md:top-6">
+      <div className="pointer-events-none fixed inset-x-0 top-4 z-[100] flex justify-center px-4 md:top-6" aria-live="polite" aria-atomic="true">
         <div className="flex w-full max-w-sm flex-col gap-2 md:items-center">
           {toasts.map((toast) => (
             <div
               key={toast.id}
-              className={`pointer-events-auto rounded-[22px] border border-[rgba(15,77,50,0.14)] bg-[rgba(255,255,255,0.9)] px-4 py-3 shadow-[0_18px_40px_rgba(15,77,50,0.16)] backdrop-blur-xl transition-all duration-300 ease-out motion-safe:will-change-transform ${
+              className={`pointer-events-auto rounded-[22px] border border-[rgba(15,77,50,0.14)] bg-[rgba(255,255,255,0.9)] px-4 py-3 shadow-[0_18px_40px_rgba(15,77,50,0.16)] backdrop-blur-xl transition-[transform,opacity] duration-300 ease-out motion-safe:will-change-transform ${
                 toast.closing
                   ? "translate-y-2 scale-[0.98] opacity-0"
                   : "translate-y-0 scale-100 opacity-100 animate-[toast-in_380ms_cubic-bezier(0.22,1,0.36,1)]"

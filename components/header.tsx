@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { List, MagnifyingGlass, ShoppingCartSimple, UserCircle, X, Plus, Minus, Trash, House, Package, Tag, CirclesFour, FacebookLogo } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
 import type { CartItem } from "./cart-store";
@@ -14,7 +15,6 @@ const links = [
   { href: "/gioi-thieu/cau-chuyen-thuong-hieu", label: "Câu chuyện" },
   { href: "/san-pham", label: "Sản phẩm" },
   { href: "/tin-tuc", label: "Tin tức" },
-  { href: "/dang-nhap", label: "Đăng nhập" },
   { href: "/lien-he", label: "Liên hệ" },
 ];
 
@@ -61,8 +61,9 @@ export function Header() {
           </button>
 
           <div className="flex min-w-0 flex-1 items-center justify-center gap-3 md:block md:flex-none md:justify-start">
-            <Link href="/" className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--green)] md:text-base">
-              Hòa Phúc Farm
+            <Link href="/" className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.2em] text-[var(--green)] md:text-base">
+              <Image src="/brand/hoaphuc-logo.svg" alt="" width={38} height={38} className="h-9 w-9 shrink-0 md:h-10 md:w-10" priority />
+              <span>Hòa Phúc Farm</span>
             </Link>
             <div className="hidden text-xs text-[var(--muted)] md:block">Nông sản • Trà thảo mộc • Đặc sản vùng miền</div>
           </div>

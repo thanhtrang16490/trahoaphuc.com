@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">Mật ong Hòa Phúc</title>
+  <desc id="desc">Ảnh minh họa sản phẩm đang chờ ảnh chụp riêng.</desc>
+  <rect width="1200" height="900" fill="#fff3c9"/>
+  <circle cx="950" cy="170" r="260" fill="#f5c33e"/>
+  <path d="M0 700 C280 620 470 760 700 660 S980 590 1200 700 V900 H0Z" fill="#8d5917"/>
+  <rect x="425" y="180" width="350" height="500" rx="70" fill="#f2b82e" stroke="#8d5917" stroke-width="8"/>
+  <rect x="465" y="390" width="270" height="190" rx="18" fill="#fff7dc"/>
+  <text x="600" y="275" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#6a3f10">HÒA PHÚC</text>
+  <text x="600" y="465" text-anchor="middle" font-family="Georgia, serif" font-size="45" font-weight="700" fill="#6a3f10">MẬT ONG</text>
+  <text x="600" y="525" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#6a3f10">VIỆT NAM</text>
+  <text x="600" y="755" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" fill="#6a3f10">ẢNH MINH HỌA - ĐANG CẬP NHẬT</text>
+</svg>

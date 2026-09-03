@@ -11,6 +11,7 @@ export const brand = {
   phone: "+84 36 669 7135",
   hotline: "+84 36 669 7135",
   facebook: "https://www.facebook.com/nongsanhoaphucnb/",
+  shopee: "https://shopee.vn/nongsanhoaphuc",
   website: "https://hoaphucfarm.com",
   address:
     "Ngã 3, thôn Nga 2, Xã Cúc Phương, Huyện Nho quan, Tỉnh Ninh Bình, Việt Nam",
