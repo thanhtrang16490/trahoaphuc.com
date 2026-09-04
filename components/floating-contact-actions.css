@@ -1,0 +1,73 @@
+.floating-contact-actions .call-container,
+.floating-contact-actions .zalo-container {
+  position: fixed;
+  right: 35px;
+  width: 40px;
+  height: 40px;
+  z-index: 9999;
+}
+
+.floating-contact-actions .call-container { bottom: 240px; }
+.floating-contact-actions .zalo-container { bottom: 170px; }
+.floating-contact-actions a { display: block; text-decoration: none; }
+.floating-contact-actions .contact-action-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+.floating-contact-actions .call-container .contact-action-icon {
+  background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%);
+  box-shadow: 0 18px 30px -16px rgba(220, 38, 38, 0.85);
+}
+.floating-contact-actions .zalo-container .contact-action-icon { background: #1182fc; }
+.floating-contact-actions .zalo-container img { max-width: 100%; height: auto; }
+.floating-contact-actions .zalo-icon { object-fit: contain; }
+.floating-contact-actions .animated_call,
+.floating-contact-actions .animated_zalo {
+  position: absolute;
+  border-radius: 100%;
+  animation-duration: 1s;
+  animation-fill-mode: both;
+  animation-iteration-count: infinite;
+}
+.floating-contact-actions .cmoz-alo-circle {
+  top: -5px;
+  right: -5px;
+  width: 50px;
+  height: 50px;
+  background-color: transparent;
+  opacity: 0.55;
+}
+.floating-contact-actions .call-container .cmoz-alo-circle { border: 2px solid #dc2626; }
+.floating-contact-actions .zalo-container .cmoz-alo-circle { border: 2px solid #1182fc; opacity: 0.5; }
+.floating-contact-actions .cmoz-alo-circle-fill {
+  top: -10px;
+  right: -10px;
+  width: 60px;
+  height: 60px;
+  border: 2px solid transparent;
+  transition: all 0.5s;
+}
+.floating-contact-actions .call-container .cmoz-alo-circle-fill { background-color: rgba(220, 38, 38, 0.38); opacity: 0.8; }
+.floating-contact-actions .zalo-container .cmoz-alo-circle-fill { background-color: rgba(17, 130, 252, 0.45); opacity: 0.75; }
+.floating-contact-actions .zoomIn_call,
+.floating-contact-actions .zoomIn_zalo { animation-name: floating-contact-zoom-in; }
+.floating-contact-actions .pulse_call,
+.floating-contact-actions .pulse_zalo { animation-name: floating-contact-pulse; }
+
+@keyframes floating-contact-zoom-in {
+  from { opacity: 0; transform: scale3d(0.3, 0.3, 0.3); }
+  50% { opacity: 1; }
+}
+@keyframes floating-contact-pulse {
+  from, to { transform: scale3d(1, 1, 1); }
+  50% { transform: scale3d(1.05, 1.05, 1.05); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .floating-contact-actions .animated_call,
+  .floating-contact-actions .animated_zalo { animation: none; }
+}

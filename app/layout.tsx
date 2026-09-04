@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import "../components/floating-contact-actions.css";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { ToastProvider } from "@/components/toast";
@@ -7,6 +8,9 @@ import { OrganizationJsonLd, WebSiteJsonLd } from "@/components/seo";
 import { brand } from "@/data/site";
 import { MobileShell } from "@/components/mobile-shell";
 import { PwaRegister } from "@/components/pwa-register";
+import { FloatingContactActions } from "@/components/floating-contact-actions";
+import { BackToTop } from "@/components/back-to-top";
+import { GlobalSidebar } from "@/components/global-sidebar";
 
 export const metadata: Metadata = {
   metadataBase: new URL(brand.website),
@@ -74,9 +78,14 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <ToastProvider>
           <OrganizationJsonLd />
           <WebSiteJsonLd />
-          <Header />
-          <MobileShell>{children}</MobileShell>
-          <Footer />
+          <GlobalSidebar />
+          <div className="lg:ml-16">
+            <Header />
+            <MobileShell>{children}</MobileShell>
+            <Footer />
+          </div>
+          <FloatingContactActions />
+          <BackToTop />
           <PwaRegister />
         </ToastProvider>
       </body>

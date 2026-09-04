@@ -4,7 +4,7 @@ import { BreadcrumbJsonLd } from "@/components/seo";
 import { brand } from "@/data/site";
 
 const phoneHref = `tel:${brand.phone.replace(/\s+/g, "")}`;
-const zaloHref = "https://zalo.me/84366697135";
+const zaloHref = brand.zalo;
 const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(brand.address)}`;
 
 export const metadata: Metadata = {

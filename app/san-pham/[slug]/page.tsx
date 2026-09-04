@@ -8,6 +8,8 @@ import { AddToCartButton } from "@/components/add-to-cart-button";
 import { formatCurrency, getProductPrice } from "@/data/pricing";
 import { BreadcrumbJsonLd, FAQJsonLd, ProductJsonLd } from "@/components/seo";
 import { MobileBackHeader } from "@/components/mobile-back-header";
+import { ProductGallery } from "@/components/product-gallery";
+import { brand } from "@/data/site";
 
 const customerReviews = [
   {
@@ -81,7 +83,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
   const price = getProductPrice(product.slug);
 
   return (
-    <main className="section !pt-0 pb-[calc(env(safe-area-inset-bottom)+136px)] md:pt-14 md:pb-24">
+    <main className="section !pt-0 bg-transparent pb-[calc(env(safe-area-inset-bottom)+136px)] md:bg-[#f6f8f6] md:pb-24">
       <BreadcrumbJsonLd
         items={[
           { name: "Trang chủ", href: "/" },
@@ -92,7 +94,34 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       <ProductJsonLd product={product} price={price} url={`https://hoaphucfarm.com/san-pham/${product.slug}`} />
       <FAQJsonLd questions={productFaqs} />
       <MobileBackHeader href="/san-pham" section="Sản phẩm" title={product.name} />
-      <div className="container">
+      <section className="hidden bg-[linear-gradient(135deg,#063b27_0%,#0f4d32_58%,#1b6a43_100%)] text-white md:block">
+        <div className="relative overflow-hidden px-8 py-12 lg:px-14 lg:py-16">
+          <div aria-hidden="true" className="absolute -right-20 -top-28 h-72 w-72 rounded-full bg-[rgba(216,183,123,0.16)]" />
+          <div aria-hidden="true" className="absolute -bottom-36 left-1/3 h-80 w-80 rounded-full bg-[rgba(159,210,15,0.1)]" />
+          <div className="relative mx-auto w-full max-w-7xl">
+            <div className="mt-7 flex max-w-3xl items-start gap-4">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/10 text-xl text-[var(--beige)]">✦</div>
+              <div>
+                <div className="text-xs font-semibold uppercase tracking-[0.22em] text-white/55">Dòng sản phẩm Hòa Phúc</div>
+                <h2 className="mt-2 text-3xl font-bold tracking-[-0.03em]">{product.category}</h2>
+                <p className="mt-4 max-w-2xl text-sm leading-7 text-white/70 lg:text-base">
+                  Trà thảo mộc và nông sản Việt được chọn lọc từ vùng nguyên liệu tự nhiên, đóng gói chỉn chu cho mỗi ngày và mỗi món quà.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div className="hidden border-b border-gray-200 bg-white md:block">
+        <div className="mx-auto flex w-full max-w-7xl items-center gap-2 px-4 py-3 text-sm text-gray-600 sm:px-6 lg:px-8" aria-label="Breadcrumb">
+          <Link href="/san-pham" className="transition-colors hover:text-[var(--green)]">Sản phẩm</Link>
+          <span aria-hidden="true">/</span>
+          <Link href="/muc-san-pham" className="transition-colors hover:text-[var(--green)]">{product.category}</Link>
+          <span aria-hidden="true">/</span>
+          <span className="truncate font-medium text-gray-900" aria-current="page">{product.name}</span>
+        </div>
+      </div>
+      <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="md:hidden">
           <div className="-mx-4 overflow-hidden bg-white">
             <div className="relative">
@@ -220,7 +249,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
         </div>
 
-        <div className="hidden md:block">
+        <div className="hidden w-full md:block">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <Link href="/san-pham" className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--green)]">
             Tất cả sản phẩm
@@ -230,28 +259,18 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
           </Link>
         </div>
 
-        <div className="mt-6 grid gap-8 lg:grid-cols-[1.02fr_0.98fr]">
+        <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
+          <div>
+        <div className="grid gap-8 lg:grid-cols-[1.02fr_0.98fr]">
           <div className="grid gap-4">
-            <div className="panel overflow-hidden rounded-[30px] md:rounded-[36px]">
-              <Image
-                src={product.image}
-                alt={product.name}
-                width={product.imageWidth}
-                height={product.imageHeight}
-                className="h-auto w-full"
-                priority
-              />
-            </div>
+            <ProductGallery
+              productName={product.name}
+              images={[
+                { src: product.image, width: product.imageWidth, height: product.imageHeight, label: "ảnh sản phẩm" },
+                { src: product.boxImage, width: product.boxImageWidth, height: product.boxImageHeight, label: "ảnh hộp sản phẩm" },
+              ]}
+            />
             <div className="grid gap-4 sm:grid-cols-2">
-              <div className="panel overflow-hidden rounded-[26px]">
-                <Image
-                  src={product.boxImage}
-                  alt={`${product.name} - ảnh hộp`}
-                  width={product.boxImageWidth}
-                  height={product.boxImageHeight}
-                  className="h-auto w-full"
-                />
-              </div>
               <div className="card rounded-[26px] p-5">
                 <div className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--brown)]">Thông tin nhanh</div>
                 <div className="mt-4 space-y-3 text-sm leading-7 text-[var(--muted)]">
@@ -276,7 +295,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
               <span className="h-px w-8 bg-[var(--green)]" />
               {product.category}
             </div>
-            <h1 className="mt-5 section-title">{product.name}</h1>
+            <h1 className="mt-5 text-2xl font-bold leading-tight tracking-[-0.03em] text-[var(--green-dark)] lg:text-3xl">{product.name}</h1>
             <div className="mt-4 flex flex-wrap items-center gap-3">
               <div className="text-2xl font-semibold text-[var(--green-dark)] md:text-3xl">{formatCurrency(price)}</div>
               <span className="rounded-full bg-[var(--green)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-white">
@@ -298,50 +317,6 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                 </div>
               ))}
             </div>
-            <p className="mt-5 max-w-[60ch] text-base leading-8 text-[var(--muted)]">{product.longDescription}</p>
-            <div className="mt-8 grid gap-4 sm:grid-cols-2">
-              {product.benefits.map((item) => (
-                <div key={item} className="card rounded-[24px] p-4 text-sm font-semibold text-[var(--green-dark)]">
-                  {item}
-                </div>
-              ))}
-            </div>
-            <div className="mt-8 rounded-[28px] bg-[rgba(15,77,50,0.05)] p-5">
-              <div className="text-xs uppercase tracking-[0.22em] text-[var(--muted)]">Thành phần nổi bật</div>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {product.ingredients.map((item) => (
-                  <span key={item} className="pill border border-[rgba(15,77,50,0.12)] bg-white/70 px-4 py-2 text-sm font-semibold text-[var(--green)]">
-                    {item}
-                  </span>
-                ))}
-              </div>
-            </div>
-            <div className="mt-8 rounded-[28px] border border-[rgba(15,77,50,0.08)] bg-white p-5 shadow-[0_12px_28px_rgba(15,77,50,0.08)]">
-              <div className="flex items-end justify-between gap-3">
-                <div>
-                  <div className="text-xs uppercase tracking-[0.22em] text-[var(--muted)]">Đánh giá</div>
-                  <div className="mt-1 text-2xl font-semibold text-[var(--green-dark)]">Khách hàng đã mua</div>
-                </div>
-                <div className="text-right">
-                  <div className="text-3xl font-semibold text-[var(--green)]">4.9/5</div>
-                  <div className="text-sm text-[var(--muted)]">Từ 128 lượt mua</div>
-                </div>
-              </div>
-              <div className="mt-5 grid gap-4">
-                {customerReviews.map((review) => (
-                  <div key={`${review.name}-${review.location}`} className="rounded-[20px] bg-[rgba(15,77,50,0.04)] p-4">
-                    <div className="flex items-center justify-between gap-3">
-                      <div>
-                        <div className="text-sm font-semibold text-[var(--green-dark)]">{review.name}</div>
-                        <div className="text-xs text-[var(--muted)]">{review.location}</div>
-                      </div>
-                      <div className="text-sm font-semibold text-[#ffcc00]">{"★".repeat(review.rating)}</div>
-                    </div>
-                    <p className="mt-2 text-sm leading-7 text-[var(--muted)]">{review.text}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
               <AddToCartButton slug={product.slug} />
               <Link href="/gio-hang" className="button button-secondary hidden md:inline-flex">
@@ -351,15 +326,92 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
             <div className="mt-4 text-sm leading-7 text-[var(--muted)]">
               {product.packageLabel} • {product.origin}
             </div>
-            <div className="mt-6 rounded-[28px] bg-[rgba(15,77,50,0.05)] p-5">
-              <div className="text-xs uppercase tracking-[0.22em] text-[var(--muted)]">Gợi ý chốt đơn</div>
-              <div className="mt-3 text-sm leading-7 text-[var(--green-dark)]">
-                Khách thường mua theo combo quà biếu hoặc thêm 2-3 sản phẩm cùng nhóm để dễ đạt ngưỡng freeship nội bộ
-                khi có chương trình.
-              </div>
-            </div>
           </div>
         </div>
+
+        <section className="mt-12 border-t border-[rgba(15,77,50,0.12)] pt-10">
+          <h2 className="text-xl font-semibold text-[var(--green-dark)]">Mô tả sản phẩm</h2>
+          <div className="mt-5 max-w-4xl space-y-3 text-base leading-8 text-[var(--muted)]">
+            {product.longDescription.split(". ").map((sentence, index, items) => (
+              <p key={`${sentence}-${index}`}>{sentence}{index < items.length - 1 ? "." : ""}</p>
+            ))}
+          </div>
+        </section>
+
+        <section className="mt-12 border-t border-[rgba(15,77,50,0.12)] pt-10">
+          <h2 className="text-xl font-semibold text-[var(--green-dark)]">Thông số chính</h2>
+          <div className="mt-6 grid gap-4 sm:grid-cols-3">
+            {[
+              { value: product.packageLabel, label: "Quy cách đóng gói" },
+              { value: product.origin, label: "Nguồn gốc" },
+              { value: `${product.ingredients.length} thành phần`, label: "Công thức thảo mộc" },
+            ].map((item) => (
+              <div key={item.label} className="rounded-2xl border border-[rgba(15,77,50,0.12)] bg-white p-6 text-center shadow-[0_10px_24px_rgba(20,44,33,0.05)] transition-shadow hover:shadow-[0_16px_30px_rgba(20,44,33,0.1)]">
+                <div className="text-2xl font-semibold leading-tight text-[var(--green)]">{item.value}</div>
+                <div className="mt-2 text-sm text-[var(--muted)]">{item.label}</div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="mt-12 scroll-mt-24 border-t border-[rgba(15,77,50,0.12)] pt-10" id="thong-tin-san-pham">
+          <h2 className="text-xl font-semibold text-[var(--green-dark)]">Thông tin sản phẩm</h2>
+          <p className="mt-3 text-sm leading-7 text-[var(--muted)]">Thông tin chi tiết giúp bạn chọn đúng sản phẩm và sử dụng thuận tiện hơn.</p>
+          <div className="mt-6 grid gap-6 lg:grid-cols-2">
+            <div className="overflow-hidden rounded-2xl border border-[rgba(15,77,50,0.12)] bg-white">
+              <div className="border-b border-[rgba(15,77,50,0.1)] bg-[rgba(15,77,50,0.04)] px-6 py-4 text-lg font-semibold text-[var(--green-dark)]">Thành phần</div>
+              <dl className="divide-y divide-[rgba(15,77,50,0.1)]">
+                {product.ingredients.map((item, index) => (
+                  <div key={item} className={`grid grid-cols-[44px_1fr] px-6 py-4 text-sm ${index % 2 === 0 ? "bg-white" : "bg-[rgba(15,77,50,0.025)]"}`}>
+                    <dt className="font-semibold text-[var(--green)]">{String(index + 1).padStart(2, "0")}</dt>
+                    <dd className="text-[var(--muted)]">{item}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+            <div className="overflow-hidden rounded-2xl border border-[rgba(15,77,50,0.12)] bg-white">
+              <div className="border-b border-[rgba(15,77,50,0.1)] bg-[rgba(15,77,50,0.04)] px-6 py-4 text-lg font-semibold text-[var(--green-dark)]">Điểm nổi bật</div>
+              <dl className="divide-y divide-[rgba(15,77,50,0.1)]">
+                {product.benefits.map((item, index) => (
+                  <div key={item} className={`grid grid-cols-[44px_1fr] px-6 py-4 text-sm ${index % 2 === 0 ? "bg-white" : "bg-[rgba(15,77,50,0.025)]"}`}>
+                    <dt className="font-semibold text-[var(--green)]">{String(index + 1).padStart(2, "0")}</dt>
+                    <dd className="text-[var(--muted)]">{item}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          </div>
+        </section>
+
+        <section className="mt-12 border-t border-[rgba(15,77,50,0.12)] pt-10">
+          <div className="rounded-2xl border border-[rgba(15,77,50,0.1)] bg-[linear-gradient(135deg,rgba(15,77,50,0.06),rgba(216,183,123,0.14))] p-6 lg:p-8">
+            <h2 className="text-xl font-semibold text-[var(--green-dark)]">Cam kết từ Hòa Phúc</h2>
+            <div className="mt-5 grid gap-4 sm:grid-cols-3">
+              {["Nguyên liệu chọn lọc", "Đóng gói cẩn thận", "Tư vấn và hỗ trợ nhanh"].map((item) => (
+                <div key={item} className="rounded-xl bg-white/75 px-4 py-3 text-sm font-semibold text-[var(--green-dark)]">{item}</div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="mt-12 border-t border-[rgba(15,77,50,0.12)] pt-10">
+          <div className="flex items-end justify-between gap-6">
+            <div>
+              <div className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--brown)]">Khách hàng đã mua</div>
+              <h2 className="mt-3 text-2xl font-semibold text-[var(--green-dark)]">Đánh giá thực tế</h2>
+            </div>
+            <div className="text-right"><div className="text-3xl font-semibold text-[var(--green)]">4.9/5</div><div className="text-sm text-[var(--muted)]">Từ 128 lượt mua</div></div>
+          </div>
+          <div className="mt-6 grid gap-4 lg:grid-cols-3">
+            {customerReviews.map((review) => (
+              <div key={`${review.name}-${review.location}`} className="rounded-2xl border border-[rgba(15,77,50,0.1)] bg-white p-5">
+                <div className="text-sm font-semibold text-[#d49a22]">{"★".repeat(review.rating)}</div>
+                <p className="mt-3 text-sm leading-7 text-[var(--muted)]">“{review.text}”</p>
+                <div className="mt-4 border-t border-[rgba(15,77,50,0.08)] pt-3 text-sm font-semibold text-[var(--green-dark)]">{review.name} · {review.location}</div>
+              </div>
+            ))}
+          </div>
+        </section>
 
         <div className="mt-6 md:hidden">
               <div className="fixed inset-x-0 bottom-[calc(env(safe-area-inset-bottom)+58px)] z-40 px-3">
@@ -381,7 +433,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                 <span className="h-px w-8 bg-[var(--green)]" />
                 Sản phẩm liên quan
               </div>
-              <h2 className="mt-5 section-title">Mở rộng bộ sưu tập Hòa Phúc</h2>
+              <h2 className="mt-5 text-2xl font-bold leading-tight tracking-[-0.03em] text-[var(--green-dark)] lg:text-3xl">Mở rộng bộ sưu tập Hòa Phúc</h2>
             </div>
             <Link href="/san-pham" className="button button-secondary hidden md:inline-flex">
               Xem toàn bộ
@@ -428,6 +480,41 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
             ))}
           </div>
         </section>
+          </div>
+
+          <aside className="hidden lg:block">
+            <div className="sticky top-24 space-y-4">
+              <h2 className="mb-6 text-xl font-bold text-[var(--green-dark)]">Sản phẩm liên quan</h2>
+              <div className="mt-5 space-y-3">
+                {related.map((item) => (
+                  <Link
+                    key={`sidebar-${item.slug}`}
+                    href={`/san-pham/${item.slug}`}
+                    className="group flex cursor-pointer gap-3 overflow-hidden rounded-2xl border border-gray-200 bg-white p-3 transition-shadow duration-200 hover:shadow-lg"
+                  >
+                    <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-lg bg-gray-50 p-2">
+                      <Image src={item.image} alt={item.name} width={item.imageWidth} height={item.imageHeight} className="h-full w-full object-contain" />
+                    </div>
+                    <div className="min-w-0 flex-1 py-1">
+                      <div className="mb-1 line-clamp-2 text-sm font-semibold leading-snug text-[var(--green-dark)] transition-colors group-hover:text-[var(--green)]">{item.name}</div>
+                      <div className="mb-2 text-xs text-[var(--muted)]">Hòa Phúc</div>
+                      <div className="flex flex-wrap gap-1">
+                        <span className="rounded bg-[rgba(15,77,50,0.08)] px-2 py-0.5 text-xs text-[var(--green)]">{item.category}</span>
+                        <span className="rounded bg-[rgba(216,183,123,0.2)] px-2 py-0.5 text-xs text-[var(--brown)]">{formatCurrency(getProductPrice(item.slug))}</span>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+              <div className="mt-6 rounded-2xl border border-[rgba(15,77,50,0.12)] bg-[var(--green-dark)] p-5 text-white shadow-[0_16px_34px_rgba(15,77,50,0.16)]">
+                <div className="text-xs font-semibold uppercase tracking-[0.18em] text-white/55">Cần tư vấn?</div>
+                <p className="mt-3 text-sm leading-6 text-white/80">Hòa Phúc sẵn sàng gợi ý vị trà và quy cách phù hợp với nhu cầu của bạn.</p>
+                <a href={`tel:${brand.phone.replace(/\s+/g, "")}`} className="mt-4 inline-flex rounded-lg bg-white px-4 py-2 text-sm font-bold text-[var(--green-dark)] transition-colors hover:bg-[#f3ead9]">Gọi tư vấn</a>
+              </div>
+              <Link href="/san-pham" className="inline-flex text-sm font-semibold text-[var(--green)] underline decoration-[rgba(15,77,50,0.22)] underline-offset-4">Xem toàn bộ sản phẩm</Link>
+            </div>
+          </aside>
+        </div>
         </div>
       </div>
     </main>
