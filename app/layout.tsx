@@ -11,6 +11,7 @@ import { PwaRegister } from "@/components/pwa-register";
 import { FloatingContactActions } from "@/components/floating-contact-actions";
 import { BackToTop } from "@/components/back-to-top";
 import { GlobalSidebar } from "@/components/global-sidebar";
+import { MobileSiteNotice } from "@/components/mobile-site-notice";
 
 export const metadata: Metadata = {
   metadataBase: new URL(brand.website),
@@ -81,6 +82,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <GlobalSidebar />
           <div className="lg:ml-16">
             <Header />
+            <MobileSiteNotice />
             <MobileShell>{children}</MobileShell>
             <Footer />
           </div>

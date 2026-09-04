@@ -4,6 +4,7 @@ import { Phone } from "@phosphor-icons/react";
 import { brand } from "@/data/site";
 
 const phoneHref = `tel:${brand.phone.replace(/\s+/g, "")}`;
+const desktopZaloHref = "https://zalo.me/2518991881868405600";
 
 /** Desktop floating contact actions adapted from EPCVINA's CallBox/ZaloBox pattern. */
 export function FloatingContactActions() {
@@ -20,7 +21,7 @@ export function FloatingContactActions() {
       </div>
 
       <div className="zalo-container right">
-        <a id="zalo-btn" href={brand.zalo} target="_blank" rel="noopener nofollow" aria-label="Chat Zalo với Hòa Phúc">
+        <a id="zalo-btn" href={desktopZaloHref} target="_blank" rel="noopener nofollow" aria-label="Chat Zalo với Hòa Phúc">
           <div className="animated_zalo infinite zoomIn_zalo cmoz-alo-circle" />
           <div className="animated_zalo infinite pulse_zalo cmoz-alo-circle-fill" />
           <span className="contact-action-icon">

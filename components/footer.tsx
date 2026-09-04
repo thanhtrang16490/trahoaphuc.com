@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { CirclesFour, House, PlayCircle, ShoppingCartSimple, UserCircle, MessengerLogo, FacebookLogo, Storefront, X } from "@phosphor-icons/react";
+import { ChatCircleDots, CirclesFour, Envelope, FacebookLogo, House, InstagramLogo, MapPin, Phone, PlayCircle, ShoppingCartSimple, Storefront, TiktokLogo, UserCircle, X } from "@phosphor-icons/react";
 import type { CartItem } from "@/components/cart-store";
 import { addProductToCart, readCart, subscribeCart } from "@/components/cart-store";
 import { useToast } from "@/components/toast";
@@ -83,7 +83,7 @@ export function Footer() {
   };
 
   return (
-    <footer className="border-t border-[rgba(15,77,50,0.12)] bg-transparent md:bg-[rgba(246,241,231,0.72)]">
+    <footer className="border-t border-[rgba(15,77,50,0.12)] bg-transparent md:border-white/10 md:bg-[var(--green-dark)] md:text-white">
       <div className="md:hidden">
         <div className="fixed inset-x-0 bottom-0 z-40">
           <div className={`mx-auto max-w-screen-sm ${isProductDetail ? "px-3 pb-[calc(env(safe-area-inset-bottom)+10px)] pt-2" : "w-full px-0 pb-[env(safe-area-inset-bottom)] pt-0"}`}>
@@ -183,91 +183,88 @@ export function Footer() {
       </div>
 
       <div className="hidden md:block">
-        <div className="container grid gap-10 pt-12 lg:grid-cols-[1.1fr_0.8fr_0.8fr_0.9fr] lg:pt-16">
-          <div>
-            <div className="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--green)]">
-              {brand.legalName}
-            </div>
-            <p className="mt-4 max-w-[50ch] text-sm leading-7 text-[var(--muted)]">
-              Mã số thuế {brand.taxId}. {brand.description} Đồng bộ nhận diện cho website, app và mini app trong tương lai.
-            </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <a
-                href={brand.facebook}
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Facebook"
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-[rgba(15,77,50,0.12)] bg-white/70 text-[var(--green-dark)] transition-transform duration-200 hover:-translate-y-0.5 hover:text-[var(--green)]"
-              >
-                <MessengerLogo size={19} weight="fill" />
-              </a>
-              <a
-                href={brand.facebook}
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Fanpage Facebook"
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-[rgba(15,77,50,0.12)] bg-white/70 text-[var(--green-dark)] transition-transform duration-200 hover:-translate-y-0.5 hover:text-[var(--green)]"
-              >
-                <FacebookLogo size={19} weight="fill" />
-              </a>
-              <a
-                href="/lien-he"
-                aria-label="Liên hệ"
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-[rgba(15,77,50,0.12)] bg-white/70 text-[var(--green-dark)] transition-transform duration-200 hover:-translate-y-0.5 hover:text-[var(--green)]"
-              >
-                <UserCircle size={19} weight="bold" />
-              </a>
-              <a
-                href={brand.shopee}
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Shopee"
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-[rgba(15,77,50,0.12)] bg-white/70 text-[var(--green-dark)] transition-transform duration-200 hover:-translate-y-0.5 hover:text-[var(--green)]"
-              >
-                <Storefront size={19} weight="bold" />
-              </a>
-            </div>
-          </div>
-
-          <div>
-            <div className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--green-dark)]">Điều hướng</div>
-            <div className="mt-4 grid gap-3 text-sm text-[var(--muted)]">
-              <Link href="/san-pham">Sản phẩm</Link>
-              <Link href="/gio-hang">Giỏ hàng</Link>
-              <Link href="/lien-he">Liên hệ</Link>
-            </div>
-          </div>
-
-          <div>
-            <div className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--green-dark)]">Kết nối</div>
-            <div className="mt-4 grid gap-4 text-sm text-[var(--muted)]">
-              <a className="inline-flex items-center gap-2" href={`tel:${brand.phone.replace(/\s+/g, "")}`}>
-                {brand.phone}
-              </a>
-              <div className="inline-flex items-start gap-2">
-                <span>{brand.address}</span>
+        <div className="w-full px-4 py-14 sm:px-6 lg:px-8 lg:py-16">
+          <div className="mx-auto max-w-[1600px]">
+            <div className="grid gap-10 lg:grid-cols-[1.35fr_1fr_1fr_1fr_1.25fr] lg:gap-12">
+              <div>
+                <h2 className="max-w-[22ch] text-sm font-bold uppercase leading-6 tracking-[0.2em] text-white">{brand.legalName}</h2>
+                <p className="mt-5 max-w-[42ch] text-sm leading-7 text-white/65">{brand.description} Sản phẩm được chọn lọc từ vùng nguyên liệu Việt Nam, phù hợp dùng hằng ngày và làm quà biếu.</p>
+                <p className="mt-3 text-xs leading-6 text-white/45">Mã số thuế: {brand.taxId}</p>
+                <div className="mt-6 flex flex-wrap gap-2.5">
+                  <a href={brand.facebook} target="_blank" rel="noreferrer" aria-label="Facebook Hòa Phúc" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-[#1877f2] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">
+                    <FacebookLogo size={18} weight="fill" aria-hidden="true" />
+                  </a>
+                  <a href={brand.zalo} target="_blank" rel="noreferrer" aria-label="Zalo Hòa Phúc" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-[#1182fc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">
+                    <img src="/icons8-zalo.svg" alt="" width={20} height={20} className="h-5 w-5 object-contain" />
+                  </a>
+                  <a href={brand.tiktok} target="_blank" rel="noreferrer" aria-label="TikTok Hòa Phúc" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">
+                    <TiktokLogo size={18} weight="fill" aria-hidden="true" />
+                  </a>
+                  <a href={brand.instagram} target="_blank" rel="noreferrer" aria-label="Instagram Hòa Phúc" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-[#d62976] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">
+                    <InstagramLogo size={18} weight="fill" aria-hidden="true" />
+                  </a>
+                  <a href={brand.shopee} target="_blank" rel="noreferrer" aria-label="Gian hàng Shopee Hòa Phúc" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-[#ee4d2d] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">
+                    <Storefront size={18} weight="bold" aria-hidden="true" />
+                  </a>
+                </div>
               </div>
-              <div className="text-sm leading-7">Người đại diện: VŨ HUYỀN TRANG</div>
-            </div>
-          </div>
 
-          <div>
-            <div className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--green-dark)]">Chính sách</div>
-            <div className="mt-4 grid gap-3 text-sm text-[var(--muted)]">
-              <Link href="/chinh-sach-bao-mat">Chính sách bảo mật</Link>
-              <Link href="/chinh-sach-giao-hang">Chính sách giao hàng</Link>
-              <Link href="/chinh-sach-doi-tra">Chính sách đổi trả</Link>
-              <Link href="/chinh-sach-thanh-toan">Chính sách thanh toán</Link>
-              <Link href="/dieu-khoan-su-dung">Điều khoản sử dụng</Link>
-              <Link href="/dang-ky-dai-ly">Đăng ký đại lý</Link>
-              <Link href="/tiep-thi-lien-ket">Tiếp thị liên kết</Link>
-              <Link href="/dang-ky-thanh-vien">Đăng ký thành viên</Link>
-              <Link href="/dang-nhap">Đăng nhập</Link>
+              <div>
+                <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-white">Sản phẩm</h3>
+                <nav className="mt-5 grid gap-3 text-sm text-white/60" aria-label="Sản phẩm">
+                  <Link href="/san-pham" className="transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">Tất cả sản phẩm</Link>
+                  <Link href="/muc-san-pham/tra-thao-moc" className="transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">Trà thảo mộc</Link>
+                  <Link href="/muc-san-pham/duong-sinh" className="transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">Dưỡng sinh</Link>
+                  <Link href="/muc-san-pham/dac-san-vung-mien" className="transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">Đặc sản vùng miền</Link>
+                  <Link href="/vong-quay-may-man" className="transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">Vòng quay may mắn</Link>
+                </nav>
+              </div>
+
+              <div>
+                <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-white">Khám phá</h3>
+                <nav className="mt-5 grid gap-3 text-sm text-white/60" aria-label="Khám phá">
+                  <Link href="/gioi-thieu" className="transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">Về Hòa Phúc</Link>
+                  <Link href="/gioi-thieu/cau-chuyen-thuong-hieu" className="transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">Câu chuyện thương hiệu</Link>
+                  <Link href="/tin-tuc" className="transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">Tin tức</Link>
+                  <Link href="/feed" className="transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">Feed Hòa Phúc</Link>
+                  <Link href="/ca-nhan" className="transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">Cá nhân</Link>
+                </nav>
+              </div>
+
+              <div>
+                <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-white">Chính sách</h3>
+                <nav className="mt-5 grid gap-3 text-sm text-white/60" aria-label="Chính sách">
+                  <Link href="/chinh-sach-bao-mat" className="transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">Chính sách bảo mật</Link>
+                  <Link href="/chinh-sach-giao-hang" className="transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">Chính sách giao hàng</Link>
+                  <Link href="/chinh-sach-doi-tra" className="transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">Chính sách đổi trả</Link>
+                  <Link href="/chinh-sach-thanh-toan" className="transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">Chính sách thanh toán</Link>
+                  <Link href="/dieu-khoan-su-dung" className="transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">Điều khoản sử dụng</Link>
+                  <Link href="/dang-ky-dai-ly" className="transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">Đăng ký đại lý</Link>
+                  <Link href="/tiep-thi-lien-ket" className="transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">Tiếp thị liên kết</Link>
+                </nav>
+              </div>
+
+              <div>
+                <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-white">Kết nối</h3>
+                <div className="mt-5 space-y-4 text-sm text-white/65">
+                  <a href={`tel:${brand.phone.replace(/\s+/g, "")}`} className="flex items-start gap-3 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"><Phone size={18} weight="fill" className="mt-0.5 shrink-0 text-[var(--beige)]" aria-hidden="true" /><span><strong className="block text-xs uppercase tracking-[0.12em] text-white/45">Hotline</strong>{brand.phone}</span></a>
+                  <a href={brand.zalo} target="_blank" rel="noreferrer" className="flex items-start gap-3 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"><ChatCircleDots size={18} weight="fill" className="mt-0.5 shrink-0 text-[#63b3ff]" aria-hidden="true" /><span><strong className="block text-xs uppercase tracking-[0.12em] text-white/45">Zalo</strong>Nhắn tin tư vấn nhanh</span></a>
+                  <a href={`mailto:${brand.email ?? "nongsanhoaphuc@gmail.com"}`} className="flex items-start gap-3 break-all transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"><Envelope size={18} weight="fill" className="mt-0.5 shrink-0 text-[var(--beige)]" aria-hidden="true" /><span>{brand.email ?? "nongsanhoaphuc@gmail.com"}</span></a>
+                  <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(brand.address)}`} target="_blank" rel="noreferrer" className="flex items-start gap-3 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"><MapPin size={18} weight="fill" className="mt-0.5 shrink-0 text-[var(--beige)]" aria-hidden="true" /><span>{brand.address}</span></a>
+                </div>
+                <Link href="/lien-he" className="mt-6 inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2.5 text-sm font-bold text-[var(--green-dark)] transition-colors hover:bg-[#f3ead9] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">Liên hệ Hòa Phúc <span aria-hidden="true">→</span></Link>
+              </div>
+            </div>
+
+            <div className="mt-12 flex flex-col gap-3 border-t border-white/10 pt-5 text-xs text-white/45 sm:flex-row sm:items-center sm:justify-between">
+              <div>© {new Date().getFullYear()} Nông Sản Hòa Phúc. Tất cả quyền được bảo lưu.</div>
+              <div className="flex flex-wrap gap-x-5 gap-y-2">
+                <span>{brand.legalName}</span>
+                <Link href="/chinh-sach-bao-mat" className="transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">Bảo mật</Link>
+                <Link href="/dieu-khoan-su-dung" className="transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">Điều khoản</Link>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="container mt-10 border-t border-[rgba(15,77,50,0.12)] py-5 text-xs text-[var(--muted)]">
-          © 2026 Nông Sản Hòa Phúc. Tất cả quyền được bảo lưu.
         </div>
       </div>
     </footer>

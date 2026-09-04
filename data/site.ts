@@ -10,8 +10,11 @@ export const brand = {
   taxId: "2700963962",
   phone: "+84 36 669 7135",
   hotline: "+84 36 669 7135",
+  email: "nongsanhoaphuc@gmail.com",
   zalo: "https://zalo.me/84366697135",
   facebook: "https://www.facebook.com/nongsanhoaphucnb/",
+  tiktok: "https://www.tiktok.com/@nongsanhoaphuc",
+  instagram: "https://www.instagram.com/nongsanhoaphuc/",
   shopee: "https://shopee.vn/nongsanhoaphuc",
   website: "https://hoaphucfarm.com",
   address:

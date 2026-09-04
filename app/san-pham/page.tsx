@@ -5,6 +5,7 @@ import { products } from "@/data/products";
 import { formatCurrency, getProductPrice } from "@/data/pricing";
 import { BreadcrumbJsonLd } from "@/components/seo";
 import { ProductCardActions } from "@/components/product-card-actions";
+import { ProductCatalogDesktop } from "@/components/product-catalog-desktop";
 
 const categoryMap = [
   { label: "Tất cả", href: "/san-pham" },
@@ -30,6 +31,7 @@ export default function ProductsPage() {
   return (
     <main className="section pt-10 md:pt-14 pb-[calc(env(safe-area-inset-bottom)+96px)] md:pb-24">
       <BreadcrumbJsonLd items={[{ name: "Trang chủ", href: "/" }, { name: "Sản phẩm", href: "/san-pham" }]} />
+      <div className="md:hidden">
       <div className="container">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
@@ -91,6 +93,8 @@ export default function ProductsPage() {
           })}
         </div>
       </div>
+      </div>
+      <ProductCatalogDesktop products={products} />
     </main>
   );
 }
