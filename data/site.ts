@@ -11,7 +11,7 @@ export const brand = {
   phone: "+84 36 669 7135",
   hotline: "+84 36 669 7135",
   email: "nongsanhoaphuc@gmail.com",
-  zalo: "https://zalo.me/84366697135",
+  zalo: "https://zalo.me/2518991881868405600",
   facebook: "https://www.facebook.com/nongsanhoaphucnb/",
   tiktok: "https://www.tiktok.com/@nongsanhoaphuc",
   instagram: "https://www.instagram.com/nongsanhoaphuc/",
