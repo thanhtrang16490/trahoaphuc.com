@@ -36,6 +36,8 @@ export default function CartPage() {
   const [quickAddOpen, setQuickAddOpen] = useState(false);
   const [quickAddQuery, setQuickAddQuery] = useState("");
   const [formError, setFormError] = useState("");
+  const [cartIssue, setCartIssue] = useState("");
+  const [cartChecking, setCartChecking] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<"cod" | "bank_transfer">("cod");
   const [locationData, setLocationData] = useState<Array<{ code: number; name: string; wards: Array<{ code: number; name: string }> }>>([]);
@@ -47,6 +49,46 @@ export default function CartPage() {
   useEffect(() => {
     fetch("/api/v1/locations", { cache: "force-cache" }).then((response) => response.json()).then((payload) => { if (payload?.ok && Array.isArray(payload.data)) setLocationData(payload.data); }).catch(() => undefined);
   }, []);
+
+  const cartSignature = items.map((item) => `${item.slug}:${item.quantity}`).join("|");
+
+  useEffect(() => {
+    if (!items.length) {
+      setCartIssue("");
+      setCartChecking(false);
+      return;
+    }
+
+    let active = true;
+    setCartChecking(true);
+    fetch("/api/v1/cart/validate", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ items: items.map((item) => ({ slug: item.slug, quantity: item.quantity })) }),
+    })
+      .then((response) => response.json().then((payload) => ({ response, payload })))
+      .then(({ response, payload }) => {
+        if (!active) return;
+        if (!response.ok || !payload?.ok) throw new Error(payload?.error?.message || "Chưa thể kiểm tra sản phẩm.");
+        const serverItems = Array.isArray(payload.data?.items) ? payload.data.items : [];
+        const unavailable = serverItems.filter((item: { available?: boolean }) => !item.available);
+        setItems((current) => current.map((item) => {
+          const serverItem = serverItems.find((candidate: { slug?: string }) => candidate.slug === item.slug);
+          return serverItem ? { ...item, name: serverItem.name || item.name, image: serverItem.image || item.image, price: Number(serverItem.price) || item.price } : item;
+        }));
+        setCartIssue(unavailable.length ? "Một sản phẩm đã thay đổi giá hoặc không còn đủ tồn kho. Vui lòng kiểm tra lại trước khi đặt hàng." : "");
+      })
+      .catch((error) => {
+        if (active) setCartIssue(error instanceof Error ? error.message : "Chưa thể kiểm tra giá và tồn kho.");
+      })
+      .finally(() => {
+        if (active) setCartChecking(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [cartSignature]);
 
   useEffect(() => {
     const syncCart = () => setItems(readCart());
@@ -138,6 +180,10 @@ export default function CartPage() {
 
   const handleSubmit = async () => {
     if (!items.length) return;
+    if (cartChecking || cartIssue) {
+      setFormError(cartIssue || "Vui lòng chờ kiểm tra lại giá và tồn kho.");
+      return;
+    }
     if (!validateCheckout()) return;
     setIsSubmitting(true);
     setFormError("");
@@ -357,6 +403,7 @@ export default function CartPage() {
               <textarea autoComplete="off" className="min-h-28 rounded-[18px] border border-[rgba(15,77,50,0.14)] bg-white/70 px-4 py-3 text-sm outline-none focus:border-[var(--green)]" placeholder="Ghi chú cho người giao hàng (không bắt buộc)" value={form.note} onChange={(e) => handleChange("note", e.target.value)} />
             </div>
             {formError ? <div role="alert" className="mt-3 rounded-[14px] bg-[rgba(200,80,70,0.08)] px-3 py-2 text-sm leading-6 text-[#b44840]">{formError}</div> : null}
+            {cartIssue ? <div role="alert" className="mt-3 rounded-[14px] bg-[rgba(200,120,30,0.1)] px-3 py-2 text-sm leading-6 text-[#8b5a16]">{cartIssue}</div> : null}
             <div className="mt-5 rounded-[24px] border border-[rgba(15,77,50,0.12)] bg-[rgba(15,77,50,0.03)] p-4">
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2 text-sm font-semibold text-[var(--green-dark)]"><Tag size={18} weight="duotone" className="text-[var(--green)]" /> Mã giảm giá</div>
@@ -407,8 +454,8 @@ export default function CartPage() {
                 </button>
               </div>
             </div>
-            <button className="button button-primary mt-5 w-full justify-center" onClick={handleSubmit} disabled={!items.length || submitted || isSubmitting}>
-              {isSubmitting ? "Đang tạo đơn..." : submitted ? "Đã đặt hàng" : "Xác nhận đặt hàng"}
+            <button className="button button-primary mt-5 w-full justify-center" onClick={handleSubmit} disabled={!items.length || submitted || isSubmitting || cartChecking || Boolean(cartIssue)}>
+              {isSubmitting ? "Đang tạo đơn..." : cartChecking ? "Đang kiểm tra sản phẩm..." : submitted ? "Đã đặt hàng" : "Xác nhận đặt hàng"}
             </button>
             <div className="mt-4 flex items-center gap-2 text-xs leading-5 text-[var(--muted)]">
               <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[rgba(15,77,50,0.08)] text-[var(--green)]">✓</span>
@@ -458,10 +505,10 @@ export default function CartPage() {
             <button
               type="button"
               onClick={handleSubmit}
-              disabled={submitted || isSubmitting}
+              disabled={submitted || isSubmitting || cartChecking || Boolean(cartIssue)}
               className="inline-flex h-11 shrink-0 items-center gap-2 rounded-[14px] bg-[var(--green)] px-4 text-sm font-semibold text-white shadow-[0_10px_20px_rgba(15,77,50,0.16)] transition-transform active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-55"
             >
-              <ShoppingCartSimple size={18} weight="bold" className={isSubmitting ? "animate-pulse" : ""} /> {isSubmitting ? "Đang xử lý..." : submitted ? "Đã ghi nhận" : "Đặt hàng"}
+              <ShoppingCartSimple size={18} weight="bold" className={isSubmitting || cartChecking ? "animate-pulse" : ""} /> {isSubmitting ? "Đang xử lý..." : cartChecking ? "Đang kiểm tra..." : submitted ? "Đã ghi nhận" : "Đặt hàng"}
             </button>
           </div>
         </div>

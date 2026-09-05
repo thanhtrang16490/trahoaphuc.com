@@ -86,6 +86,9 @@ export async function POST(request: Request) {
   if (!/^(0|\+84)\d{8,10}$/.test(customerPhone.replace(/[.\s-]/g, ""))) {
     return apiError(ORDER_ERROR_MESSAGES.ORDER_PHONE_INVALID, 422);
   }
+  if (!/^(0|\+84)\d{8,10}$/.test(recipientPhone.replace(/[.\s-]/g, ""))) {
+    return apiError(ORDER_ERROR_MESSAGES.ORDER_PHONE_INVALID, 422);
+  }
 
   if (!paymentMethod || !["cod", "bank_transfer"].includes(paymentMethod)) {
     return apiError(ORDER_ERROR_MESSAGES.ORDER_PAYMENT_INVALID, 422);

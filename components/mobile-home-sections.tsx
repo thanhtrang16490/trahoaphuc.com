@@ -9,6 +9,7 @@ import type { Category } from "@/data/categories";
 import { blogPosts } from "@/data/blog";
 import { homePageSections } from "@/data/home-page";
 import type { Product } from "@/data/products";
+import { readAuthUser, subscribeAuth } from "@/components/auth-store";
 
 const quickActions = [
   { label: ["Lịch sử", "Đơn hàng"], href: "/gio-hang", icon: ShoppingBagOpen },
@@ -28,6 +29,13 @@ export function MobileHomeSections({ products, categories }: { products: Product
   const blogCarouselRef = useRef<HTMLDivElement | null>(null);
   const [activeBlogIndex, setActiveBlogIndex] = useState(0);
   const [heroVideoReady, setHeroVideoReady] = useState(false);
+  const [authUser, setAuthUser] = useState<ReturnType<typeof readAuthUser>>(null);
+
+  useEffect(() => {
+    const syncAuth = () => setAuthUser(readAuthUser());
+    syncAuth();
+    return subscribeAuth(syncAuth);
+  }, []);
 
   useEffect(() => {
     const container = blogCarouselRef.current;
@@ -88,7 +96,7 @@ export function MobileHomeSections({ products, categories }: { products: Product
         </section>
       ) : null}
 
-      <section className="px-4 pt-3">
+      {authUser ? <section className="px-4 pt-3">
         <div
           className="rounded-[28px] border border-[rgba(15,77,50,0.08)] bg-white p-4 shadow-[0_14px_34px_rgba(15,77,50,0.08)]"
           style={{ contentVisibility: "auto", containIntrinsicSize: "420px" }}
@@ -100,7 +108,7 @@ export function MobileHomeSections({ products, categories }: { products: Product
               </div>
               <div className="min-w-0">
                 <div className="text-[13px] text-[var(--muted)]">Xin chào,</div>
-                <div className="text-[18px] font-semibold leading-tight text-[var(--green-dark)]">Quý khách hàng</div>
+                <div className="truncate text-[18px] font-semibold leading-tight text-[var(--green-dark)]">{authUser.name || "Hội viên Hòa Phúc"}</div>
               </div>
             </div>
             <div className="border-l border-[rgba(15,77,50,0.12)] pl-4 text-right">
@@ -138,7 +146,7 @@ export function MobileHomeSections({ products, categories }: { products: Product
             ))}
           </div>
         </div>
-      </section>
+      </section> : null}
 
       <section className="px-4 pt-4">
         <div

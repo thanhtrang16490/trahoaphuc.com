@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { BreadcrumbJsonLd, FAQJsonLd } from "@/components/seo";
 import { brand } from "@/data/site";
+import { MembershipMembers } from "@/components/membership-members";
 
 export const metadata: Metadata = {
   title: "Hội viên thân thiết",
@@ -32,41 +33,10 @@ const memberTiers = [
   },
 ];
 
-const mockMembers = [
-  {
-    name: "Nguyễn Thị Hạnh",
-    city: "Ninh Bình",
-    points: 4850,
-    orders: 24,
-    tier: "Hội viên vàng",
-  },
-  {
-    name: "Phạm Quốc Huy",
-    city: "Hà Nội",
-    points: 2320,
-    orders: 15,
-    tier: "Hội viên thân thiết",
-  },
-  {
-    name: "Lê Thảo Vy",
-    city: "Nam Định",
-    points: 980,
-    orders: 8,
-    tier: "Thành viên mới",
-  },
-  {
-    name: "Trần Minh Anh",
-    city: "Thanh Hóa",
-    points: 1650,
-    orders: 12,
-    tier: "Hội viên thân thiết",
-  },
-];
-
 const faqs = [
   {
-    question: "1 điểm có giá trị như thế nào?",
-    answer: "1 điểm tương đương 1 đồng trong hệ thống đổi quà và voucher Hòa Phúc.",
+    question: "Điểm hội viên được tính như thế nào?",
+    answer: "Điểm hiển thị hiện được tạm tính theo giá trị các đơn đã xác nhận. Quy đổi chính thức sẽ được Hòa Phúc công bố khi chương trình tích điểm vận hành đầy đủ.",
   },
   {
     question: "Làm sao để lên hạng hội viên?",
@@ -97,7 +67,7 @@ export default function MembershipPage() {
                 <div className="max-w-2xl">
               <div className="inline-flex items-center gap-2 rounded-full border border-white/18 bg-white/10 px-3 py-1.5 text-[12px] font-semibold text-white/90">
                     ✦
-                    Điểm thưởng = 1 đồng
+                    Điểm thưởng theo giá trị đơn
                   </div>
                   <h1 className="mt-4 text-[clamp(2.2rem,5vw,4.8rem)] font-semibold leading-[0.96] tracking-[-0.05em]">
                     Trở thành hội viên để tích điểm, đổi quà và mở khóa ưu đãi riêng.
@@ -120,7 +90,7 @@ export default function MembershipPage() {
 
               <div className="mt-6 grid gap-3 sm:grid-cols-3">
                 {[
-                  { label: "Tích điểm", value: "1 điểm = 1 đồng", mark: "★" },
+                  { label: "Tích điểm", value: "Theo giá trị đơn", mark: "★" },
                   { label: "Đổi quà", value: "Voucher & quà tặng", mark: "🎁" },
                   { label: "Ưu tiên", value: "Đặc quyền theo hạng", mark: "◎" },
                 ].map(({ label, value, mark }) => (
@@ -166,43 +136,7 @@ export default function MembershipPage() {
                 <span className="h-px w-8 bg-[var(--green)]" />
                 Danh sách hội viên
               </div>
-              <h2 className="mt-4 text-[clamp(1.5rem,3vw,2.4rem)] font-semibold tracking-[-0.04em] text-[var(--green-dark)]">
-                Mock data hội viên thân thiết
-              </h2>
-              <p className="mt-3 text-[14px] leading-7 text-[var(--muted)]">
-                Danh sách này là dữ liệu mô phỏng để thể hiện giao diện, điểm thưởng và hạng thành viên trước khi nối
-                sang hệ thống thật.
-              </p>
-
-              <div className="mt-6 space-y-3">
-                {mockMembers.map((member, index) => (
-                  <div
-                    key={member.name}
-                    className="flex items-center gap-3 rounded-[24px] border border-[rgba(15,77,50,0.08)] bg-[rgba(15,77,50,0.03)] p-3"
-                  >
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[rgba(15,77,50,0.08)] text-[var(--green)]">
-                      <span className="text-[18px] font-semibold leading-none">◉</span>
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center justify-between gap-2">
-                        <div className="truncate text-[15px] font-semibold text-[var(--green-dark)]">{member.name}</div>
-                        <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--brown)]">
-                          #{index + 1}
-                        </div>
-                      </div>
-                      <div className="mt-1 text-[12px] leading-5 text-[var(--muted)]">
-                        {member.city} · {member.orders} đơn
-                      </div>
-                      <div className="mt-1 flex items-center gap-2 text-[12px] font-semibold text-[var(--green-dark)]">
-                        <span className="text-[11px]">✦</span>
-                        {member.tier}
-                        <span className="text-[rgba(15,77,50,0.22)]">|</span>
-                        {member.points} điểm
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <MembershipMembers />
             </div>
 
             <div className="rounded-[28px] border border-[rgba(15,77,50,0.08)] bg-[rgba(15,77,50,0.04)] p-5">
