@@ -15,6 +15,7 @@ function serializeProduct(product: Product) {
     ingredients: product.ingredients,
     benefits: product.benefits,
     price: product.price ?? getProductPrice(product.slug),
+    originalPrice: product.originalPrice ?? product.price ?? getProductPrice(product.slug),
     packageLabel: product.packageLabel,
     origin: product.origin,
     image: `${siteOrigin}${product.image}`,

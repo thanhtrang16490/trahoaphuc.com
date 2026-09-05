@@ -25,8 +25,9 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   if (error) return apiError("Không thể cập nhật sản phẩm.", 503);
   if (body.price_vnd !== undefined) {
     const price = Number(body.price_vnd);
-    if (!Number.isInteger(price) || price <= 0) return apiError("Giá sản phẩm không hợp lệ.", 422);
-    const { error: priceError } = await context.admin.from("product_prices").update({ price_vnd: price }).eq("product_id", id);
+    const originalPrice = body.original_price_vnd === undefined || body.original_price_vnd === "" ? price : Number(body.original_price_vnd);
+    if (!Number.isInteger(price) || price <= 0 || !Number.isInteger(originalPrice) || originalPrice < price) return apiError("Giá gốc phải lớn hơn hoặc bằng giá bán.", 422);
+    const { error: priceError } = await context.admin.from("product_prices").update({ price_vnd: price, original_price_vnd: originalPrice }).eq("product_id", id);
     if (priceError) return apiError("Sản phẩm đã cập nhật nhưng giá chưa đồng bộ.", 503);
   }
   return apiResponse(data);

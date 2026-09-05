@@ -25,5 +25,6 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   };
   const { error: profileError } = await context.admin.from("profiles").update(profileFields).eq("id", id);
   if (profileError) return apiError("Vai trò đã cập nhật nhưng hồ sơ chưa đồng bộ.", 503);
+  if (role === "dealer") await context.admin.from("dealer_profiles").upsert({ user_id: id, status: "pending" }, { onConflict: "user_id" });
   return apiResponse(data);
 }

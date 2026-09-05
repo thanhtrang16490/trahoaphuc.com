@@ -81,6 +81,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
   const related = await getRelatedProducts(product.slug);
   const price = product.price ?? getProductPrice(product.slug);
+  const originalPrice = product.originalPrice ?? price;
 
   return (
     <main className="section !pt-0 bg-transparent pb-[calc(env(safe-area-inset-bottom)+136px)] md:bg-[#f6f8f6] md:pb-24">
@@ -91,7 +92,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
           { name: product.name, href: `/san-pham/${product.slug}` },
         ]}
       />
-      <ProductJsonLd product={product} price={price} url={`https://hoaphucfarm.com/san-pham/${product.slug}`} />
+              <ProductJsonLd product={product} price={price} url={`https://hoaphucfarm.com/san-pham/${product.slug}`} />
       <FAQJsonLd questions={productFaqs} />
       <MobileBackHeader href="/san-pham" section="Sản phẩm" title={product.name} />
       <section className="hidden bg-[linear-gradient(135deg,#063b27_0%,#0f4d32_58%,#1b6a43_100%)] text-white md:block">
@@ -147,7 +148,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
               <h1 className="text-[26px] font-semibold leading-[1.08] tracking-[-0.03em] text-[var(--green-dark)]">
                 {product.name}
               </h1>
-              <div className="mt-3 text-[30px] font-semibold leading-none text-[var(--green)]">{formatCurrency(price)}</div>
+              <div className="mt-3 text-[30px] font-semibold leading-none text-[var(--green)]">{formatCurrency(price)}</div>{originalPrice > price ? <div className="mt-2 text-sm text-[var(--muted)] line-through">Giá gốc: {formatCurrency(originalPrice)}</div> : null}
               <div className="mt-3 flex flex-wrap gap-2">
                 <span className="rounded-[4px] border border-[var(--green)] px-3 py-1 text-[12px] font-semibold text-[var(--green)]">
                   Tích điểm đổi quà
@@ -297,7 +298,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
             </div>
             <h1 className="mt-5 text-2xl font-bold leading-tight tracking-[-0.03em] text-[var(--green-dark)] lg:text-3xl">{product.name}</h1>
             <div className="mt-4 flex flex-wrap items-center gap-3">
-              <div className="text-2xl font-semibold text-[var(--green-dark)] md:text-3xl">{formatCurrency(price)}</div>
+              <div className="text-2xl font-semibold text-[var(--green-dark)] md:text-3xl">{formatCurrency(price)}</div>{originalPrice > price ? <div className="mt-1 text-sm text-[var(--muted)] line-through">Giá gốc: {formatCurrency(originalPrice)}</div> : null}
               <span className="rounded-full bg-[var(--green)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-white">
                 Hàng local
               </span>

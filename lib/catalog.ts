@@ -34,6 +34,7 @@ type SupabaseProductRow = {
 type SupabasePriceRow = {
   product_id: string;
   price_vnd: number | string;
+  original_price_vnd: number | string;
 };
 
 export type Catalog = {
@@ -73,7 +74,7 @@ async function fetchCatalogFromSupabase(): Promise<Catalog> {
       .eq("is_active", true)
       .order("sort_order", { ascending: true })
       .order("name", { ascending: true }),
-    supabase.from("product_prices").select("product_id, price_vnd"),
+    supabase.from("product_prices").select("product_id, price_vnd, original_price_vnd"),
   ]);
 
   if (categoriesResult.error) throw categoriesResult.error;
@@ -85,6 +86,7 @@ async function fetchCatalogFromSupabase(): Promise<Catalog> {
   const priceRows = (pricesResult.data ?? []) as SupabasePriceRow[];
   const categoryById = new Map(categoryRows.map((category) => [category.id, category]));
   const priceByProductId = new Map(priceRows.map((price) => [price.product_id, Number(price.price_vnd)]));
+  const originalPriceByProductId = new Map(priceRows.map((price) => [price.product_id, Number(price.original_price_vnd || price.price_vnd)]));
 
   return {
     categories: categoryRows.map(({ slug, name, description }) => ({ slug, name, description })),
@@ -95,6 +97,7 @@ async function fetchCatalogFromSupabase(): Promise<Catalog> {
         name: product.name,
         category: categoryById.get(product.category_id)?.name ?? "",
         price: priceByProductId.get(product.id) ?? getProductPrice(product.slug),
+        originalPrice: originalPriceByProductId.get(product.id) ?? getProductPrice(product.slug),
         shortDescription: product.short_description,
         longDescription: product.long_description,
         ingredients: toStringArray(product.ingredients),

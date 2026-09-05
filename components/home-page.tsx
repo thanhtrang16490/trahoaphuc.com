@@ -364,9 +364,8 @@ export function HomePage({ products, categories }: { products: Product[]; catego
                       <p className="mt-3 line-clamp-2 min-h-[3.5rem] text-sm leading-7 text-[var(--muted)]">{product.shortDescription}</p>
                       <div className="mt-4 flex items-center justify-between gap-3 border-t border-[rgba(15,77,50,0.1)] pt-4">
                         <div className="min-w-0">
-                          <div className="text-xl font-semibold tracking-[-0.04em] text-[var(--green-dark)]">
-                            {formatCurrency(product.price ?? getProductPrice(product.slug))}
-                          </div>
+                          <div className="text-xl font-semibold tracking-[-0.04em] text-[var(--green-dark)]">{formatCurrency(product.price ?? getProductPrice(product.slug))}</div>
+                          {product.originalPrice && product.originalPrice > (product.price ?? 0) ? <div className="text-xs text-[var(--muted)] line-through">{formatCurrency(product.originalPrice)}</div> : null}
                           <div className="mt-1 truncate text-xs text-[var(--muted)]">{product.packageLabel}</div>
                         </div>
                         <span className="shrink-0 rounded-full bg-[rgba(15,77,50,0.06)] px-3 py-1 text-xs font-semibold text-[var(--green)]">

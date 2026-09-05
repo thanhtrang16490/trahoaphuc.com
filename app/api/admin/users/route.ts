@@ -41,6 +41,7 @@ export async function POST(request: Request) {
       await context.admin.auth.admin.deleteUser(data.user.id);
       return apiError("Không thể đồng bộ hồ sơ và vai trò tài khoản.", 503);
     }
+    if (role === "dealer") await context.admin.from("dealer_profiles").upsert({ user_id: data.user.id, status: "pending" }, { onConflict: "user_id" });
     return apiResponse({ id: data.user.id, email, role });
   } catch {
     return apiError("Hệ thống quản trị tài khoản chưa sẵn sàng.", 503);

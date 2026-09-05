@@ -3,6 +3,7 @@ export type Product = {
   name: string;
   category: string;
   price?: number;
+  originalPrice?: number;
   shortDescription: string;
   longDescription: string;
   ingredients: string[];

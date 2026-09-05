@@ -9,7 +9,8 @@ const items = [
   { label: "Sản phẩm & tồn kho", href: "/quan-tri/san-pham", icon: Cube },
   { label: "Đơn hàng", href: "/quan-tri/don-hang", icon: ClipboardText },
   { label: "Khách hàng", href: "/quan-tri/khach-hang", icon: UsersThree },
-  { label: "Đại lý & lead", href: "/quan-tri/dai-ly", icon: UserSwitch },
+  { label: "Đại lý", href: "/quan-tri/dai-ly", icon: UserSwitch },
+  { label: "Lead", href: "/quan-tri/lead", icon: UserSwitch },
   { label: "Mã giảm giá", href: "/quan-tri/coupon", icon: Tag },
   { label: "Tin tức", href: "/quan-tri/tin-tuc", icon: Newspaper },
 ];

@@ -12,6 +12,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
   return apiResponse({
     ...product,
     price: product.price ?? getProductPrice(product.slug),
+    originalPrice: product.originalPrice ?? product.price ?? getProductPrice(product.slug),
     image: `${siteOrigin}${product.image}`,
     boxImage: `${siteOrigin}${product.boxImage}`,
   });

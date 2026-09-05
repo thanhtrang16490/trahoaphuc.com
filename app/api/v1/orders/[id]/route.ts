@@ -23,6 +23,7 @@ export async function PATCH(_request: Request, { params }: { params: Promise<{ i
       };
       return apiError(messages[code] || "Không thể hủy đơn hàng.", code === "ORDER_FORBIDDEN" ? 403 : 422);
     }
+    await admin.from("orders").update({ dealer_commission_status: "cancelled" }).eq("id", id).eq("customer_id", data.user.id).not("dealer_id", "is", null);
     return apiResponse(order);
   } catch {
     void notifyTelegramSystem({ title: "Không thể hủy đơn hàng", detail: `Order ID: ${id}` });
