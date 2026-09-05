@@ -4,15 +4,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { useMemo, useState } from "react";
 import { FunnelSimple, MagnifyingGlass, Sparkle, Tag } from "@phosphor-icons/react";
-import { categories } from "@/data/categories";
-import { products } from "@/data/products";
+import type { Category } from "@/data/categories";
+import type { Product } from "@/data/products";
 import { formatCurrency, getProductPrice } from "@/data/pricing";
 import { useMobileScrollVisibility } from "@/components/use-mobile-scroll-visibility";
-
-const categoryMap = [
-  { label: "Tất cả", value: "all" },
-  ...categories.map((category) => ({ label: category.name, value: category.name })),
-];
 
 const quickChips = [
   "Trà Dưỡng Tâm An Nhiên",
@@ -25,10 +20,14 @@ const quickChips = [
   "Đặc sản vùng miền",
 ];
 
-export function CategoryIndexClient() {
+export function CategoryIndexClient({ products, categories }: { products: Product[]; categories: Category[] }) {
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
   const { hidden } = useMobileScrollVisibility();
+  const categoryMap = [
+    { label: "Tất cả", value: "all" },
+    ...categories.map((category) => ({ label: category.name, value: category.name })),
+  ];
 
   const filteredProducts = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -131,7 +130,7 @@ export function CategoryIndexClient() {
         <div className="bg-white px-4 pb-6 pt-2">
           <div className="grid grid-cols-2 gap-3">
             {filteredProducts.map((product) => {
-              const price = getProductPrice(product.slug);
+              const price = product.price ?? getProductPrice(product.slug);
               return (
                 <article
                   key={product.slug}
@@ -217,7 +216,7 @@ export function CategoryIndexClient() {
 
         <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {filteredProducts.map((product) => {
-            const price = getProductPrice(product.slug);
+            const price = product.price ?? getProductPrice(product.slug);
             return (
               <article key={product.slug} className="card overflow-hidden rounded-[28px]">
                 <Link href={`/san-pham/${product.slug}`}>

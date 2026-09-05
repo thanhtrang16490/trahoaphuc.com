@@ -6,9 +6,10 @@ import { addProductToCart } from "./cart-store";
 import { useToast } from "@/components/toast";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import type { Product } from "@/data/products";
 
-export function AddToCartButton({ slug, className = "", buyNow = false }: { slug: string; className?: string; buyNow?: boolean }) {
-  const product = products.find((item) => item.slug === slug);
+export function AddToCartButton({ slug, product: providedProduct, className = "", buyNow = false }: { slug: string; product?: Product; className?: string; buyNow?: boolean }) {
+  const product = providedProduct ?? products.find((item) => item.slug === slug);
   const { showToast } = useToast();
   const router = useRouter();
   const [isAdding, setIsAdding] = useState(false);

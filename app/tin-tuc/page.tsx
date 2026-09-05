@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { BreadcrumbJsonLd } from "@/components/seo";
-import { blogPosts } from "@/data/blog";
+import { getNewsPosts } from "@/lib/news";
 
 export const metadata: Metadata = {
   title: "Tin tức và câu chuyện Hòa Phúc",
@@ -16,13 +16,6 @@ export const metadata: Metadata = {
 };
 
 const categoryOrder = ["Trà thảo mộc", "Quà biếu", "Xu hướng", "Câu chuyện thương hiệu", "Lối sống", "Chăm sóc"];
-const categoryCounts = blogPosts.reduce<Record<string, number>>((counts, post) => {
-  counts[post.category] = (counts[post.category] ?? 0) + 1;
-  return counts;
-}, {});
-
-const featuredPosts = blogPosts.slice(0, 3);
-
 export default async function BlogIndexPage({ searchParams }: BlogIndexContentProps) {
   return <BlogIndexContent searchParams={searchParams} />;
 }
@@ -33,6 +26,12 @@ type BlogIndexContentProps = {
 
 async function BlogIndexContent({ searchParams }: BlogIndexContentProps = {}) {
   const params = searchParams ? await searchParams : {};
+  const blogPosts = await getNewsPosts();
+  const categoryCounts = blogPosts.reduce<Record<string, number>>((counts, post) => {
+    counts[post.category] = (counts[post.category] ?? 0) + 1;
+    return counts;
+  }, {});
+  const featuredPosts = blogPosts.slice(0, 3);
   const selectedCategory = categoryOrder.includes(params.category ?? "") ? params.category : null;
   const visiblePosts = selectedCategory ? blogPosts.filter((post) => post.category === selectedCategory) : blogPosts;
 

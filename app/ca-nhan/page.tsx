@@ -7,6 +7,7 @@ import { BreadcrumbJsonLd } from "@/components/seo";
 import type { AuthUser } from "@/components/auth-store";
 import { clearAuthUser, isMockAdminUser, readAuthUser, subscribeAuth } from "@/components/auth-store";
 import { brand } from "@/data/site";
+import { formatCurrency } from "@/data/pricing";
 import { useMobileScrollVisibility } from "@/components/use-mobile-scroll-visibility";
 
 const orderStates = [
@@ -39,9 +40,30 @@ const specialOffers = [
   },
 ];
 
+type CustomerOrder = {
+  id: string;
+  order_number: string;
+  status: string;
+  total_vnd: number;
+  created_at: string;
+  order_items?: Array<{ product_name: string; quantity: number }>;
+};
+
+const orderStatusLabels: Record<string, string> = {
+  pending: "Chờ xác nhận",
+  confirmed: "Đã xác nhận",
+  packing: "Đang chuẩn bị",
+  shipping: "Đang giao hàng",
+  delivered: "Đã giao",
+  cancelled: "Đã hủy",
+};
+
 export default function ProfilePage() {
   const { hidden } = useMobileScrollVisibility();
   const [authUser, setAuthUser] = useState<AuthUser | null>(null);
+  const [orders, setOrders] = useState<CustomerOrder[]>([]);
+  const [ordersLoading, setOrdersLoading] = useState(false);
+  const [cancellingOrder, setCancellingOrder] = useState<string | null>(null);
 
   useEffect(() => {
     const syncAuth = () => setAuthUser(readAuthUser());
@@ -49,9 +71,54 @@ export default function ProfilePage() {
     return subscribeAuth(syncAuth);
   }, []);
 
+  useEffect(() => {
+    let active = true;
+    if (!authUser?.id) {
+      setOrders([]);
+      setOrdersLoading(false);
+      return () => {
+        active = false;
+      };
+    }
+
+    setOrdersLoading(true);
+    fetch("/api/v1/orders", { cache: "no-store" })
+      .then((response) => response.json())
+      .then((payload) => {
+        if (active && payload?.ok && Array.isArray(payload.data)) {
+          setOrders(payload.data as CustomerOrder[]);
+        }
+      })
+      .catch(() => {
+        if (active) setOrders([]);
+      })
+      .finally(() => {
+        if (active) setOrdersLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [authUser?.id]);
+
   const isLoggedIn = Boolean(authUser);
   const points = isLoggedIn ? (isMockAdminUser(authUser) ? 1280 : 320) : 0;
   const avatarLetter = (authUser?.name || "H").trim().charAt(0).toUpperCase();
+
+  const cancelOrder = async (order: CustomerOrder) => {
+    if (!window.confirm(`Hủy đơn ${order.order_number}?`)) return;
+    setCancellingOrder(order.id);
+    try {
+      const response = await fetch(`/api/v1/orders/${order.id}`, { method: "PATCH" });
+      const payload = await response.json();
+      if (!response.ok || !payload?.ok) throw new Error(payload?.error?.message || "Không thể hủy đơn hàng.");
+      setOrders((current) => current.map((item) => item.id === order.id ? { ...item, status: "cancelled" } : item));
+    } catch (error) {
+      window.alert(error instanceof Error ? error.message : "Không thể hủy đơn hàng.");
+    } finally {
+      setCancellingOrder(null);
+    }
+  };
 
   return (
     <main className="pb-[calc(env(safe-area-inset-bottom)+96px)] md:pb-24">
@@ -184,6 +251,35 @@ export default function ProfilePage() {
                 </div>
               ))}
             </div>
+            {isLoggedIn ? (
+              <section className="mt-4 rounded-[22px] border border-[rgba(15,77,50,0.08)] bg-white p-4 shadow-[0_10px_24px_rgba(15,77,50,0.06)]">
+                <div className="flex items-center justify-between gap-3">
+                  <h3 className="text-[16px] font-semibold text-[var(--green-dark)]">Đơn hàng gần đây</h3>
+                  <span className="text-xs text-[var(--muted)]">{orders.length} đơn</span>
+                </div>
+                {ordersLoading ? (
+                  <div className="mt-4 h-16 animate-pulse rounded-[16px] bg-[rgba(15,77,50,0.06)]" />
+                ) : orders.length ? (
+                  <div className="mt-3 divide-y divide-[rgba(15,77,50,0.08)]">
+                    {orders.slice(0, 3).map((order) => (
+                      <div key={order.order_number} className="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0">
+                        <div className="min-w-0">
+                          <div className="text-sm font-semibold text-[var(--green-dark)]">{order.order_number}</div>
+                          <div className="mt-1 truncate text-xs text-[var(--muted)]">{order.order_items?.[0]?.product_name ?? "Đơn hàng Hòa Phúc"}</div>
+                        </div>
+                        <div className="shrink-0 text-right">
+                          <div className="text-sm font-semibold text-[var(--green)]">{formatCurrency(order.total_vnd)}</div>
+                          <div className="mt-1 text-xs text-[var(--muted)]">{orderStatusLabels[order.status] ?? order.status}</div>
+                          {order.status === "pending" || order.status === "confirmed" ? <button type="button" className="mt-2 text-xs font-semibold text-[#a63d3d] underline underline-offset-2 disabled:opacity-50" disabled={cancellingOrder === order.id} onClick={() => void cancelOrder(order)}>{cancellingOrder === order.id ? "Đang hủy..." : "Hủy đơn"}</button> : null}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="mt-3 text-sm leading-6 text-[var(--muted)]">Bạn chưa có đơn hàng nào. Hãy khám phá sản phẩm Hòa Phúc.</p>
+                )}
+              </section>
+            ) : null}
           </section>
 
           <section className="mt-4 overflow-hidden rounded-[22px] bg-white shadow-[0_10px_24px_rgba(15,77,50,0.08)]">

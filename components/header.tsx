@@ -9,6 +9,7 @@ import type { CartItem } from "./cart-store";
 import { clearCart, readCart, removeItem, subscribeCart, updateItem } from "./cart-store";
 import { formatCurrency } from "@/data/pricing";
 import { brand } from "@/data/site";
+import { readAuthUser, subscribeAuth } from "./auth-store";
 
 const links = [
   { href: "/", label: "Trang chủ" },
@@ -43,11 +44,17 @@ export function Header() {
   const [cartOpen, setCartOpen] = useState(false);
   const [items, setItems] = useState<CartItem[]>([]);
   const [badgeBump, setBadgeBump] = useState(false);
+  const [authUser, setAuthUser] = useState<ReturnType<typeof readAuthUser>>(null);
 
   useEffect(() => {
     const syncCart = () => setItems(readCart());
     syncCart();
     return subscribeCart(syncCart);
+  }, []);
+  useEffect(() => {
+    const syncAuth = () => setAuthUser(readAuthUser());
+    syncAuth();
+    return subscribeAuth(syncAuth);
   }, []);
   const count = items.reduce((sum, item) => sum + item.quantity, 0);
   const subtotal = items.reduce((sum, item) => sum + item.quantity * item.price, 0);
@@ -99,12 +106,12 @@ export function Header() {
           </nav>
 
           <div className="flex items-center gap-2 md:gap-3 md:order-2">
-            <button aria-label="Tìm kiếm" className="hidden md:inline-flex panel pill p-3">
+            <Link href="/tim-kiem" aria-label="Tìm kiếm" className="hidden md:inline-flex panel pill p-3">
               <MagnifyingGlass size={18} weight="bold" />
-            </button>
-            <button aria-label="Tài khoản" className="hidden sm:inline-flex panel pill p-3">
+            </Link>
+            <Link href={authUser?.role === "admin" ? "/quan-tri" : "/ca-nhan"} aria-label={authUser?.role === "admin" ? "Mở quản trị" : "Mở tài khoản"} className="hidden sm:inline-flex panel pill p-3">
               <UserCircle size={18} weight="bold" />
-            </button>
+            </Link>
             <button aria-label="Giỏ hàng" className="hidden md:inline-flex panel pill relative p-3" onClick={() => setCartOpen(true)}>
               <ShoppingCartSimple size={18} weight="bold" />
               {count > 0 ? (

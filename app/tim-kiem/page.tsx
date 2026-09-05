@@ -2,18 +2,12 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, FunnelSimple, MagnifyingGlass, Sparkle, Tag } from "@phosphor-icons/react";
-import { products } from "@/data/products";
+import { products as localProducts, type Product } from "@/data/products";
+import { categories as localCategories, type Category } from "@/data/categories";
 import { formatCurrency, getProductPrice } from "@/data/pricing";
 import { useMobileScrollVisibility } from "@/components/use-mobile-scroll-visibility";
-
-const categoryMap = [
-  { label: "Tất cả", value: "all" },
-  { label: "Trà thảo mộc", value: "Trà thảo mộc" },
-  { label: "Dưỡng sinh", value: "Dưỡng sinh" },
-  { label: "Đặc sản vùng miền", value: "Đặc sản vùng miền" },
-];
 
 const quickChips = [
   "Trà Dưỡng Tâm An Nhiên",
@@ -27,9 +21,41 @@ const quickChips = [
 ];
 
 export default function SearchPage() {
+  const [products, setProducts] = useState<Product[]>(localProducts);
+  const [categories, setCategories] = useState<Category[]>(localCategories);
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
   const { hidden } = useMobileScrollVisibility();
+
+  useEffect(() => {
+    let active = true;
+
+    Promise.all([
+      fetch("/api/v1/products?limit=50", { cache: "no-store" }).then((response) => response.json()),
+      fetch("/api/v1/categories", { cache: "no-store" }).then((response) => response.json()),
+    ])
+      .then(([productsPayload, categoriesPayload]) => {
+        if (!active) return;
+        if (productsPayload?.ok && Array.isArray(productsPayload.data?.items)) {
+          setProducts(productsPayload.data.items as Product[]);
+        }
+        if (categoriesPayload?.ok && Array.isArray(categoriesPayload.data)) {
+          setCategories(categoriesPayload.data as Category[]);
+        }
+      })
+      .catch(() => {
+        // Keep the local catalog if the API is temporarily unavailable.
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const categoryMap = [
+    { label: "Tất cả", value: "all" },
+    ...categories.map((category) => ({ label: category.name, value: category.name })),
+  ];
 
   const filteredProducts = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -129,7 +155,7 @@ export default function SearchPage() {
         <div className="bg-white px-4 pb-6 pt-2">
           <div className="grid grid-cols-2 gap-3">
             {filteredProducts.map((product) => {
-              const price = getProductPrice(product.slug);
+              const price = product.price ?? getProductPrice(product.slug);
               return (
                 <article
                   key={product.slug}
@@ -232,7 +258,7 @@ export default function SearchPage() {
         </div>
         <div className="mt-8 grid grid-cols-2 gap-5 xl:grid-cols-3">
           {filteredProducts.map((product) => {
-            const price = getProductPrice(product.slug);
+            const price = product.price ?? getProductPrice(product.slug);
             return (
               <article key={product.slug} className="card overflow-hidden rounded-[28px]">
                 <Link href={`/san-pham/${product.slug}`}>

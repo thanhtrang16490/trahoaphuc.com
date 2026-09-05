@@ -1,25 +1,33 @@
-import { products } from "@/data/products";
+import type { Product } from "@/data/products";
 import { getProductPrice } from "@/data/pricing";
 import { apiOptions, apiResponse } from "@/lib/api-v1";
+import { getProducts } from "@/lib/catalog";
 
 const siteOrigin = process.env.NEXT_PUBLIC_SITE_URL ?? "https://trahoaphuc.com";
 
-function serializeProduct(product: (typeof products)[number]) {
+function serializeProduct(product: Product) {
   return {
     slug: product.slug,
     name: product.name,
     category: product.category,
     shortDescription: product.shortDescription,
-    price: getProductPrice(product.slug),
+    longDescription: product.longDescription,
+    ingredients: product.ingredients,
+    benefits: product.benefits,
+    price: product.price ?? getProductPrice(product.slug),
     packageLabel: product.packageLabel,
     origin: product.origin,
     image: `${siteOrigin}${product.image}`,
     imageWidth: product.imageWidth,
     imageHeight: product.imageHeight,
+    boxImage: `${siteOrigin}${product.boxImage}`,
+    boxImageWidth: product.boxImageWidth,
+    boxImageHeight: product.boxImageHeight,
   };
 }
 
-export function GET(request: Request) {
+export async function GET(request: Request) {
+  const products = await getProducts();
   const url = new URL(request.url);
   const query = url.searchParams.get("q")?.trim().toLowerCase() ?? "";
   const category = url.searchParams.get("category")?.trim().toLowerCase() ?? "";

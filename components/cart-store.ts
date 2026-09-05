@@ -13,7 +13,10 @@ export type CartItem = {
 
 export type CheckoutInfo = {
   name: string;
+  email: string;
   phone: string;
+  province: string;
+  ward: string;
   address: string;
   note: string;
 };
@@ -50,7 +53,7 @@ export function subscribeCart(listener: () => void) {
 
 export function addProductToCart(product: Product) {
   const items = readCart();
-  const price = getProductPrice(product.slug);
+  const price = product.price ?? getProductPrice(product.slug);
   const exists = items.find((item) => item.slug === product.slug);
   const next = exists
     ? items.map((item) => (item.slug === product.slug ? { ...item, quantity: item.quantity + 1 } : item))
@@ -87,18 +90,21 @@ export function saveCheckoutInfo(info: CheckoutInfo) {
 }
 
 export function readCheckoutInfo(): CheckoutInfo {
-  if (typeof window === "undefined") return { name: "", phone: "", address: "", note: "" };
+  if (typeof window === "undefined") return { name: "", email: "", phone: "", province: "", ward: "", address: "", note: "" };
   try {
     const raw = window.localStorage.getItem(CHECKOUT_KEY);
-    if (!raw) return { name: "", phone: "", address: "", note: "" };
+    if (!raw) return { name: "", email: "", phone: "", province: "", ward: "", address: "", note: "" };
     const parsed = JSON.parse(raw) as CheckoutInfo;
     return {
       name: parsed.name ?? "",
+      email: parsed.email ?? "",
       phone: parsed.phone ?? "",
+      province: parsed.province ?? "",
+      ward: parsed.ward ?? "",
       address: parsed.address ?? "",
       note: parsed.note ?? "",
     };
   } catch {
-    return { name: "", phone: "", address: "", note: "" };
+    return { name: "", email: "", phone: "", province: "", ward: "", address: "", note: "" };
   }
 }

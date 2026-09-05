@@ -2,6 +2,7 @@ export type Product = {
   slug: string;
   name: string;
   category: string;
+  price?: number;
   shortDescription: string;
   longDescription: string;
   ingredients: string[];

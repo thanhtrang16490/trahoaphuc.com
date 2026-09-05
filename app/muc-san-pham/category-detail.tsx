@@ -3,15 +3,17 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { BreadcrumbJsonLd } from "@/components/seo";
 import { ProductCardActions } from "@/components/product-card-actions";
-import { categories, getCategoryBySlug, getProductsByCategoryName } from "@/data/categories";
 import { formatCurrency, getProductPrice } from "@/data/pricing";
+import { getCatalog } from "@/lib/catalog";
 
-export function generateCategoryStaticParams() {
+export async function generateCategoryStaticParams() {
+  const { categories } = await getCatalog();
   return categories.map((category) => ({ slug: category.slug }));
 }
 
-export function generateCategoryMetadata(slug: string) {
-  const category = getCategoryBySlug(slug);
+export async function generateCategoryMetadata(slug: string) {
+  const { categories } = await getCatalog();
+  const category = categories.find((item) => item.slug === slug);
   if (!category) return {};
 
   return {
@@ -28,11 +30,12 @@ export function generateCategoryMetadata(slug: string) {
   };
 }
 
-export function CategoryDetailPage({ slug }: { slug: string }) {
-  const category = getCategoryBySlug(slug);
+export async function CategoryDetailPage({ slug }: { slug: string }) {
+  const { categories, products } = await getCatalog();
+  const category = categories.find((item) => item.slug === slug);
   if (!category) notFound();
 
-  const items = getProductsByCategoryName(category.name);
+  const items = products.filter((product) => product.category === category.name);
 
   return (
     <main className="section pt-10 md:pt-14 pb-[calc(env(safe-area-inset-bottom)+96px)] md:pb-24">
@@ -62,7 +65,7 @@ export function CategoryDetailPage({ slug }: { slug: string }) {
 
         <div className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-2 md:gap-5 xl:grid-cols-3 xl:gap-6">
           {items.map((product) => {
-            const price = getProductPrice(product.slug);
+            const price = product.price ?? getProductPrice(product.slug);
             return (
               <article key={product.slug} className="card overflow-hidden rounded-[22px] md:rounded-[32px]">
                 <Link href={`/san-pham/${product.slug}`} className="block">

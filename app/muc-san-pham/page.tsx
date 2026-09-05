@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { BreadcrumbJsonLd } from "@/components/seo";
 import { CategoryIndexClient } from "./category-index-client";
+import { getCatalog } from "@/lib/catalog";
 
 export const metadata: Metadata = {
   title: "Mục sản phẩm",
@@ -15,11 +16,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function CategoryIndexPage() {
+export default async function CategoryIndexPage() {
+  const { products, categories } = await getCatalog();
+
   return (
     <main className="pb-[calc(env(safe-area-inset-bottom)+96px)] md:pb-24">
       <BreadcrumbJsonLd items={[{ name: "Trang chủ", href: "/" }, { name: "Mục sản phẩm", href: "/muc-san-pham" }]} />
-      <CategoryIndexClient />
+      <CategoryIndexClient products={products} categories={categories} />
     </main>
   );
 }

@@ -176,13 +176,13 @@ html :where(h1, h2, h3, h4, [id]) { scroll-margin-top: 96px; }
 .button:active { transform: translateY(0) scale(0.98); }
 
 .button-primary {
-  background: var(--green);
+  background-color: var(--green);
   color: white;
   border: 1px solid var(--green);
 }
 
 .button-secondary {
-  background: rgba(255, 255, 255, 0.48);
+  background-color: rgba(255, 255, 255, 0.48);
   color: var(--green-dark);
   border: 1px solid rgba(15, 77, 50, 0.16);
 }
@@ -346,4 +346,43 @@ html :where(h1, h2, h3, h4, [id]) { scroll-margin-top: 96px; }
 
 @media (max-width: 767px) {
   .section { padding: 64px 0; }
+}
+
+.admin-table {
+  overflow: hidden;
+  border: 1px solid rgba(15, 77, 50, 0.1);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.admin-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 20px;
+  border-bottom: 1px solid rgba(15, 77, 50, 0.08);
+  padding: 18px 20px;
+  color: var(--green-dark);
+}
+
+.admin-row:last-child { border-bottom: 0; }
+
+.admin-form {
+  display: grid;
+  gap: 12px;
+  border: 1px solid rgba(15, 77, 50, 0.1);
+  border-radius: 24px;
+  background: #fff;
+  padding: 20px;
+}
+
+.admin-form-title {
+  color: var(--green-dark);
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+@media (max-width: 640px) {
+  .admin-row { grid-template-columns: minmax(0, 1fr) auto; gap: 12px; }
+  .admin-row > :last-child { grid-column: 2; }
 }

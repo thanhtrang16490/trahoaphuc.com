@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { BreadcrumbJsonLd, FAQJsonLd } from "@/components/seo";
 import { brand } from "@/data/site";
+import { AgentLeadForm } from "@/components/agent-lead-form";
 
 export const metadata: Metadata = {
   title: "Đăng ký đại lý",
@@ -146,11 +147,11 @@ export default function AgentSignupPage() {
                 Gửi thông tin để chúng tôi tư vấn nhanh
               </h2>
               <p className="mt-3 text-[14px] leading-7 text-[var(--muted)]">
-                Chỉ cần điền vài thông tin cơ bản, đội ngũ Hòa Phúc sẽ phản hồi chính sách và danh mục phù hợp cho khu
-                vực của bạn. Form đang lưu local để dễ nối API sau này.
+                Chỉ cần điền vài thông tin cơ bản, đội ngũ Hòa Phúc sẽ phản hồi chính sách và danh mục phù hợp cho khu vực của bạn.
               </p>
 
-              <form className="mt-6 space-y-4">
+              <AgentLeadForm />
+              {/*
                 <label className="block">
                   <span className="mb-2 block text-sm font-semibold text-[var(--green-dark)]">Họ và tên / doanh nghiệp</span>
                   <input
@@ -242,7 +243,7 @@ export default function AgentSignupPage() {
                 <p className="text-[12px] leading-6 text-[var(--muted)]">
                   Bằng việc gửi form, bạn đồng ý để Hòa Phúc liên hệ tư vấn qua điện thoại hoặc fanpage.
                 </p>
-              </form>
+              </form> */}
             </div>
 
             <div className="mt-4 rounded-[28px] border border-[rgba(15,77,50,0.08)] bg-[rgba(15,77,50,0.04)] p-5">

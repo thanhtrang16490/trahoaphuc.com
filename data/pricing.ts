@@ -25,7 +25,7 @@ export function buildCartItem(product: Product) {
     slug: product.slug,
     name: product.name,
     image: product.image,
-    price: getProductPrice(product.slug),
+    price: product.price ?? getProductPrice(product.slug),
     quantity: 1,
   };
 }

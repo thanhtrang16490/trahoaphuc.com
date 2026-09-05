@@ -116,7 +116,7 @@ export function ProductCatalogDesktop({ products }: { products: Product[] }) {
                       <div className="flex items-center justify-between gap-3 border-t border-gray-100 pt-2 text-xs"><span className="text-gray-500">Xuất xứ</span><span className="font-semibold text-gray-900">{product.origin}</span></div>
                     </div>
                     <div className="flex items-center justify-between gap-2 border-t border-gray-100 pt-3">
-                      <span className="text-sm font-bold text-[var(--green)]">{formatCurrency(getProductPrice(product.slug))}</span>
+                      <span className="text-sm font-bold text-[var(--green)]">{formatCurrency(product.price ?? getProductPrice(product.slug))}</span>
                       <ProductCardActions product={product} />
                     </div>
                   </div>

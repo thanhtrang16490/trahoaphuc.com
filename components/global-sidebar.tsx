@@ -31,6 +31,8 @@ export function GlobalSidebar() {
   const [expanded, setExpanded] = useState(false);
   const [productsOpen, setProductsOpen] = useState(pathname.startsWith("/san-pham") || pathname.startsWith("/muc-san-pham"));
 
+  if (pathname.startsWith("/quan-tri")) return null;
+
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
     return pathname.startsWith(href.split("#")[0]);

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { BreadcrumbJsonLd } from "@/components/seo";
-import { products } from "@/data/products";
 import { brand } from "@/data/site";
+import { getCatalog } from "@/lib/catalog";
 
 export const metadata: Metadata = {
   title: "Giới thiệu Hòa Phúc",
@@ -55,13 +55,14 @@ const journey = [
   },
 ];
 
-const stats = [
-  { value: String(products.length).padStart(2, "0"), label: "sản phẩm đang có" },
-  { value: "03", label: "nhóm sản phẩm" },
-  { value: "Cúc Phương", label: "điểm khởi đầu" },
-];
+export default async function IntroductionPage() {
+  const { products, categories } = await getCatalog();
+  const stats = [
+    { value: String(products.length).padStart(2, "0"), label: "sản phẩm đang có" },
+    { value: String(categories.length).padStart(2, "0"), label: "nhóm sản phẩm" },
+    { value: "Cúc Phương", label: "điểm khởi đầu" },
+  ];
 
-export default function IntroductionPage() {
   return (
     <main className="overflow-hidden pb-[calc(env(safe-area-inset-bottom)+96px)] md:pb-24">
       <BreadcrumbJsonLd items={[{ name: "Trang chủ", href: "/" }, { name: "Giới thiệu", href: "/gioi-thieu" }]} />

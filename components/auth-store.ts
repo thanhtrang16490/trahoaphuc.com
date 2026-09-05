@@ -1,6 +1,9 @@
 "use client";
 
+import { createClient } from "@/lib/supabase/client";
+
 export type AuthUser = {
+  id?: string;
   name: string;
   email: string;
   phone: string;
@@ -26,6 +29,7 @@ export function readAuthUser(): AuthUser | null {
     const parsed = JSON.parse(raw) as AuthUser;
     if (!parsed?.email) return null;
     return {
+      id: parsed.id ?? "",
       name: parsed.name ?? "",
       email: parsed.email ?? "",
       phone: parsed.phone ?? "",
@@ -74,6 +78,7 @@ export function isMockAdminUser(user: AuthUser | null) {
 export function clearAuthUser() {
   window.localStorage.removeItem(AUTH_KEY);
   window.dispatchEvent(new Event(AUTH_EVENT));
+  void createClient().auth.signOut();
 }
 
 export function subscribeAuth(listener: () => void) {

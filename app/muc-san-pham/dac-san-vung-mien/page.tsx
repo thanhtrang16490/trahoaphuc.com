@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { generateCategoryMetadata, CategoryDetailPage } from "../category-detail";
 
-export const metadata: Metadata = generateCategoryMetadata("dac-san-vung-mien");
+export async function generateMetadata(): Promise<Metadata> {
+  return generateCategoryMetadata("dac-san-vung-mien");
+}
 
-export default function Page() {
+export default async function Page() {
   return <CategoryDetailPage slug="dac-san-vung-mien" />;
 }

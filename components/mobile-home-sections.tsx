@@ -5,10 +5,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { Gift, Medal, ShoppingBagOpen, Storefront } from "@phosphor-icons/react";
 import { UserCircle } from "@phosphor-icons/react";
-import { categories } from "@/data/categories";
+import type { Category } from "@/data/categories";
 import { blogPosts } from "@/data/blog";
 import { homePageSections } from "@/data/home-page";
-import { products } from "@/data/products";
+import type { Product } from "@/data/products";
 
 const quickActions = [
   { label: ["Lịch sử", "Đơn hàng"], href: "/gio-hang", icon: ShoppingBagOpen },
@@ -24,7 +24,7 @@ const utilityItems = [
   { label: "Lịch sử điểm thưởng", href: "/dang-nhap" },
 ];
 
-export function MobileHomeSections() {
+export function MobileHomeSections({ products, categories }: { products: Product[]; categories: Category[] }) {
   const blogCarouselRef = useRef<HTMLDivElement | null>(null);
   const [activeBlogIndex, setActiveBlogIndex] = useState(0);
   const [heroVideoReady, setHeroVideoReady] = useState(false);

@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { products } from "@/data/products";
 import { formatCurrency, getProductPrice } from "@/data/pricing";
 import { BreadcrumbJsonLd } from "@/components/seo";
 import { ProductCardActions } from "@/components/product-card-actions";
 import { ProductCatalogDesktop } from "@/components/product-catalog-desktop";
+import { getProducts } from "@/lib/catalog";
 
 const categoryMap = [
   { label: "Tất cả", href: "/san-pham" },
@@ -27,7 +27,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ProductsPage() {
+export default async function ProductsPage() {
+  const products = await getProducts();
+
   return (
     <main className="section pt-10 md:pt-14 pb-[calc(env(safe-area-inset-bottom)+96px)] md:pb-24">
       <BreadcrumbJsonLd items={[{ name: "Trang chủ", href: "/" }, { name: "Sản phẩm", href: "/san-pham" }]} />
@@ -56,7 +58,7 @@ export default function ProductsPage() {
 
         <div className="mt-8 grid grid-cols-2 gap-3 md:gap-5 md:grid-cols-2 xl:grid-cols-3 xl:gap-6">
           {products.map((product) => {
-            const price = getProductPrice(product.slug);
+            const price = product.price ?? getProductPrice(product.slug);
             return (
               <article key={product.slug} className="card relative overflow-hidden rounded-[22px] md:rounded-[32px]">
                 <Link href={`/san-pham/${product.slug}`} className="absolute inset-0 z-0" aria-label={product.name} />

@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getProductBySlug, getRelatedProducts } from "@/data/product-utils";
-import { products } from "@/data/products";
+import { getProductBySlug, getProducts, getRelatedProducts } from "@/lib/catalog";
 import { AddToCartButton } from "@/components/add-to-cart-button";
 import { formatCurrency, getProductPrice } from "@/data/pricing";
 import { BreadcrumbJsonLd, FAQJsonLd, ProductJsonLd } from "@/components/seo";
@@ -50,13 +49,14 @@ const productFaqs = [
   },
 ];
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const products = await getProducts();
   return products.map((product) => ({ slug: product.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
+  const product = await getProductBySlug(slug);
   if (!product) return {};
 
   return {
@@ -76,11 +76,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function ProductDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
+  const product = await getProductBySlug(slug);
   if (!product) notFound();
 
-  const related = getRelatedProducts(product.slug);
-  const price = getProductPrice(product.slug);
+  const related = await getRelatedProducts(product.slug);
+  const price = product.price ?? getProductPrice(product.slug);
 
   return (
     <main className="section !pt-0 bg-transparent pb-[calc(env(safe-area-inset-bottom)+136px)] md:bg-[#f6f8f6] md:pb-24">
@@ -318,7 +318,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
               ))}
             </div>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-              <AddToCartButton slug={product.slug} />
+              <AddToCartButton slug={product.slug} product={product} />
               <Link href="/gio-hang" className="button button-secondary hidden md:inline-flex">
                 Mua ngay
               </Link>
@@ -420,7 +420,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                     Xem giỏ hàng
                   </Link>
                   <div className="flex-1">
-                    <AddToCartButton slug={product.slug} buyNow />
+                    <AddToCartButton slug={product.slug} product={product} buyNow />
                   </div>
                 </div>
           </div>
@@ -500,7 +500,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                       <div className="mb-2 text-xs text-[var(--muted)]">Hòa Phúc</div>
                       <div className="flex flex-wrap gap-1">
                         <span className="rounded bg-[rgba(15,77,50,0.08)] px-2 py-0.5 text-xs text-[var(--green)]">{item.category}</span>
-                        <span className="rounded bg-[rgba(216,183,123,0.2)] px-2 py-0.5 text-xs text-[var(--brown)]">{formatCurrency(getProductPrice(item.slug))}</span>
+                        <span className="rounded bg-[rgba(216,183,123,0.2)] px-2 py-0.5 text-xs text-[var(--brown)]">{formatCurrency(item.price ?? getProductPrice(item.slug))}</span>
                       </div>
                     </div>
                   </Link>

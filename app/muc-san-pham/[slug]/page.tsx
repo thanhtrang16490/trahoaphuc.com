@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
 import { generateCategoryMetadata, generateCategoryStaticParams, CategoryDetailPage } from "../category-detail";
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
   return generateCategoryStaticParams();
 }
 
-export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
-  return generateCategoryMetadata(params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  return generateCategoryMetadata(slug);
 }
 
-export default function CategoryRoutePage({ params }: { params: { slug: string } }) {
-  return <CategoryDetailPage slug={params.slug} />;
+export default async function CategoryRoutePage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  return <CategoryDetailPage slug={slug} />;
 }

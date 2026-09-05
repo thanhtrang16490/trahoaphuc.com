@@ -2,54 +2,51 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Check, Plus, ShoppingBagOpen, ShoppingCartSimple, Tag, X } from "@phosphor-icons/react";
 import type { CartItem } from "@/components/cart-store";
 import { addProductToCart, clearCart, readCart, readCheckoutInfo, removeItem, saveCheckoutInfo, setItemQuantity, subscribeCart } from "@/components/cart-store";
 import { formatCurrency, getProductPrice } from "@/data/pricing";
-import { products } from "@/data/products";
+import { products as localProducts, type Product } from "@/data/products";
+import { couponCatalog as localCouponCatalog, type CouponCatalog, type CouponOffer } from "@/data/coupons";
 import type { AuthUser } from "@/components/auth-store";
 import { isMockAdminUser, readAuthUser, saveAuthUser, subscribeAuth } from "@/components/auth-store";
 import { useToast } from "@/components/toast";
 import { MobileBackHeader } from "@/components/mobile-back-header";
 import { ModalShell } from "@/components/modal-shell";
-
-const couponCatalog = {
-  HOAPHUC5: { label: "Giảm 5%", type: "percent" as const, value: 0.05, minSubtotal: 0, note: "Áp dụng cho mọi đơn hàng" },
-  FREESHIP200: { label: "Miễn phí ship", type: "shipping" as const, value: 30000, minSubtotal: 200000, note: "Đơn từ 200.000đ" },
-  HOAPHUC10: { label: "Giảm 10%", type: "percent" as const, value: 0.1, minSubtotal: 1000000, note: "Đơn từ 1.000.000đ" },
-  HOAPHUC15: { label: "Giảm 15%", type: "percent" as const, value: 0.15, minSubtotal: 1500000, note: "Ưu đãi thành viên, đơn từ 1.500.000đ" },
-  HOAPHUC100: { label: "Giảm 100.000đ", type: "fixed" as const, value: 100000, minSubtotal: 500000, note: "Voucher quà tặng, đơn từ 500.000đ" },
-  HOAPHUCBI: { label: "Giảm 50.000đ", type: "fixed" as const, value: 50000, minSubtotal: 300000, note: "Mã bí mật, đơn từ 300.000đ" },
-};
-
-const couponSources = {
-  HOAPHUC5: "Mã dành cho khách mới",
-  FREESHIP200: "Mã vận chuyển của Hòa Phúc",
-  HOAPHUC10: "Mã thành viên thân thiết",
-  HOAPHUC15: "Mã thành viên thân thiết",
-  HOAPHUC100: "Voucher quà tặng từ vòng quay",
-  HOAPHUCBI: "Mã bí mật từ vòng quay",
-};
+import { vietnamProvinces } from "@/data/vietnam-address";
 
 type CouponState = {
   code: string;
   error: string;
-  appliedCode: keyof typeof couponCatalog | "";
+  appliedCode: string;
 };
 
 export default function CartPage() {
   const [items, setItems] = useState<CartItem[]>([]);
+  const [products, setProducts] = useState<Product[]>(localProducts);
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState(() => readCheckoutInfo());
+  const [differentRecipient, setDifferentRecipient] = useState(false);
+  const [recipient, setRecipient] = useState({ name: "", phone: "", province: "", ward: "", address: "", note: "" });
   const [authUser, setAuthUser] = useState<AuthUser | null>(null);
+  const [availableCoupons, setAvailableCoupons] = useState<CouponCatalog>(localCouponCatalog);
   const [coupon, setCoupon] = useState<CouponState>({ code: "", error: "", appliedCode: "" });
   const [couponPickerOpen, setCouponPickerOpen] = useState(false);
   const [quickAddOpen, setQuickAddOpen] = useState(false);
   const [quickAddQuery, setQuickAddQuery] = useState("");
   const [formError, setFormError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<"cod" | "bank_transfer">("cod");
+  const [locationData, setLocationData] = useState<Array<{ code: number; name: string; wards: Array<{ code: number; name: string }> }>>([]);
+  const [orderResult, setOrderResult] = useState<{ order_number: string; total_vnd: number; payment_method: string } | null>(null);
+  const idempotencyKeyRef = useRef<string>("");
   const { showToast } = useToast();
+  const selectedProvince = locationData.find((item) => item.name === form.province);
+
+  useEffect(() => {
+    fetch("/api/v1/locations", { cache: "force-cache" }).then((response) => response.json()).then((payload) => { if (payload?.ok && Array.isArray(payload.data)) setLocationData(payload.data); }).catch(() => undefined);
+  }, []);
 
   useEffect(() => {
     const syncCart = () => setItems(readCart());
@@ -58,13 +55,52 @@ export default function CartPage() {
   }, []);
 
   useEffect(() => {
+    let active = true;
+
+    fetch("/api/v1/coupons", { cache: "no-store" })
+      .then((response) => response.json())
+      .then((payload) => {
+        if (!active || !payload?.ok || !Array.isArray(payload.data)) return;
+        setAvailableCoupons(
+          Object.fromEntries(payload.data.map((offer: CouponOffer & { code: string }) => [offer.code, offer])) as CouponCatalog,
+        );
+      })
+      .catch(() => {
+        // Keep local voucher data if the API is temporarily unavailable.
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  useEffect(() => {
     const syncAuth = () => setAuthUser(readAuthUser());
     syncAuth();
     return subscribeAuth(syncAuth);
   }, []);
+
+  useEffect(() => {
+    let active = true;
+
+    fetch("/api/v1/products?limit=50", { cache: "no-store" })
+      .then((response) => response.json())
+      .then((payload) => {
+        if (active && payload?.ok && Array.isArray(payload.data?.items)) {
+          setProducts(payload.data.items as Product[]);
+        }
+      })
+      .catch(() => {
+        // Keep the local catalog if the API is temporarily unavailable.
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
   const subtotal = items.reduce((sum, item) => sum + item.quantity * item.price, 0);
   const shipping = subtotal > 0 ? 30000 : 0;
-  const appliedCoupon = coupon.appliedCode ? couponCatalog[coupon.appliedCode] : null;
+  const appliedCoupon = coupon.appliedCode ? availableCoupons[coupon.appliedCode] : null;
   const discount = appliedCoupon
     ? appliedCoupon.type === "percent"
       ? Math.round(subtotal * appliedCoupon.value)
@@ -82,14 +118,17 @@ export default function CartPage() {
     saveCheckoutInfo(next);
   };
 
+  const handleRecipientChange = (field: keyof typeof recipient, value: string) => setRecipient((current) => ({ ...current, [field]: value }));
+
   const validateCheckout = () => {
-    if (!form.name.trim() || !form.phone.trim() || !form.address.trim()) {
-      setFormError("Vui lòng điền họ tên, số điện thoại và địa chỉ nhận hàng.");
-      const firstMissing = !form.name.trim() ? "checkout-name" : !form.phone.trim() ? "checkout-phone" : "checkout-address";
+    const shipping = differentRecipient ? recipient : form;
+    if (!form.name.trim() || !form.phone.trim() || !shipping.province.trim() || !shipping.ward.trim() || !shipping.address.trim() || (differentRecipient && !shipping.name.trim())) {
+      setFormError("Vui lòng điền họ tên, số điện thoại, tỉnh/thành, xã/phường và địa chỉ chi tiết.");
+      const firstMissing = !form.name.trim() ? "checkout-name" : !form.phone.trim() ? "checkout-phone" : !shipping.province.trim() ? "checkout-province" : !shipping.ward.trim() ? "checkout-ward" : "checkout-address";
       document.getElementById(firstMissing)?.focus();
       return false;
     }
-    if (!/^(0|\+84)\d{8,10}$/.test(form.phone.replace(/[.\s-]/g, ""))) {
+    if (!/^(0|\+84)\d{8,10}$/.test(form.phone.replace(/[.\s-]/g, "")) || !/^(0|\+84)\d{8,10}$/.test(shipping.phone.replace(/[.\s-]/g, ""))) {
       setFormError("Số điện thoại chưa đúng định dạng. Bạn hãy kiểm tra lại nhé.");
       document.getElementById("checkout-phone")?.focus();
       return false;
@@ -97,15 +136,42 @@ export default function CartPage() {
     return true;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!items.length) return;
     if (!validateCheckout()) return;
     setIsSubmitting(true);
-    window.setTimeout(() => {
-      setIsSubmitting(false);
+    setFormError("");
+    if (!idempotencyKeyRef.current) {
+      idempotencyKeyRef.current = window.crypto?.randomUUID?.() ?? `hp-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    }
+
+    try {
+      const response = await fetch("/api/v1/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customer: form,
+          recipient: differentRecipient ? recipient : form,
+          items: items.map((item) => ({ slug: item.slug, quantity: item.quantity })),
+          couponCode: coupon.appliedCode || null,
+          paymentMethod,
+          idempotencyKey: idempotencyKeyRef.current,
+        }),
+      });
+      const payload = await response.json();
+      if (!response.ok || !payload?.ok) {
+        throw new Error(payload?.error?.message || "Chưa thể tạo đơn hàng.");
+      }
+
+      setOrderResult(payload.data);
       setSubmitted(true);
-      showToast({ title: "Đã ghi nhận đơn hàng", message: "Hòa Phúc sẽ liên hệ để xác nhận thông tin giao hàng." });
-    }, 500);
+      clearCart();
+      showToast({ title: "Đặt hàng thành công", message: `Mã đơn ${payload.data.order_number}` });
+    } catch (error) {
+      setFormError(error instanceof Error ? error.message : "Chưa thể tạo đơn hàng. Vui lòng thử lại.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const applyCouponCode = (value: string) => {
@@ -115,7 +181,7 @@ export default function CartPage() {
       return;
     }
 
-    const found = couponCatalog[raw as keyof typeof couponCatalog];
+    const found = availableCoupons[raw];
     if (!found) {
       setCoupon((current) => ({ ...current, error: "Mã giảm giá không hợp lệ." }));
       return;
@@ -129,7 +195,7 @@ export default function CartPage() {
       return;
     }
 
-    setCoupon({ code: raw, error: "", appliedCode: raw as keyof typeof couponCatalog });
+    setCoupon({ code: raw, error: "", appliedCode: raw });
     setCouponPickerOpen(false);
     showToast({
       title: "Đã áp dụng mã giảm giá",
@@ -248,6 +314,7 @@ export default function CartPage() {
                     className="button button-primary justify-center"
                     onClick={() => {
                       handleChange("name", authUser.name);
+                      handleChange("email", authUser.email);
                       handleChange("phone", authUser.phone);
                     }}
                   >
@@ -280,11 +347,13 @@ export default function CartPage() {
           </section>
 
           <section className="card rounded-[32px] p-6 md:p-8">
-            <h2 className="text-2xl font-semibold text-[var(--green-dark)]">Thông tin nhận hàng</h2>
+            <h2 className="text-2xl font-semibold text-[var(--green-dark)]">Thông tin người đặt hàng</h2>
             <div className="mt-5 grid gap-4">
+              <input id="checkout-email" type="email" autoComplete="email" className="rounded-[18px] border border-[rgba(15,77,50,0.14)] bg-white/70 px-4 py-3 text-sm outline-none focus:border-[var(--green)]" placeholder="Email nhận xác nhận đơn (không bắt buộc)" value={form.email} onChange={(e) => handleChange("email", e.target.value)} />
               <input id="checkout-name" required autoComplete="name" className="rounded-[18px] border border-[rgba(15,77,50,0.14)] bg-white/70 px-4 py-3 text-sm outline-none focus:border-[var(--green)]" placeholder="Họ và tên *" value={form.name} onChange={(e) => handleChange("name", e.target.value)} />
               <input id="checkout-phone" required inputMode="tel" autoComplete="tel" className="rounded-[18px] border border-[rgba(15,77,50,0.14)] bg-white/70 px-4 py-3 text-sm outline-none focus:border-[var(--green)]" placeholder="Số điện thoại *" value={form.phone} onChange={(e) => handleChange("phone", e.target.value)} />
-              <input id="checkout-address" required autoComplete="street-address" className="rounded-[18px] border border-[rgba(15,77,50,0.14)] bg-white/70 px-4 py-3 text-sm outline-none focus:border-[var(--green)]" placeholder="Địa chỉ giao hàng *" value={form.address} onChange={(e) => handleChange("address", e.target.value)} />
+              <label className="flex items-center gap-3 rounded-[18px] bg-[rgba(15,77,50,0.05)] px-4 py-3 text-sm font-semibold text-[var(--green-dark)]"><input type="checkbox" checked={differentRecipient} onChange={(e) => { setDifferentRecipient(e.target.checked); setFormError(""); }} /> Thông tin người nhận khác người đặt hàng</label>
+              {!differentRecipient ? <><select id="checkout-province" required autoComplete="address-level1" className="rounded-[18px] border border-[rgba(15,77,50,0.14)] bg-white/70 px-4 py-3 text-sm outline-none focus:border-[var(--green)]" value={form.province} onChange={(e) => handleChange("province", e.target.value)}><option value="">Chọn tỉnh / thành phố *</option>{vietnamProvinces.map((province) => <option key={province} value={province}>{province}</option>)}</select>{selectedProvince?.wards.length ? <select id="checkout-ward" required autoComplete="address-level2" className="rounded-[18px] border border-[rgba(15,77,50,0.14)] bg-white/70 px-4 py-3 text-sm outline-none focus:border-[var(--green)]" value={form.ward} onChange={(e) => handleChange("ward", e.target.value)}><option value="">Chọn xã / phường / đặc khu *</option>{selectedProvince.wards.map((ward) => <option key={ward.code} value={ward.name}>{ward.name}</option>)}</select> : <input id="checkout-ward" required autoComplete="address-level2" className="rounded-[18px] border border-[rgba(15,77,50,0.14)] bg-white/70 px-4 py-3 text-sm outline-none focus:border-[var(--green)]" placeholder="Nhập xã / phường / đặc khu *" value={form.ward} onChange={(e) => handleChange("ward", e.target.value)} />}<input id="checkout-address" required autoComplete="street-address" className="rounded-[18px] border border-[rgba(15,77,50,0.14)] bg-white/70 px-4 py-3 text-sm outline-none focus:border-[var(--green)]" placeholder="Địa chỉ giao hàng *" value={form.address} onChange={(e) => handleChange("address", e.target.value)} /></> : <div className="space-y-4 rounded-[24px] border border-[rgba(15,77,50,0.12)] bg-[rgba(15,77,50,0.03)] p-4"><div className="text-sm font-semibold text-[var(--green-dark)]">Thông tin người nhận</div><input required name="recipient-name" className="rounded-[18px] border border-[rgba(15,77,50,0.14)] bg-white/70 px-4 py-3 text-sm outline-none focus:border-[var(--green)]" placeholder="Tên người nhận *" value={recipient.name} onChange={(e) => handleRecipientChange("name", e.target.value)} /><input required inputMode="tel" className="rounded-[18px] border border-[rgba(15,77,50,0.14)] bg-white/70 px-4 py-3 text-sm outline-none focus:border-[var(--green)]" placeholder="Số điện thoại người nhận *" value={recipient.phone} onChange={(e) => handleRecipientChange("phone", e.target.value)} /><select required className="rounded-[18px] border border-[rgba(15,77,50,0.14)] bg-white/70 px-4 py-3 text-sm outline-none focus:border-[var(--green)]" value={recipient.province} onChange={(e) => handleRecipientChange("province", e.target.value)}><option value="">Chọn tỉnh / thành phố *</option>{vietnamProvinces.map((province) => <option key={province} value={province}>{province}</option>)}</select><input required className="rounded-[18px] border border-[rgba(15,77,50,0.14)] bg-white/70 px-4 py-3 text-sm outline-none focus:border-[var(--green)]" placeholder="Xã / phường / đặc khu *" value={recipient.ward} onChange={(e) => handleRecipientChange("ward", e.target.value)} /><input required className="rounded-[18px] border border-[rgba(15,77,50,0.14)] bg-white/70 px-4 py-3 text-sm outline-none focus:border-[var(--green)]" placeholder="Địa chỉ giao hàng *" value={recipient.address} onChange={(e) => handleRecipientChange("address", e.target.value)} /></div>}
               <textarea autoComplete="off" className="min-h-28 rounded-[18px] border border-[rgba(15,77,50,0.14)] bg-white/70 px-4 py-3 text-sm outline-none focus:border-[var(--green)]" placeholder="Ghi chú cho người giao hàng (không bắt buộc)" value={form.note} onChange={(e) => handleChange("note", e.target.value)} />
             </div>
             {formError ? <div role="alert" className="mt-3 rounded-[14px] bg-[rgba(200,80,70,0.08)] px-3 py-2 text-sm leading-6 text-[#b44840]">{formError}</div> : null}
@@ -317,16 +386,40 @@ export default function CartPage() {
                 </div>
               ) : null}
             </div>
+            <div className="mt-5 rounded-[24px] border border-[rgba(15,77,50,0.12)] bg-[rgba(15,77,50,0.03)] p-4">
+              <div className="text-sm font-semibold text-[var(--green-dark)]">Phương thức thanh toán</div>
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod("cod")}
+                  className={`rounded-[18px] border p-4 text-left transition-colors ${paymentMethod === "cod" ? "border-[var(--green)] bg-white shadow-[0_8px_18px_rgba(15,77,50,0.08)]" : "border-[rgba(15,77,50,0.1)] bg-white/55"}`}
+                >
+                  <div className="text-sm font-semibold text-[var(--green-dark)]">Thanh toán khi nhận hàng</div>
+                  <div className="mt-1 text-xs leading-5 text-[var(--muted)]">Kiểm tra hàng và thanh toán cho đơn vị giao hàng.</div>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod("bank_transfer")}
+                  className={`rounded-[18px] border p-4 text-left transition-colors ${paymentMethod === "bank_transfer" ? "border-[var(--green)] bg-white shadow-[0_8px_18px_rgba(15,77,50,0.08)]" : "border-[rgba(15,77,50,0.1)] bg-white/55"}`}
+                >
+                  <div className="text-sm font-semibold text-[var(--green-dark)]">Chuyển khoản ngân hàng</div>
+                  <div className="mt-1 text-xs leading-5 text-[var(--muted)]">Hòa Phúc gửi thông tin chuyển khoản sau khi tiếp nhận đơn.</div>
+                </button>
+              </div>
+            </div>
             <button className="button button-primary mt-5 w-full justify-center" onClick={handleSubmit} disabled={!items.length || submitted || isSubmitting}>
-              {isSubmitting ? "Đang ghi nhận..." : submitted ? "Đã ghi nhận" : "Xác nhận đặt hàng"}
+              {isSubmitting ? "Đang tạo đơn..." : submitted ? "Đã đặt hàng" : "Xác nhận đặt hàng"}
             </button>
             <div className="mt-4 flex items-center gap-2 text-xs leading-5 text-[var(--muted)]">
               <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[rgba(15,77,50,0.08)] text-[var(--green)]">✓</span>
-              Thanh toán khi nhận hàng. Hòa Phúc sẽ gọi xác nhận trước khi gửi.
+              {paymentMethod === "cod" ? "Thanh toán khi nhận hàng. Hòa Phúc sẽ gọi xác nhận trước khi gửi." : "Đơn chuyển khoản sẽ được xác nhận sau khi Hòa Phúc kiểm tra giao dịch."}
             </div>
-            {submitted ? (
+            {orderResult ? (
               <div className="mt-4 rounded-[22px] bg-[rgba(15,77,50,0.08)] p-4 text-sm leading-7 text-[var(--green-dark)]">
-                Đơn hàng của bạn đã được ghi nhận. Chúng tôi sẽ tiếp tục hoàn thiện luồng xác nhận và giao hàng trong các bước sau.
+                <div className="font-semibold">Đặt hàng thành công</div>
+                <div className="mt-1">Mã đơn: <strong>{orderResult.order_number}</strong></div>
+                <div>Tổng thanh toán: <strong>{formatCurrency(orderResult.total_vnd)}</strong></div>
+                <div className="mt-2 text-xs leading-6 text-[var(--muted)]">Hòa Phúc sẽ liên hệ để xác nhận thông tin giao hàng và trạng thái thanh toán.</div>
               </div>
             ) : null}
             <p className="mt-4 text-xs leading-6 text-[var(--muted)]">
@@ -377,7 +470,7 @@ export default function CartPage() {
       {couponPickerOpen ? (
         <ModalShell eyebrow="Ưu đãi của bạn" title="Chọn mã giảm giá" onClose={() => setCouponPickerOpen(false)} className="max-w-lg">
             <div className="mt-5 space-y-3">
-              {Object.entries(couponCatalog).map(([code, offer]) => {
+              {Object.entries(availableCoupons).map(([code, offer]) => {
                 const eligible = subtotal >= offer.minSubtotal;
                 return (
                   <button
@@ -390,14 +483,14 @@ export default function CartPage() {
                     <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] bg-[rgba(15,77,50,0.08)] text-[var(--green)]"><Tag size={22} weight="duotone" /></span>
                     <span className="min-w-0 flex-1">
                       <span className="block text-sm font-semibold uppercase tracking-[0.12em] text-[var(--green-dark)]">{code}</span>
-                      <span className="mt-1 block text-xs leading-5 text-[var(--muted)]">{offer.label} · {eligible ? couponSources[code as keyof typeof couponSources] : `Cần đơn từ ${formatCurrency(offer.minSubtotal)}`}</span>
+                      <span className="mt-1 block text-xs leading-5 text-[var(--muted)]">{offer.label} · {eligible ? offer.source : `Cần đơn từ ${formatCurrency(offer.minSubtotal)}`}</span>
                     </span>
                     {eligible ? <Check size={19} weight="bold" className="text-[var(--green)]" /> : null}
                   </button>
                 );
               })}
             </div>
-            <p className="mt-4 text-xs leading-5 text-[var(--muted)]">Mã mock dành cho trải nghiệm thử nghiệm, điều kiện sẽ được kiểm tra theo giá trị đơn hàng hiện tại.</p>
+            <p className="mt-4 text-xs leading-5 text-[var(--muted)]">Mã được kiểm tra lại ở server khi tạo đơn để đảm bảo điều kiện và giá trị giảm chính xác.</p>
         </ModalShell>
       ) : null}
 
@@ -412,7 +505,7 @@ export default function CartPage() {
                   <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-[15px] bg-[linear-gradient(180deg,#f2e4c9,#dfc18e)]"><Image src={product.image} alt={product.name} fill sizes="80px" className="object-contain" /></div>
                   <div className="min-w-0 flex-1">
                     <h3 className="line-clamp-2 text-sm font-semibold leading-5 text-[var(--green-dark)]">{product.name}</h3>
-                    <div className="mt-1 text-sm font-semibold text-[var(--green)]">{formatCurrency(getProductPrice(product.slug))}</div>
+                    <div className="mt-1 text-sm font-semibold text-[var(--green)]">{formatCurrency(product.price ?? getProductPrice(product.slug))}</div>
                     <button type="button" onClick={() => addQuickProduct(product.slug)} className="mt-2 inline-flex h-8 items-center gap-1 rounded-full bg-[var(--green)] px-3 text-xs font-semibold text-white"><Plus size={14} weight="bold" /> Thêm</button>
                   </div>
                 </div>

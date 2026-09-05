@@ -4,20 +4,21 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BreadcrumbJsonLd, ArticleJsonLd } from "@/components/seo";
 import { MobileBackHeader } from "@/components/mobile-back-header";
-import { blogPosts, getBlogPostBySlug } from "@/data/blog";
+import { getNewsPostBySlug, getNewsPosts } from "@/lib/news";
 import { formatDateLong } from "@/lib/date";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export function generateStaticParams() {
-  return blogPosts.map((post) => ({ slug: post.slug }));
+export async function generateStaticParams() {
+  const posts = await getNewsPosts();
+  return posts.map((post) => ({ slug: post.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = getBlogPostBySlug(slug);
+  const post = await getNewsPostBySlug(slug);
   if (!post) return {};
 
   return {
@@ -35,10 +36,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function BlogDetailPage({ params }: PageProps) {
   const { slug } = await params;
-  const post = getBlogPostBySlug(slug);
+  const post = await getNewsPostBySlug(slug);
   if (!post) notFound();
 
-  const relatedPosts = blogPosts.filter((item) => item.slug !== post.slug).slice(0, 3);
+  const relatedPosts = (await getNewsPosts()).filter((item) => item.slug !== post.slug).slice(0, 3);
   const publishedDate = formatDateLong(post.date);
 
   return (
