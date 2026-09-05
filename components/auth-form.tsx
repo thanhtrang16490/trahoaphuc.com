@@ -6,6 +6,7 @@ import { brand } from "@/data/site";
 import { saveAuthUser } from "@/components/auth-store";
 import { createClient } from "@/lib/supabase/client";
 import { vietnamProvinces } from "@/data/vietnam-address";
+import { trackEvent } from "@/lib/analytics";
 
 type Mode = "login" | "register";
 
@@ -67,6 +68,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
                   const payload = await response.json();
                   if (!response.ok || !payload.ok || !payload.data) throw new Error(payload?.error?.message || "Không thể đăng nhập.");
                   const user = payload.data;
+                  trackEvent("login", { method: "password" });
 
                   saveAuthUser({
                     id: user.id,
@@ -75,6 +77,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
                     phone: String(user.phone ?? ""),
                     role: user.role === "admin" ? "admin" : "customer",
                   });
+                  trackEvent("sign_up", { method: "password" });
                   if (user.role === "admin") {
                     window.location.assign("/quan-tri");
                     return;

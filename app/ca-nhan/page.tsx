@@ -285,7 +285,7 @@ export default function ProfilePage() {
                     {orders.slice(0, 3).map((order) => (
                       <div key={order.order_number} className="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0">
                         <div className="min-w-0">
-                          <div className="text-sm font-semibold text-[var(--green-dark)]">{order.order_number}</div>
+                          <Link href={`/ca-nhan/don-hang/${order.id}`} className="text-sm font-semibold text-[var(--green-dark)] underline-offset-2 hover:underline">{order.order_number}</Link>
                           <div className="mt-1 truncate text-xs text-[var(--muted)]">{order.order_items?.[0]?.product_name ?? "Đơn hàng Hòa Phúc"}</div>
                         </div>
                         <div className="shrink-0 text-right">

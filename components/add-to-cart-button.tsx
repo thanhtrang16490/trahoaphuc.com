@@ -7,6 +7,7 @@ import { useToast } from "@/components/toast";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { Product } from "@/data/products";
+import { trackEvent } from "@/lib/analytics";
 
 export function AddToCartButton({ slug, product: providedProduct, className = "", buyNow = false }: { slug: string; product?: Product; className?: string; buyNow?: boolean }) {
   const product = providedProduct ?? products.find((item) => item.slug === slug);
@@ -19,6 +20,7 @@ export function AddToCartButton({ slug, product: providedProduct, className = ""
     if (isAdding) return;
     setIsAdding(true);
     addProductToCart(product);
+    trackEvent(buyNow ? "begin_checkout" : "add_to_cart", { currency: "VND", value: product.price ?? 0, item_id: product.slug, item_name: product.name });
     if (buyNow) {
       router.push("/gio-hang");
       return;

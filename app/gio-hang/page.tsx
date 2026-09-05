@@ -15,6 +15,7 @@ import { useToast } from "@/components/toast";
 import { MobileBackHeader } from "@/components/mobile-back-header";
 import { ModalShell } from "@/components/modal-shell";
 import { vietnamProvinces } from "@/data/vietnam-address";
+import { trackEvent } from "@/lib/analytics";
 
 type CouponState = {
   code: string;
@@ -89,6 +90,10 @@ export default function CartPage() {
       active = false;
     };
   }, [cartSignature]);
+
+  useEffect(() => {
+    if (items.length) trackEvent("begin_checkout", { currency: "VND", value: subtotal, items: items.length });
+  }, [items.length]);
 
   useEffect(() => {
     const syncCart = () => setItems(readCart());
@@ -212,6 +217,7 @@ export default function CartPage() {
       setOrderResult(payload.data);
       setSubmitted(true);
       clearCart();
+      trackEvent("purchase", { transaction_id: payload.data.order_number, currency: "VND", value: payload.data.total_vnd });
       showToast({ title: "Đặt hàng thành công", message: `Mã đơn ${payload.data.order_number}` });
     } catch (error) {
       setFormError(error instanceof Error ? error.message : "Chưa thể tạo đơn hàng. Vui lòng thử lại.");

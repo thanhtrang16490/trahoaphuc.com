@@ -143,3 +143,42 @@ export function AdminDealerManager() {
   if (loading) return <div className="rounded-2xl bg-white p-8 text-sm text-[var(--muted)]">Đang tải danh sách đại lý...</div>;
   return <div className="space-y-5"><div><h2 className="text-xl font-semibold text-[var(--green-dark)]">Đại lý và hoa hồng</h2><p className="mt-1 text-sm text-[var(--muted)]">Thiết lập tỷ lệ hoa hồng và kích hoạt chính sách cho từng đại lý. Hoa hồng được chốt theo từng đơn hàng.</p></div><div className="admin-table">{dealers.length ? dealers.map((dealer) => <form key={dealer.user_id} className="admin-row" onSubmit={(event) => { event.preventDefault(); void update(dealer, event.currentTarget); }}><div><b>{dealer.business_name || dealer.profiles?.full_name || "Đại lý chưa cập nhật tên"}</b><div className="text-xs text-[var(--muted)]">{dealer.profiles?.email || ""} · {dealer.area || "Chưa có khu vực"}</div></div><input name="commission_rate" type="number" min="0" max="100" step="0.01" defaultValue={dealer.commission_rate} className="input w-28" aria-label="Tỷ lệ hoa hồng phần trăm" /><span className="text-sm text-[var(--muted)]">%</span><select name="status" defaultValue={dealer.status} className="input w-32"><option value="pending">Chờ duyệt</option><option value="active">Đang hoạt động</option><option value="paused">Tạm dừng</option><option value="rejected">Từ chối</option></select><button type="submit" className="button button-secondary px-3 py-2 text-xs">Lưu</button></form>) : <div className="p-6 text-center text-sm text-[var(--muted)]">Chưa có hồ sơ đại lý.</div>}</div>{message ? <div className="text-sm text-[var(--green-dark)]">{message}</div> : null}</div>;
 }
+
+type LoyaltyMember = { user_id: string; points_balance: number; lifetime_earned: number; lifetime_redeemed: number; tier: string; profiles?: { full_name?: string; email?: string; phone?: string; account_type?: string } | null };
+type LoyaltyReward = { id: string; code: string; title: string; points_cost: number; stock: number | null; is_active: boolean };
+
+export function AdminLoyaltyManager() {
+  const [members, setMembers] = useState<LoyaltyMember[]>([]);
+  const [rewards, setRewards] = useState<LoyaltyReward[]>([]);
+  const [selected, setSelected] = useState<LoyaltyMember | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState("");
+
+  async function load() {
+    setLoading(true);
+    const response = await fetch("/api/admin/loyalty", { cache: "no-store" });
+    const payload = await response.json();
+    if (response.ok && payload.ok) { setMembers(payload.data.members ?? []); setRewards(payload.data.rewards ?? []); }
+    else setMessage(payload?.error?.message || "Không thể tải dữ liệu hội viên.");
+    setLoading(false);
+  }
+  useEffect(() => { void load(); }, []);
+
+  async function adjust(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault(); if (!selected) return;
+    const values = Object.fromEntries(new FormData(event.currentTarget).entries());
+    const response = await fetch("/api/admin/loyalty", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ user_id: selected.user_id, points: Number(values.points), description: values.description }) });
+    const payload = await response.json();
+    if (!response.ok || !payload.ok) { setMessage(payload?.error?.message || "Không thể điều chỉnh điểm."); return; }
+    setSelected(null); setMessage("Đã điều chỉnh điểm và ghi lịch sử giao dịch."); await load();
+  }
+
+  async function toggleReward(reward: LoyaltyReward) {
+    const response = await fetch("/api/admin/loyalty", { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ reward_id: reward.id, is_active: !reward.is_active }) });
+    const payload = await response.json();
+    if (!response.ok || !payload.ok) setMessage(payload?.error?.message || "Không thể cập nhật phần thưởng."); else { setMessage("Đã cập nhật phần thưởng."); await load(); }
+  }
+
+  if (loading) return <div className="rounded-2xl bg-white p-8 text-sm text-[var(--muted)]">Đang tải dữ liệu hội viên...</div>;
+  return <div className="space-y-6"><div><h2 className="text-xl font-semibold text-[var(--green-dark)]">Hội viên và điểm thưởng</h2><p className="mt-1 text-sm text-[var(--muted)]">Theo dõi số dư điểm, lịch sử tích lũy và bật/tắt các phần thưởng đổi điểm.</p></div>{message ? <div className="rounded-2xl bg-[#eef6ee] p-4 text-sm text-[var(--green-dark)]">{message}</div> : null}<section className="admin-table"><div className="border-b border-black/10 px-4 py-3 font-semibold text-[var(--green-dark)]">Danh sách hội viên</div>{members.length ? members.map((member) => <div key={member.user_id} className="admin-row"><div><b>{member.profiles?.full_name || "Chưa cập nhật tên"}</b><div className="text-xs text-[var(--muted)]">{member.profiles?.email || ""} · {member.profiles?.phone || "Chưa có SĐT"}</div></div><div><b>{member.points_balance.toLocaleString("vi-VN")} điểm</b><div className="text-xs text-[var(--muted)]">{member.tier} · tích lũy {member.lifetime_earned.toLocaleString("vi-VN")}</div></div><button type="button" className="button button-secondary px-3 py-2 text-xs" onClick={() => setSelected(member)}>Điều chỉnh điểm</button></div>) : <div className="p-6 text-center text-sm text-[var(--muted)]">Chưa có dữ liệu hội viên.</div>}</section><section className="admin-table"><div className="border-b border-black/10 px-4 py-3 font-semibold text-[var(--green-dark)]">Phần thưởng đổi điểm</div>{rewards.length ? rewards.map((reward) => <div key={reward.id} className="admin-row"><div><b>{reward.title}</b><div className="text-xs text-[var(--muted)]">{reward.code} · {reward.points_cost.toLocaleString("vi-VN")} điểm · {reward.stock === null ? "Không giới hạn" : `còn ${reward.stock}`}</div></div><span className={reward.is_active ? "text-[#247447]" : "text-[#a63d3d]"}>{reward.is_active ? "Đang bật" : "Đã tắt"}</span><button type="button" className="button button-secondary px-3 py-2 text-xs" onClick={() => void toggleReward(reward)}>{reward.is_active ? "Tắt" : "Bật"}</button></div>) : <div className="p-6 text-center text-sm text-[var(--muted)]">Chưa có phần thưởng.</div>}</section>{selected ? <AdminModal title={`Điều chỉnh điểm · ${selected.profiles?.full_name || selected.profiles?.email || "Hội viên"}`} onClose={() => setSelected(null)}><form onSubmit={adjust} className="admin-form"><p className="text-sm text-[var(--muted)]">Số dương để cộng điểm, số âm để trừ điểm. Thao tác được lưu vào lịch sử.</p><input required name="points" type="number" step="1" className={input} placeholder="Ví dụ: 100 hoặc -100" /><input required name="description" className={input} defaultValue="Điều chỉnh điểm bởi quản trị viên" placeholder="Lý do điều chỉnh" /><button className="button button-primary" type="submit">Lưu điều chỉnh</button></form></AdminModal> : null}</div>;
+}

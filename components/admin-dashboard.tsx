@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { AdminCouponCreateForm, AdminNewsCreateForm, AdminProductCreateForm, AdminProductManager, AdminUserManager, AdminOrderManager, AdminDealerManager } from "@/components/admin-crud-panels";
+import { AdminCouponCreateForm, AdminNewsCreateForm, AdminProductCreateForm, AdminProductManager, AdminUserManager, AdminOrderManager, AdminDealerManager, AdminLoyaltyManager } from "@/components/admin-crud-panels";
 
 type AdminData = {
   role: string;
@@ -18,7 +18,7 @@ type AdminData = {
 };
 
 const money = (value: number) => new Intl.NumberFormat("vi-VN").format(value) + "đ";
-const tabs = ["Tổng quan", "Sản phẩm", "Đơn hàng", "Đại lý", "Tài khoản", "Lead", "Coupon", "Tin tức"];
+const tabs = ["Tổng quan", "Sản phẩm", "Đơn hàng", "Đại lý", "Hội viên", "Tài khoản", "Lead", "Coupon", "Tin tức"];
 
 export function AdminDashboard({ initialTab = "Tổng quan" }: { initialTab?: string }) {
   const [data, setData] = useState<AdminData | null>(null);
@@ -61,6 +61,7 @@ export function AdminDashboard({ initialTab = "Tổng quan" }: { initialTab?: st
         {activeTab === "Sản phẩm" ? <section className="mt-6"><AdminProductCreateForm categories={data.categories} onDone={() => void load()} /><div className="mt-5"><AdminProductManager products={data.products} categories={data.categories} onDone={() => void load()} /></div></section> : null}
         {activeTab === "Đơn hàng" ? <section className="mt-6"><AdminOrderManager orders={data.orders} products={data.products} users={data.users} onUpdate={update} onDone={() => void load()} /></section> : null}
         {activeTab === "Đại lý" ? <section className="mt-6"><AdminDealerManager /></section> : null}
+        {activeTab === "Hội viên" ? <section className="mt-6"><AdminLoyaltyManager /></section> : null}
         {activeTab === "Tài khoản" ? <section className="mt-6"><AdminUserManager users={data.users} roles={data.roles} currentUserId={data.user_id} onDone={() => void load()} /></section> : null}
         {activeTab === "Lead" ? <section className="admin-table mt-6">{data.leads.length ? data.leads.map((item) => <div key={item.id} className="admin-row"><div><b>{item.name}</b><div className="text-xs text-[var(--muted)]">{item.phone} · {item.area} · {item.business_type}</div></div><select className="input w-36" value={item.status} onChange={(event) => void update(`/api/admin/leads/${item.id}`, { status: event.target.value })}><option value="new">Mới</option><option value="contacted">Đã liên hệ</option><option value="qualified">Tiềm năng</option><option value="closed">Đã chốt</option><option value="discarded">Loại</option></select></div>) : <Empty text="Chưa có lead." />}</section> : null}
         {activeTab === "Coupon" ? <section className="mt-6"><AdminCouponCreateForm onDone={() => void load()} /><div className="admin-table mt-5">{data.coupons.map((item) => <div key={item.id} className="admin-row"><div><b>{item.code}</b><div className="text-xs text-[var(--muted)]">{item.label}</div></div><span className="text-sm text-[var(--muted)]">Đã dùng {item.usage_count}{item.usage_limit ? ` / ${item.usage_limit}` : ""}</span><span>{item.is_active ? "Đang bật" : "Đã tắt"}</span><button type="button" className="button button-secondary px-3 py-2 text-xs" onClick={() => void update(`/api/admin/coupons/${item.id}`, { is_active: !item.is_active })}>{item.is_active ? "Tắt coupon" : "Bật coupon"}</button></div>)}</div></section> : null}

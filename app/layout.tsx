@@ -11,6 +11,7 @@ import { PwaRegister } from "@/components/pwa-register";
 import { FloatingContactActions } from "@/components/floating-contact-actions";
 import { BackToTop } from "@/components/back-to-top";
 import { GlobalSidebar } from "@/components/global-sidebar";
+import { GoogleAnalytics } from "@/components/google-analytics";
 
 export const metadata: Metadata = {
   metadataBase: new URL(brand.website),
@@ -87,6 +88,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <FloatingContactActions />
           <BackToTop />
           <PwaRegister />
+          <GoogleAnalytics />
         </ToastProvider>
       </body>
     </html>

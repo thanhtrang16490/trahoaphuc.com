@@ -30,7 +30,10 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     return apiResponse({ ...cancelled, telegram_sent: telegramSent });
   }
   const { data, error } = await context.admin.from("orders").update(changes).eq("id", id).select("id, order_number, status, payment_status").single();
-  if (error) return apiError("Không thể cập nhật đơn hàng.", 503);
+  if (error) {
+    if (error.message.startsWith("ORDER_STATUS_TRANSITION_INVALID")) return apiError("Trạng thái đơn hàng không thể chuyển theo quy trình hiện tại.", 422);
+    return apiError("Không thể cập nhật đơn hàng.", 503);
+  }
   const telegramSent = await notifyTelegramOrderStatus({ order: { ...previous, status: data.status, payment_status: data.payment_status }, previous });
   return apiResponse({ ...data, telegram_sent: telegramSent });
 }

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import type { Product } from "@/data/products";
 import { addProductToCart } from "@/components/cart-store";
 import { useToast } from "@/components/toast";
+import { trackEvent } from "@/lib/analytics";
 
 export function ProductCardActions({ product }: { product: Product }) {
   const router = useRouter();
@@ -12,11 +13,13 @@ export function ProductCardActions({ product }: { product: Product }) {
 
   const addToCart = () => {
     addProductToCart(product);
+    trackEvent("add_to_cart", { currency: "VND", value: product.price ?? 0, item_id: product.slug, item_name: product.name });
     showToast({ title: "Đã thêm vào giỏ hàng", message: product.name });
   };
 
   const buyNow = () => {
     addToCart();
+    trackEvent("begin_checkout", { currency: "VND", value: product.price ?? 0, item_id: product.slug });
     router.push("/gio-hang");
   };
 
