@@ -8,9 +8,9 @@ export async function GET() {
 
     const { admin } = context;
     const [products, categories, orders, users, roles, leads, coupons, news] = await Promise.all([
-      admin.from("products").select("id, slug, name, short_description, long_description, package_label, image, box_image, origin, is_active, stock_quantity, category_id, product_prices(price_vnd, original_price_vnd)").order("sort_order"),
+      admin.from("products").select("id, slug, name, short_description, long_description, package_label, image, box_image, origin, is_active, stock_quantity, low_stock_threshold, category_id, product_prices(price_vnd, original_price_vnd)").order("sort_order"),
       admin.from("categories").select("id, name").order("sort_order"),
-      admin.from("orders").select("id, order_number, customer_id, dealer_id, dealer_commission_rate, dealer_commission_vnd, dealer_commission_status, customer_name, customer_email, customer_phone, recipient_name, recipient_email, recipient_phone, shipping_address, shipping_note, total_vnd, subtotal_vnd, shipping_fee_vnd, discount_vnd, status, payment_status, payment_method, coupon_code, created_at, order_items(id, product_name, product_slug, unit_price_vnd, quantity, line_total_vnd)").order("created_at", { ascending: false }).limit(100),
+      admin.from("orders").select("id, order_number, customer_id, dealer_id, dealer_commission_rate, dealer_commission_vnd, dealer_commission_status, customer_name, customer_email, customer_phone, recipient_name, recipient_email, recipient_phone, shipping_address, shipping_note, total_vnd, subtotal_vnd, shipping_fee_vnd, discount_vnd, status, payment_status, payment_method, coupon_code, shipping_provider, tracking_code, paid_at, shipped_at, delivered_at, cancelled_at, created_at, order_items(id, product_name, product_slug, unit_price_vnd, quantity, line_total_vnd)").order("created_at", { ascending: false }).limit(100),
       admin.from("profiles").select("id, email, full_name, phone, province, account_type, is_active, created_at").order("created_at", { ascending: false }).limit(100),
       admin.from("user_roles").select("user_id, role"),
       admin.from("leads").select("id, name, phone, area, business_type, status, created_at").order("created_at", { ascending: false }).limit(100),

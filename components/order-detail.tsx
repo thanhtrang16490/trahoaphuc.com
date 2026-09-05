@@ -9,7 +9,7 @@ import { MobileBackHeader } from "@/components/mobile-back-header";
 type Order = {
   order_number: string; status: string; payment_status: string; payment_method: string;
   customer_name: string; customer_email: string; customer_phone: string; recipient_name: string; recipient_phone: string;
-  shipping_address: string; shipping_note: string; subtotal_vnd: number; shipping_fee_vnd: number; discount_vnd: number; total_vnd: number; coupon_code?: string | null; created_at: string;
+  shipping_address: string; shipping_note: string; subtotal_vnd: number; shipping_fee_vnd: number; discount_vnd: number; total_vnd: number; coupon_code?: string | null; shipping_provider?: string; tracking_code?: string; created_at: string;
   order_items: Array<{ id: string; product_name: string; quantity: number; unit_price_vnd: number; line_total_vnd: number }>;
   order_status_history: Array<{ id: string; from_status?: string | null; to_status: string; note: string; created_at: string }>;
 };

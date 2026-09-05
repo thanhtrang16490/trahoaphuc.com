@@ -13,12 +13,16 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   if (body.status !== undefined && !statuses.includes(body.status)) return apiError("Trạng thái đơn hàng không hợp lệ.", 422);
   if (body.payment_status !== undefined && !paymentStatuses.includes(body.payment_status)) return apiError("Trạng thái thanh toán không hợp lệ.", 422);
   if (body.dealer_commission_status !== undefined && !commissionStatuses.includes(body.dealer_commission_status)) return apiError("Trạng thái hoa hồng không hợp lệ.", 422);
-  if (body.status === undefined && body.payment_status === undefined && body.dealer_commission_status === undefined) return apiError("Chưa có thông tin cần cập nhật.", 422);
+  if (body.shipping_provider !== undefined && typeof body.shipping_provider !== "string") return apiError("Nhà vận chuyển không hợp lệ.", 422);
+  if (body.tracking_code !== undefined && typeof body.tracking_code !== "string") return apiError("Mã vận đơn không hợp lệ.", 422);
+  if (body.status === undefined && body.payment_status === undefined && body.dealer_commission_status === undefined && body.shipping_provider === undefined && body.tracking_code === undefined) return apiError("Chưa có thông tin cần cập nhật.", 422);
   const { id } = await params;
   const changes = {
     ...(body.status !== undefined && body.status !== "cancelled" ? { status: body.status } : {}),
     ...(body.payment_status !== undefined ? { payment_status: body.payment_status } : {}),
     ...(body.dealer_commission_status !== undefined ? { dealer_commission_status: body.dealer_commission_status } : {}),
+    ...(body.shipping_provider !== undefined ? { shipping_provider: body.shipping_provider.trim().slice(0, 80) } : {}),
+    ...(body.tracking_code !== undefined ? { tracking_code: body.tracking_code.trim().slice(0, 120) } : {}),
   };
   const { data: previous, error: previousError } = await context.admin.from("orders").select("order_number, customer_name, customer_phone, total_vnd, status, payment_status").eq("id", id).single();
   if (previousError || !previous) return apiError("Không tìm thấy đơn hàng.", 404);

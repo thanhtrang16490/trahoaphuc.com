@@ -42,7 +42,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
     const admin = createAdminClient();
     const { data, error } = await admin
       .from("orders")
-      .select("id, order_number, status, payment_status, payment_method, customer_name, customer_email, customer_phone, recipient_name, recipient_email, recipient_phone, shipping_address, shipping_note, subtotal_vnd, shipping_fee_vnd, discount_vnd, total_vnd, coupon_code, created_at, updated_at, order_items(id, product_name, product_slug, unit_price_vnd, quantity, line_total_vnd), order_status_history(id, from_status, to_status, note, created_at)")
+      .select("id, order_number, status, payment_status, payment_method, customer_name, customer_email, customer_phone, recipient_name, recipient_email, recipient_phone, shipping_address, shipping_note, subtotal_vnd, shipping_fee_vnd, discount_vnd, total_vnd, coupon_code, shipping_provider, tracking_code, paid_at, shipped_at, delivered_at, cancelled_at, created_at, updated_at, order_items(id, product_name, product_slug, unit_price_vnd, quantity, line_total_vnd), order_status_history(id, from_status, to_status, note, created_at)")
       .eq("id", id)
       .eq("customer_id", authData.user.id)
       .single();

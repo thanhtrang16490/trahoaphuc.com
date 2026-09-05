@@ -3,7 +3,7 @@ import { getAdminContext } from "@/lib/admin-auth";
 import { AdminSidebar } from "@/components/admin-sidebar";
 import { AdminDashboard } from "@/components/admin-dashboard";
 
-const sections: Record<string, string> = { "san-pham": "Sản phẩm", "don-hang": "Đơn hàng", "dai-ly": "Đại lý", "khach-hang": "Tài khoản", "lead": "Lead", "coupon": "Coupon", "tin-tuc": "Tin tức" };
+const sections: Record<string, string> = { "san-pham": "Sản phẩm", "don-hang": "Đơn hàng", "dai-ly": "Đại lý", "hoi-vien": "Hội viên", "khach-hang": "Khách hàng", "lead": "Lead", "coupon": "Coupon", "tin-tuc": "Tin tức" };
 
 export const dynamic = "force-dynamic";
 
