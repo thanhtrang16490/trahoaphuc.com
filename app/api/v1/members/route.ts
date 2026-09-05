@@ -21,14 +21,16 @@ function tierForPoints(points: number) {
 export async function GET() {
   try {
     const admin = createAdminClient();
-    const [{ data: profiles, error: profilesError }, { data: roles, error: rolesError }, { data: orders, error: ordersError }] = await Promise.all([
+    const [{ data: profiles, error: profilesError }, { data: roles, error: rolesError }, { data: orders, error: ordersError }, { data: accounts, error: accountsError }] = await Promise.all([
       admin.from("profiles").select("id, full_name, province, account_type, is_active, created_at").eq("is_active", true).eq("account_type", "customer").order("created_at", { ascending: false }).limit(100),
       admin.from("user_roles").select("user_id, role"),
       admin.from("orders").select("customer_id, subtotal_vnd, status").not("customer_id", "is", null).in("status", ["confirmed", "processing", "shipped", "delivered"]),
+      admin.from("loyalty_accounts").select("user_id, points_balance"),
     ]);
-    if (profilesError || rolesError || ordersError) return apiError("Chưa thể tải danh sách hội viên.", 503);
+    if (profilesError || rolesError || ordersError || accountsError) return apiError("Chưa thể tải danh sách hội viên.", 503);
 
     const blockedIds = new Set((roles ?? []).filter((role) => ["admin", "staff", "editor", "dealer"].includes(role.role)).map((role) => role.user_id));
+    const pointsByCustomer = new Map((accounts ?? []).map((account) => [account.user_id, Number(account.points_balance ?? 0)]));
     const orderByCustomer = new Map<string, { orders: number; spend: number }>();
     for (const order of orders ?? []) {
       if (!order.customer_id) continue;
@@ -40,7 +42,7 @@ export async function GET() {
 
     const members = (profiles ?? []).filter((profile) => !blockedIds.has(profile.id)).map((profile) => {
       const stats = orderByCustomer.get(profile.id) ?? { orders: 0, spend: 0 };
-      const points = Math.floor(stats.spend / 1000);
+      const points = pointsByCustomer.get(profile.id) ?? 0;
       return {
         name: maskName(profile.full_name),
         city: profile.province || "Việt Nam",

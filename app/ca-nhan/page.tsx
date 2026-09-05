@@ -9,6 +9,7 @@ import { clearAuthUser, isMockAdminUser, readAuthUser, subscribeAuth } from "@/c
 import { brand } from "@/data/site";
 import { formatCurrency } from "@/data/pricing";
 import { useMobileScrollVisibility } from "@/components/use-mobile-scroll-visibility";
+import { LoyaltyDashboard } from "@/components/loyalty-dashboard";
 
 const orderStates = [
   { label: "Đơn hàng mới", icon: Package },
@@ -64,6 +65,8 @@ export default function ProfilePage() {
   const [orders, setOrders] = useState<CustomerOrder[]>([]);
   const [ordersLoading, setOrdersLoading] = useState(false);
   const [cancellingOrder, setCancellingOrder] = useState<string | null>(null);
+  const [loyaltyPoints, setLoyaltyPoints] = useState(0);
+  const [loyaltyTier, setLoyaltyTier] = useState("new");
 
   useEffect(() => {
     const syncAuth = () => setAuthUser(readAuthUser());
@@ -101,8 +104,26 @@ export default function ProfilePage() {
     };
   }, [authUser?.id]);
 
+  useEffect(() => {
+    let active = true;
+    if (!authUser?.id) {
+      setLoyaltyPoints(0);
+      setLoyaltyTier("new");
+      return () => { active = false; };
+    }
+    fetch("/api/v1/loyalty", { cache: "no-store" })
+      .then((response) => response.json())
+      .then((payload) => {
+        if (!active || !payload?.ok) return;
+        setLoyaltyPoints(Number(payload.data?.account?.points_balance ?? 0));
+        setLoyaltyTier(payload.data?.account?.tier ?? "new");
+      })
+      .catch(() => undefined);
+    return () => { active = false; };
+  }, [authUser?.id]);
+
   const isLoggedIn = Boolean(authUser);
-  const points = isLoggedIn ? (isMockAdminUser(authUser) ? 1280 : 320) : 0;
+  const points = isLoggedIn ? loyaltyPoints : 0;
   const avatarLetter = (authUser?.name || "H").trim().charAt(0).toUpperCase();
 
   const cancelOrder = async (order: CustomerOrder) => {
@@ -168,11 +189,11 @@ export default function ProfilePage() {
                   <>
                     <div className="flex items-center justify-between rounded-[14px] bg-[rgba(255,255,255,0.1)] px-3 py-2.5">
                       <span className="text-[13px] font-semibold uppercase tracking-[0.16em] text-white/80">Điểm thưởng</span>
-                      <span className="text-[18px] font-semibold leading-none text-white">{points} điểm</span>
+                      <span className="text-[18px] font-semibold leading-none text-white">{points.toLocaleString("vi-VN")} điểm</span>
                     </div>
                     <div className="mt-2 flex items-center gap-2.5 text-[13px] leading-6">
                       <CheckCircle size={16} weight="fill" className="shrink-0 text-[#c9ef63]" />
-                      <span>{isMockAdminUser(authUser) ? "Quyền quản trị mock đã sẵn sàng" : "Tài khoản khách hàng đang hoạt động"}</span>
+                      <span>{isMockAdminUser(authUser) ? "Tài khoản quản trị đang hoạt động" : `Hạng ${loyaltyTier === "gold" ? "hội viên vàng" : loyaltyTier === "member" ? "hội viên thân thiết" : "thành viên mới"}`}</span>
                     </div>
                     <div className="flex items-center gap-2.5 text-[13px] leading-6">
                       <CheckCircle size={16} weight="fill" className="shrink-0 text-[#c9ef63]" />
@@ -228,7 +249,7 @@ export default function ProfilePage() {
             </div>
           </article>
 
-          <section className="mt-4 px-1">
+          {isLoggedIn ? <section className="mt-4 px-1">
             <div className="flex items-end justify-between gap-4">
               <div>
                 <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--green)]">Đơn mua</div>
@@ -280,7 +301,18 @@ export default function ProfilePage() {
                 )}
               </section>
             ) : null}
-          </section>
+          </section> : (
+            <section className="mt-4 overflow-hidden rounded-[22px] border border-[rgba(15,77,50,0.08)] bg-white p-4 shadow-[0_10px_24px_rgba(15,77,50,0.06)]">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--green)]">Dành cho bạn</div>
+              <h2 className="mt-2 text-[24px] font-semibold leading-tight text-[var(--green-dark)]">Đăng nhập để quản lý đơn hàng</h2>
+              <p className="mt-2 text-[13px] leading-6 text-[var(--muted)]">Theo dõi trạng thái giao hàng, nhận điểm khi mua sắm và đổi voucher dành riêng cho hội viên.</p>
+              <div className="mt-4 grid grid-cols-2 gap-2">
+                <Link href="/dang-nhap?redirect=/ca-nhan" className="flex h-11 items-center justify-center rounded-[14px] bg-[var(--green)] text-[14px] font-semibold text-white">Đăng nhập</Link>
+                <Link href="/dang-ky-thanh-vien" className="flex h-11 items-center justify-center rounded-[14px] border border-[rgba(15,77,50,0.16)] text-[14px] font-semibold text-[var(--green-dark)]">Đăng ký</Link>
+              </div>
+              <Link href="/san-pham" className="mt-3 flex h-10 items-center justify-center text-[13px] font-semibold text-[var(--green)]">Tiếp tục xem sản phẩm <span className="ml-1 text-lg">›</span></Link>
+            </section>
+          )}
 
           <section className="mt-4 overflow-hidden rounded-[22px] bg-white shadow-[0_10px_24px_rgba(15,77,50,0.08)]">
             <div className="px-4 py-3 text-[13px] leading-6 text-[var(--green-dark)]">
@@ -300,7 +332,7 @@ export default function ProfilePage() {
             </div>
           </section>
 
-          <section className="mt-4 px-1">
+          {isLoggedIn ? <section className="mt-4 px-1">
             <div className="flex items-end justify-between gap-4">
               <div>
                 <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--green)]">Tiện ích</div>
@@ -327,9 +359,9 @@ export default function ProfilePage() {
                 </Link>
               ))}
             </div>
-          </section>
+          </section> : null}
 
-          <section className="mt-4 grid gap-3">
+          {isLoggedIn ? <section className="mt-4 grid gap-3">
             {specialOffers.map((offer) => (
               <article key={offer.title} className="relative overflow-hidden rounded-[20px] border border-[rgba(15,77,50,0.08)] bg-white px-3.5 py-3 shadow-[0_8px_24px_rgba(15,77,50,0.06)]">
                 <span className="absolute right-0 top-0 rounded-bl-[16px] bg-[var(--green)] px-3 py-1.5 text-[11px] font-semibold leading-none text-white">
@@ -352,7 +384,7 @@ export default function ProfilePage() {
                 </div>
               </article>
             ))}
-          </section>
+          </section> : null}
 
           <section className="mt-4 overflow-hidden rounded-[22px] bg-white shadow-[0_10px_24px_rgba(15,77,50,0.08)]">
             <div className="px-4 py-3">
@@ -370,6 +402,10 @@ export default function ProfilePage() {
           </section>
         </div>
       </section>
+
+      <div className="container">
+        <LoyaltyDashboard userId={authUser?.id} />
+      </div>
 
       <section className="hidden md:block section pt-10 md:pt-14">
         <div className="container max-w-4xl">

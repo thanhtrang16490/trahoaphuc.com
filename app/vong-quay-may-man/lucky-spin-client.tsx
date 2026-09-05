@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, Check, Copy, Gift, Info, Sparkle, Tag, Trophy } from "@phosphor-icons/react";
-import { addLoyaltyPoints, readLoyaltyPoints, subscribeLoyalty } from "@/components/loyalty-store";
+import { readAuthUser } from "@/components/auth-store";
 import { useToast } from "@/components/toast";
 import { MobileBackHeader } from "@/components/mobile-back-header";
 
@@ -21,14 +21,16 @@ export function LuckySpinClient() {
   const [spinning, setSpinning] = useState(false);
   const [result, setResult] = useState("Sẵn sàng quay thưởng");
   const [points, setPoints] = useState(0);
+  const [spinAvailable, setSpinAvailable] = useState(true);
   const [wonPrize, setWonPrize] = useState<(typeof prizes)[number] | null>(null);
   const [copied, setCopied] = useState(false);
   const { showToast } = useToast();
 
   useEffect(() => {
-    const syncPoints = () => setPoints(readLoyaltyPoints());
-    syncPoints();
-    return subscribeLoyalty(syncPoints);
+    fetch("/api/v1/loyalty", { cache: "no-store" })
+      .then((response) => response.json())
+      .then((payload) => { if (payload?.ok) { setPoints(Number(payload.data?.account?.points_balance ?? 0)); setSpinAvailable(payload.data?.spinAvailable !== false); } })
+      .catch(() => undefined);
   }, []);
 
   const prizeCount = prizes.length;
@@ -41,7 +43,14 @@ export function LuckySpinClient() {
   }, [rotation, prizeCount, sliceAngle]);
 
   const spinWheel = () => {
-    if (spinning) return;
+    if (spinning || !spinAvailable) {
+      if (!spinAvailable) setResult("Bạn đã hết lượt quay hôm nay. Hẹn gặp lại ngày mai nhé!");
+      return;
+    }
+    if (!readAuthUser()) {
+      setResult("Vui lòng đăng nhập để nhận điểm thưởng.");
+      return;
+    }
     setSpinning(true);
 
     const winningIndex = Math.floor(Math.random() * prizeCount);
@@ -53,14 +62,18 @@ export function LuckySpinClient() {
       const prize = prizes[winningIndex];
       setWonPrize(prize);
       setResult(`Bạn nhận được: ${prize.label}`);
-      const addedPoints = prize.points;
-      const nextPoints = addLoyaltyPoints(addedPoints);
-      setPoints(nextPoints);
-      showToast({
-        title: "Cộng điểm thành công",
-        message: `+${addedPoints} điểm, số dư hiện tại ${nextPoints} điểm`,
-      });
-      setSpinning(false);
+      fetch("/api/v1/loyalty/spin", { method: "POST" })
+        .then((response) => response.json().then((payload) => ({ response, payload })))
+        .then(({ response, payload }) => {
+          if (!response.ok || !payload?.ok) throw new Error(payload?.error?.message || "Chưa thể cộng điểm.");
+          const addedPoints = Number(payload.data?.points ?? 0);
+          const nextPoints = Number(payload.data?.balance ?? 0);
+          setPoints(nextPoints);
+          setSpinAvailable(false);
+          showToast({ title: "Cộng điểm thành công", message: `+${addedPoints} điểm, số dư hiện tại ${nextPoints} điểm` });
+        })
+        .catch((error) => { setSpinAvailable(false); setResult(error instanceof Error ? error.message : "Chưa thể cộng điểm thưởng."); })
+        .finally(() => setSpinning(false));
     }, 4200);
   };
 
@@ -142,10 +155,10 @@ export function LuckySpinClient() {
               <button
                 type="button"
                 onClick={spinWheel}
-                disabled={spinning}
+                disabled={spinning || !spinAvailable}
                 className="mt-5 flex h-12 w-full items-center justify-center rounded-[18px] bg-[linear-gradient(180deg,#0f4d32,#063b27)] text-[15px] font-semibold text-white shadow-[0_16px_32px_rgba(15,77,50,0.24)] disabled:opacity-70"
               >
-                {spinning ? "Đang quay..." : wonPrize ? "Quay lại lần nữa" : "Quay ngay"}
+                {spinning ? "Đang quay..." : !spinAvailable ? "Đã hết lượt hôm nay" : wonPrize ? "Quay lại lần nữa" : "Quay ngay"}
               </button>
 
               <div aria-live="polite" className="mt-4 rounded-[20px] bg-white px-4 py-3 text-center text-[14px] font-semibold text-[var(--green-dark)] shadow-[0_10px_24px_rgba(15,77,50,0.08)]">
